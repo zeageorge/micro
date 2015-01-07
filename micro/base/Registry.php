@@ -18,17 +18,16 @@ use \Micro\Micro;
  */
 final class Registry
 {
-    /** @var array $data TUT VSE KLASSY i DRUGIE DANNYE */
-    static protected $data = [];
-    
-    
+    /** @var array $data registry data */
+    protected static $data = [];
+
+
     /**
      * Disable construct
      *
      * @access protected
      * @result void
      */
-
     protected function __construct()
     {
     }
@@ -66,10 +65,9 @@ final class Registry
      * @return void
      * @static
      */
-  // Добавление данных
-    static public function set($name, $value) 
+    public static function set($name, $value)
     {
-	self::configure();
+        self::configure();
         self::$data[$name] = $value;
        
     }
