@@ -32,7 +32,7 @@ function getVars($object)
  */
 abstract class Model extends FormModel
 {
-    /** @var \PDO $db pdo connection */
+    /** @var DbConnection $db pdo connection */
     protected $db = false;
     /** @var boolean $_isNewRecord is new record? */
     protected $_isNewRecord = false;
@@ -62,7 +62,7 @@ abstract class Model extends FormModel
      */
     public function getDbConnection()
     {
-        $this->db = Registry::get('db')->conn;
+        $this->db = Registry::get('db');
     }
 
     /**
@@ -155,18 +155,14 @@ abstract class Model extends FormModel
      */
     public function create()
     {
+        if (!$this->isNewRecord()) {
+            return false;
+        }
         if ($this->beforeCreate()) {
             $arr = getVars($this);
             unset($arr['isNewRecord']);
-            $arr_h = array_keys($arr);
-            $typs = implode(',', $arr_h);
-            $keys = ':' . implode(', :', $arr_h);
 
-            $sth = $this->db->prepare(
-                'INSERT INTO ' . $this->tableName() . ' (' . $typs . ') VALUES (' . $keys . ');'
-            );
-
-            if ($sth->execute($arr)) {
+            if ($this->db->insert($this->tableName(), $arr)) {
                 $this->_isNewRecord = false;
                 $this->afterCreate();
                 return true;
@@ -254,33 +250,24 @@ abstract class Model extends FormModel
      */
     public function update($where = null)
     {
-        if (!$this->isNewRecord()) {
-            if ($this->beforeUpdate()) {
-                $arr = getVars($this);
-                unset($arr['isNewRecord']);
+        if ($this->isNewRecord()) {
+            return false;
+        }
+        if ($this->beforeUpdate()) {
+            $arr = getVars($this);
+            unset($arr['isNewRecord']);
 
-                $params = [];
-                foreach ($arr AS $key => $val) {
-                    if ($key == 'id') {
-                        continue;
-                    }
-                    $params[] = $key . ' = :' . $key;
-                }
-
-                $query = 'UPDATE ' . $this->tableName() . ' SET ' . implode(', ', $params);
-                if ($where) {
-                    $query .= ' WHERE ' . $where;
-                } elseif (isset($this->id) AND !empty($this->id)) {
-                    $query .= ' WHERE id = :id';
+            if (!$where) {
+                if (isset($this->id) AND !empty($this->id)) {
+                    $where .= ' WHERE id = :id';
                 } else {
                     throw new Exception ('In table ' . $this->tableName() . ' option `id` not defined/not use.');
                 }
-                $sth = $this->db->prepare($query);
+            }
 
-                if ($sth->execute($arr)) {
-                    $this->afterUpdate();
-                    return true;
-                }
+            if ($this->db->update($this->tableName(), $arr, $where)) {
+                $this->afterUpdate();
+                return true;
             }
         }
         return false;
@@ -312,21 +299,22 @@ abstract class Model extends FormModel
      *
      * @access public
      * @return boolean
+     * @throws Exception
      */
     public function delete()
     {
-        if (!$this->isNewRecord()) {
-            if ($this->beforeDelete()) {
+        if ($this->isNewRecord()) {
+            return false;
+        }
+        if ($this->beforeDelete()) {
+            if (!isset($this->id) AND empty($this->id)) {
+                throw new Exception('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+            }
 
-                $sth = $this->db->prepare(
-                    'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->id . ' LIMIT 1;'
-                );
-
-                if ($sth->execute()) {
-                    $this->afterDelete();
-                    unset($this);
-                    return true;
-                }
+            if ($this->db->delete($this->tableName(), 'id=:id', ['id'=>$this->id])) {
+                $this->afterDelete();
+                unset($this);
+                return true;
             }
         }
         return false;
