@@ -78,12 +78,8 @@ class DbConnection
         foreach ($params AS $name => $value) {
             $st->bindValue($name, $value);
         }
-        if ($query->execute()) {
-            if ($this->single) {
-                return $query->fetch();
-            } else {
-                return $query->fetchAll();
-            }
+        if ($st->execute()) {
+            return $st->fetchAll();
         } else {
             throw new Exception( $st->errorCode() . ': ' . $st->errorInfo() );
         }

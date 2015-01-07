@@ -4,7 +4,7 @@
 //define('DEBUG_MICRO', true);
 
 // Configs
-$config = require '../app/config.php';
+$config = require '../app/configs/index.php';
 
 // Get micro
 require $config['MicroDir'] . '/base/Autoload.php';

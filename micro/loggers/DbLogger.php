@@ -20,8 +20,8 @@ use Micro\base\Registry;
  */
 class DbLogger extends LogInterface
 {
-    /** @var \Micro\db\DbConnection $connect connect to DB */
-    protected $connect;
+    /** @var \Micro\db\DbConnection $conn connect to DB */
+    protected $conn;
     /** @var string $tableName logger table name */
     public $tableName;
 
@@ -39,8 +39,8 @@ class DbLogger extends LogInterface
 
         $this->tableName = (isset($params['table']) AND !empty($params['table'])) ? $params['table'] : 'logs';
 
-        if (!$this->connect->tableExists($this->tableName)) {
-            $this->connect->createTable(
+        if (!$this->conn->tableExists($this->tableName)) {
+            $this->conn->createTable(
                 $this->tableName,
                 array(
                     '`id` INT AUTO_INCREMENT',
@@ -63,7 +63,7 @@ class DbLogger extends LogInterface
      */
     public function getConnect()
     {
-        $this->connect = Registry::get('db');
+        $this->conn = Registry::get('db');
     }
 
     /**
@@ -76,7 +76,7 @@ class DbLogger extends LogInterface
      */
     public function sendMessage($level, $message)
     {
-        $this->connect->insert($this->tableName, [
+        $this->conn->insert($this->tableName, [
             'level' => $level,
             'message' => $message,
             'date_create' => $_SERVER['REQUEST_TIME'],
