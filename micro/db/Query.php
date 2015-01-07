@@ -18,8 +18,8 @@ use Micro\base\Registry;
  */
 class Query
 {
-    /** @var \PDO $_conn Current connect to DB */
-    protected $_conn;
+    /** @var DbConnection $conn Current connect to DB */
+    protected $conn;
     /** @var string $select selectable columns */
     public $select = '*';
     /** @var boolean $distinct unique rows */
@@ -43,7 +43,7 @@ class Query
     /** @var string $table table for query */
     public $table = '';
     /** @var string $objectName class name form fetching */
-    public $objectName = '';
+    public $objectName = 'Model';
     /** @var boolean $single is one result? */
     public $single = false;
 
@@ -67,7 +67,7 @@ class Query
      */
     public function getDbConnection()
     {
-        $this->_conn = Registry::get('db')->conn;
+        $this->conn = Registry::get('db');
     }
 
     /**
@@ -237,25 +237,6 @@ class Query
      */
     public function run($as = \PDO::FETCH_CLASS)
     {
-        /** @var \PDOStatement $query query */
-        $query = $this->_conn->prepare($this->getQuery() . ';');
-        if ($as == \PDO::FETCH_CLASS) {
-            $query->setFetchMode($as, ucfirst($this->objectName), ['new' => false]);
-        } else {
-            $query->setFetchMode($as);
-        }
-
-        foreach ($this->params AS $name => $value) {
-            $query->bindValue($name, $value);
-        }
-
-        if ($query->execute()) {
-            if ($this->single) {
-                return $query->fetch();
-            } else {
-                return $query->fetchAll();
-            }
-        }
-        return false;
+        return $this->db->rawQuery($this->getQuery(), $this->params, $as, ucfirst($this->objectName));
     }
 }

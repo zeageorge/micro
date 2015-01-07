@@ -19,7 +19,7 @@ use \Micro\base\Exception;
 class DbConnection
 {
     /** @var \PDO|null $conn Connection to DB */
-    public $conn;
+    protected $conn;
 
 
     /**
@@ -60,13 +60,33 @@ class DbConnection
      * @access public
      * @param string $query raw query to db
      * @param array $params params for query
-     * @return \PDOStatement
+     * @param int $fetchType fetching type
+     * @param string $fetchClass fetching class
+     * @return \PDOStatement|array
+     * @throws Exception
      */
-    public function rawQuery($query = '', array $params = [])
+    public function rawQuery($query = '', array $params = [], $fetchType=\PDO::FETCH_ASSOC, $fetchClass='Model')
     {
-        $st = $this->conn->query($query);
-        $st->execute($params);
-        return $st;
+        $st = $this->conn->prepare($query);
+
+        if ($fetchType == \PDO::FETCH_CLASS) {
+            $st->setFetchMode($fetchType, ucfirst($fetchClass), ['new' => false]);
+        } else {
+            $st->setFetchMode($fetchType);
+        }
+
+        foreach ($params AS $name => $value) {
+            $st->bindValue($name, $value);
+        }
+        if ($query->execute()) {
+            if ($this->single) {
+                return $query->fetch();
+            } else {
+                return $query->fetchAll();
+            }
+        } else {
+            throw new Exception( $st->errorCode() . ': ' . $st->errorInfo() );
+        }
     }
 
     /**
