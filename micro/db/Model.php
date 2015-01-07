@@ -259,7 +259,7 @@ abstract class Model extends FormModel
 
             if (!$where) {
                 if (isset($this->id) AND !empty($this->id)) {
-                    $where .= ' WHERE id = :id';
+                    $where .= 'id=:id';
                 } else {
                     throw new Exception ('In table ' . $this->tableName() . ' option `id` not defined/not use.');
                 }
