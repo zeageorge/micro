@@ -666,6 +666,7 @@ class Html
     {
         $attributes['id'] = $name;
         $attributes['size'] = 1;
+
         return self::listbox($name, $options, $attributes);
     }
 
@@ -697,7 +698,20 @@ class Html
                 if ($option['value'] == $selected) {
                     $option['selected'] = 'selected';
                 }
-                $opts .= self::option($option['value'], $option['text'], $option['attributes']);
+
+                $attr = [];
+                if (isset($option['attributes'])) {
+                    $attr = $option['attributes'];
+                    unset($option['attributes']);
+                }
+
+                $text = '';
+                if (isset($option['text'])) {
+                    $text = $option['text'];
+                    unset($option['text']);
+                }
+
+                $opts .= self::option($option['value'], $text, $attr);
             }
         }
         return self::openTag('select', $attributes) . $opts . self::closeTag('select');

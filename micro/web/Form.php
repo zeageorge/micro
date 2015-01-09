@@ -443,7 +443,13 @@ class Form
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
         $options['selected'] = $element['value'];
-        $elements = isset($options['elements']) ? $options['elements'] : [];
+
+        $elements = [];
+        if (isset($options['elements'])) {
+            $elements = $options['elements'];
+            unset($options['elements']);
+        }
+
         return Html::dropDownList($element['name'], $elements, $options);
     }
 
@@ -1109,7 +1115,6 @@ class Form
      */
     public function dropDownListFieldRow($model, $property, array $options=[])
     {
-        $elements = isset($options['elements']) ? $options['elements'] : [];
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
 
@@ -1127,7 +1132,7 @@ class Form
 
         return Html::openTag('div', $block) .
         Html::label($model->getLabel($property), $element['id'], $label) .
-        $this->dropDownListField($model, $property, $elements, $options) .
+        $this->dropDownListField($model, $property, $options) .
         Html::closeTag('div');
     }
 
