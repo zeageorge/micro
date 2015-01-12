@@ -20,10 +20,15 @@ use Micro\base\Exception;
  * @since 1.0
  */
 class PhpView extends View {
+    /** @var string Layout to render */
     public $layout;
+    /** @var string $view View name */
     public $view;
+    /** @var string $path Path to view */
     public $path;
+    /** @var string $data Return data */
     public $data='';
+
 
     /**
      * Render insert data into view
@@ -39,6 +44,7 @@ class PhpView extends View {
             ($this->data) ? $this->data : $this->renderFile($this->getViewFile($this->view), $this->params)
         );
     }
+
     /**
      * Render partial
      *
@@ -83,6 +89,7 @@ class PhpView extends View {
 
         return ob_get_clean();
     }
+
     /**
      * Render raw data in layout
      *
@@ -138,6 +145,7 @@ class PhpView extends View {
         }
         return $path;
     }
+
     /**
      * Get layout path
      *

@@ -28,6 +28,7 @@ abstract class View
     /** @var array $stack */
     public $stack=[];
 
+
     /**
      * Render
      *
@@ -36,6 +37,8 @@ abstract class View
      * @return mixed
      */
     abstract public function render();
+
+
     /**
      * Convert object to string
      *
@@ -45,6 +48,7 @@ abstract class View
     public function __toString() {
         return ''.$this->render();
     }
+
     /**
      * Add parameter into view
      *
@@ -87,6 +91,7 @@ abstract class View
         unset($widget);
         return $result;
     }
+
     /**
      * Begin widget
      *
@@ -110,13 +115,25 @@ abstract class View
         $GLOBALS['widgetStack'][$name] = new $name($options);
         return $GLOBALS['widgetStack'][$name]->init();
     }
+
     /**
+     * Ending widget
+     *
      * @access public
      * @param string $name widget name
      * @throws Exception
      */
-    public function endWidget($name)
+    public function endWidget($name = '')
     {
+        if (!$name AND $GLOBALS['widgetStack']) {
+            $widget = array_pop($GLOBALS['widgetStack']);
+            $v = $widget->run();
+            unset($widget);
+
+            echo $v;
+            return;
+        }
+
         if (!class_exists($name) OR !isset($GLOBALS['widgetStack'][$name])) {
             throw new Exception('Widget ' . $name . ' not started.');
         }
@@ -162,6 +179,7 @@ abstract class View
 
         return $result;
     }
+
     /**
      * Register JS script
      *
@@ -177,6 +195,7 @@ abstract class View
             'body' => Html::script($source)
         ];
     }
+
     /**
      * Register JS file
      *
@@ -192,6 +211,7 @@ abstract class View
             'body' => Html::scriptFile($source)
         ];
     }
+
     /**
      * Register CSS code
      *
@@ -207,6 +227,7 @@ abstract class View
             'body' => Html::css($source)
         ];
     }
+
     /**
      * Register CSS file
      *
