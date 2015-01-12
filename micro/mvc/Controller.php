@@ -84,9 +84,10 @@ abstract class Controller
             $view->layout = (!$view->layout) ? $this->layout : $view->layout;
             $view->view = (!$view->view) ? $name : $view->name;
             $view->path = get_called_class();
+            $view = $view->__toString();
         }
 
-        echo $this->applyFilters($name, false, $filters, $view->__toString());
+        echo $this->applyFilters($name, false, $filters, $view);
     }
 
     /**
