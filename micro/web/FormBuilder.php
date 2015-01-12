@@ -39,10 +39,10 @@ class FormBuilder
      * @param string $method method of request
      * @param string $type type data
      * @param string $action path URL action
-     * @param array $attributes attributes for form
+     * @param array $attr attributes for form
      * @result void
      */
-    public function __construct(array $config = [], $model = null, $method = 'GET', $type = 'text/plain', $action = '', $attributes=[])
+    public function __construct(array $config=[], $model=null, $method='GET', $type='text/plain', $action='', $attr=[])
     {
         $this->config = $config;
         $this->model = $model;
@@ -51,7 +51,7 @@ class FormBuilder
             'method' => $method,
             'type' => $type,
             'client' => $model->getClient(),
-            'attributes' => $attributes
+            'attributes' => $attr
         ]);
     }
 
