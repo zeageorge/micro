@@ -19,7 +19,8 @@ use Micro\base\Registry;
 class Query
 {
     /** @var DbConnection $conn Current connect to DB */
-    protected $conn;
+    public $conn;
+
     /** @var string $select selectable columns */
     public $select = '*';
     /** @var boolean $distinct unique rows */

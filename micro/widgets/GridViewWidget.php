@@ -89,31 +89,27 @@ class GridViewWidget extends Widget
      */
     public function init()
     {
+        $this->page  = ($this->page  < 0) ? 0 : $this->page;
         $this->limit = ($this->limit < 1) ? 1 : $this->limit;
 
         if (!$this->rows) {
-            $this->makeRows();
+            $this->makeDbRows();
         } else {
-            if (is_object($this->rows[0]) == true) {
-                foreach ( $this->rows AS $key=>$row) {
-                    $this->rows[$key] = (array)$row;
-                    foreach($this->rows[$key] AS $num=>$val) {
-                        if (is_array($this->rows[$key][$num]) OR is_object($this->rows[$key][$num])) {
-                            unset($this->rows[$key][$num]);
-                        }
-                        if (strpos($num, 'isNewRecord') !== FALSE) {
-                            unset($this->rows[$key][$num]);
-                        }
+            $this->makeArrRows();
+        }
+
+        // Upgrade rows
+        if (is_object($this->rows[0]) == true) {
+            foreach ( $this->rows AS $key=>$row) {
+                $this->rows[$key] = (array)$row;
+                foreach($this->rows[$key] AS $num=>$val) {
+                    if (is_array($this->rows[$key][$num]) OR is_object($this->rows[$key][$num])) {
+                        unset($this->rows[$key][$num]);
+                    }
+                    if (strpos($num, 'isNewRecord') !== FALSE) {
+                        unset($this->rows[$key][$num]);
                     }
                 }
-            }
-
-            $this->query    = ($this->query) ? null : $this->query;
-            $this->rowCount = count($this->rows);
-            $this->keys     = array_keys($this->rows[0]);
-
-            if ($this->rowCount > $this->limit) {
-                $this->rows = array_slice($this->rows, ($this->page * $this->limit), $this->limit);
             }
         }
 
@@ -130,23 +126,46 @@ class GridViewWidget extends Widget
      * @access private
      * @return void
      */
-    private function makeRows()
+    private function makeDbRows()
     {
+        // отрезать лимит
         if (($position = strpos($this->query, 'LIMIT')) !== false) {
             $this->query = substr($this->query, 0, $position);
         }
 
+        // посчитать всех
         if (!$this->conn->count($this->query)) {
             return;
         }
 
-        $st = $this->conn->rawQuery($this->query);
+        // получаем одного
+        $st = array_shift($this->conn->rawQuery($this->query . ' LIMIT 1'));
+        $this->keys = array_keys($st);
 
-        $this->keys = array_keys($st->fetch(\PDO::FETCH_ASSOC));
+
         $this->rowCount = $this->conn->count($this->query);
 
-        $st = $this->conn->rawQuery($this->query . ' LIMIT ' . ($this->page * $this->limit) . ',' . $this->limit);
-        $this->rows = $st->fetchAll(\PDO::FETCH_ASSOC);
+        $this->rows = $this->conn->rawQuery($this->query . ' LIMIT ' . ($this->page * $this->limit) . ',' . $this->limit);
+    }
+
+    /**
+     * Make rows from array
+     *
+     * @access protected
+     * @return void
+     */
+    private function makeArrRows()
+    {
+        $this->query    = ($this->query) ? null : $this->query;
+        $this->rowCount = count($this->rows);
+
+        // cut current
+        if ($this->rowCount > $this->limit) {
+            $this->rows = array_slice($this->rows, ($this->page * $this->limit), $this->limit);
+        }
+
+        // make keys
+        $this->keys     = array_keys($this->rows[0]);
     }
 
     /**
