@@ -7,18 +7,6 @@ html, body {
     padding: 0;
 }
 
-.Mruntime {
-    position: absolute;
-    left: 85%;
-    top: 0;
-    font-weight: bold;
-    font-size: small;
-}
-
-.Mruntime:before {
-    content: 'Сгенерировано за: ';
-}
-
 #container {
     border-radius: 3px;
     line-height: 1.4;
