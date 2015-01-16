@@ -20,7 +20,7 @@ use Micro\Micro;
 class Language
 {
     /** @var array $language language array */
-    private $language = [];
+    private $language = [ ];
     /** @var string $defaultLang default language */
     private $defaultLang = 'en';
 
@@ -29,36 +29,40 @@ class Language
      * Constructor language
      *
      * @access public
+     *
      * @param string $viewNameFile path to view
+     *
      * @result void
      */
-    public function __construct($viewNameFile)
+    public function __construct( $viewNameFile )
     {
-        $viewName = substr($viewNameFile, 0, -3);
-        $config = Micro::getInstance()->config;
-        $lang = (isset($config['lang'])) ? $config['lang'] : $this->defaultLang;
+        $viewName = substr( $viewNameFile, 0, - 3 );
+        $config   = Micro::getInstance()->config;
+        $lang     = ( isset( $config['lang'] ) ) ? $config['lang'] : $this->defaultLang;
 
-        if (!file_exists($viewName . $lang . '.ini')) {
+        if ( ! file_exists( $viewName . $lang . '.ini' )) {
             return;
         }
 
-        $this->language = parse_ini_file($viewName . $lang . '.ini', true);
+        $this->language = parse_ini_file( $viewName . $lang . '.ini', true );
     }
 
     /**
      * Get param value
      *
      * @access public
+     *
      * @param string $name element name
+     *
      * @throws Exception
      * @return mixed
      */
-    public function __get($name)
+    public function __get( $name )
     {
-        if (isset($this->language[$name])) {
+        if (isset( $this->language[$name] )) {
             return $this->language[$name];
         } else {
-            throw new Exception($name . ' not defined into lang file');
+            throw new Exception( $name . ' not defined into lang file' );
         }
     }
 }

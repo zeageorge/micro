@@ -12,32 +12,33 @@ class RegisterController extends Controller
     {
         return [
             [
-                'class'=>'\Micro\filters\AccessFilter',
-                'actions'=>['success','error','index','post'],
-                'rules'=>[
+                'class'   => '\Micro\filters\AccessFilter',
+                'actions' => [ 'success', 'error', 'index', 'post' ],
+                'rules'   => [
                     [
-                        'allow'     =>false,
-                        'actions'   =>['index','success','error','post'],
-                        'users'     =>['@'],
-                        'message'   =>'Only for not authorized!'
+                        'allow'   => false,
+                        'actions' => [ 'index', 'success', 'error', 'post' ],
+                        'users'   => [ '@' ],
+                        'message' => 'Only for not authorized!'
                     ],
                 ]
             ],
             [
-                'class'=>'\Micro\filters\CsrfFilter',
-                'actions'=>['index']
+                'class'   => '\Micro\filters\CsrfFilter',
+                'actions' => [ 'index' ]
             ],
             [
-                'class'=>'\Micro\filters\XssFilter',
-                'actions'=>['post'],
-                'clean'=>'*'
+                'class'   => '\Micro\filters\XssFilter',
+                'actions' => [ 'post' ],
+                'clean'   => '*'
             ]
         ];
     }
+
     public function actionIndex()
     {
         $v = new View;
-        $v->addParameter('model', new User);
+        $v->addParameter( 'model', new User );
         return $v;
     }
 
@@ -53,16 +54,16 @@ class RegisterController extends Controller
 
     public function actionPost()
     {
-        if (isset($_POST['User'])) {
+        if (isset( $_POST['User'] )) {
             $user = new User;
-            $user->setModelData($_POST['User']);
-            $user->pass = md5($_POST['User']['pass']);
+            $user->setModelData( $_POST['User'] );
+            $user->pass = md5( $_POST['User']['pass'] );
 
             if ($user->save()) {
-                $this->redirect('/register/success');
+                $this->redirect( '/register/success' );
             }
-            $this->redirect('/register/error');
+            $this->redirect( '/register/error' );
         }
-        $this->redirect('/register');
+        $this->redirect( '/register' );
     }
 }

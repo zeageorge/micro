@@ -2,6 +2,7 @@
 
 namespace Micro;
 
+use Micro\base\Console;
 use Micro\base\Exception;
 use Micro\base\Autoload;
 use Micro\base\Registry;
@@ -48,15 +49,18 @@ final class Micro
      * Getting instance of MicroPHP class
      *
      * @access public
+     *
      * @param  array $config configuration array
+     *
      * @return Micro this
      * @static
      */
-    public static function getInstance(array $config = [])
+    public static function getInstance( array $config = [ ] )
     {
         if (self::$_app == null) {
-            self::$_app = new Micro($config);
+            self::$_app = new Micro( $config );
         }
+
         return self::$_app;
     }
 
@@ -68,20 +72,23 @@ final class Micro
      * and setup components.
      *
      * @access private
+     *
      * @param array $config configuration array
+     *
      * @result void
      */
-    private function __construct(array $config = [])
+    private function __construct( array $config = [ ] )
     {
         $this->config = $config;
 
-        Autoload::setAlias('Micro', $config['MicroDir']);
-        Autoload::setAlias('App', $config['AppDir']);
-        if (isset($config['VendorDir'])) {
-            Autoload::setAlias('Vendor', $config['VendorDir']);
+        Autoload::setAlias( 'Micro', $config['MicroDir'] );
+        Autoload::setAlias( 'App', $config['AppDir'] );
+
+        if (isset( $config['VendorDir'] )) {
+            Autoload::setAlias( 'Vendor', $config['VendorDir'] );
         }
 
-        spl_autoload_register(['\Micro\base\Autoload', 'loader']);
+        spl_autoload_register( [ '\Micro\base\Autoload', 'loader' ] );
     }
 
     /**
@@ -96,25 +103,56 @@ final class Micro
      */
     public function run()
     {
-        $path = $this->prepareController();
-        $action = Registry::get('request')->getAction();
+        if (php_sapi_name() === 'cli') {
+            die('Not allowed from web');
+        }
 
-        if (!class_exists($path)) {
-            if (isset($this->config['errorController']) AND $this->config['errorController']) {
-                if (!Autoload::loader($this->config['errorController'])) {
-                    throw new Exception('Error controller not valid');
+        $path   = $this->prepareController();
+        $action = Registry::get( 'request' )->getAction();
+
+        if ( ! class_exists( $path )) {
+            if (isset( $this->config['errorController'] ) AND $this->config['errorController']) {
+                if ( ! Autoload::loader( $this->config['errorController'] )) {
+                    throw new Exception( 'Error controller not valid' );
                 }
 
-                $path = $this->config['errorController'];
-                $action = isset($config['errorAction']) ? $config['errorAction'] : 'error';
+                $path   = $this->config['errorController'];
+                $action = isset( $config['errorAction'] ) ? $config['errorAction'] : 'error';
             } else {
-                throw new Exception('ErrorController not defined or empty');
+                throw new Exception( 'ErrorController not defined or empty' );
             }
         }
 
         /** @var \Micro\base\Controller $mvc ModelViewController */
         $mvc = new $path;
-        $mvc->action($action);
+        $mvc->action( $action );
+    }
+
+    /**
+     * Running command line interface
+     *
+     * @access public
+     * @global Registry
+     * @return void
+     * @throws Exception command not set
+     */
+    public function runCli()
+    {
+        global $argc, $argv;
+        if (php_sapi_name() !== 'cli') {
+            die('Not allowed from command');
+        }
+
+        $cli = new Console($argv);
+        $cls = $cli->getCommand();
+
+        /** @var \Micro\base\Command $command */
+        $command = new $cls($cli->getParams());
+        $command->execute();
+        if (!$command->result) {
+            define('DEBUG_MICRO', true);
+            throw new Exception($command->message);
+        }
     }
 
     /**
@@ -130,9 +168,9 @@ final class Micro
     private function prepareController()
     {
         /** @var \Micro\web\Request $request current request */
-        $request = Registry::get('request');
-        if (!$request) {
-            throw new Exception('Component request not loaded.');
+        $request = Registry::get( 'request' );
+        if ( ! $request) {
+            throw new Exception( 'Component request not loaded.' );
         }
 
         $path = 'App';

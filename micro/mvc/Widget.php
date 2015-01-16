@@ -20,10 +20,12 @@ abstract class Widget
      * Constructor for widgets
      *
      * @access public
+     *
      * @param array $args arguments array
+     *
      * @result void
      */
-    public function __construct(array $args = [])
+    public function __construct( array $args = [ ] )
     {
         foreach ($args AS $name => $value) {
             $this->$name = $value;

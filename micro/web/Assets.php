@@ -35,44 +35,48 @@ class Assets
      * Constructor for class
      *
      * @access public
+     *
      * @param string $directory directory of assets
+     *
      * @result void
      */
-    public function __construct($directory = '')
+    public function __construct( $directory = '' )
     {
         $this->directory = $directory;
-        $this->hash = md5($this->directory);
+        $this->hash      = md5( $this->directory );
 
-        $tmp = '/' . $this->assetDir . '/' . $this->hash;
+        $tmp              = '/' . $this->assetDir . '/' . $this->hash;
         $this->publishDir = Micro::getInstance()->config['HtmlDir'] . $tmp;
-        $this->sourceDir = Micro::getInstance()->config['WebDir'] . $tmp;
+        $this->sourceDir  = Micro::getInstance()->config['WebDir'] . $tmp;
     }
 
     /**
      * Publication directory or files
      *
      * @access public
+     *
      * @param string $exclude exclude files
+     *
      * @return void
      */
-    public function publish($exclude = '.php')
+    public function publish( $exclude = '.php' )
     {
         $hashDir = $this->getSourceDir();
 
-        if (!file_exists($hashDir)) {
-            mkdir($hashDir, 0777);
+        if ( ! file_exists( $hashDir )) {
+            mkdir( $hashDir, 0777 );
         }
 
-        if (is_dir($this->directory)) {
-            MFile::recurseCopyIfEdited($this->directory, $this->sourceDir);
+        if (is_dir( $this->directory )) {
+            MFile::recurseCopyIfEdited( $this->directory, $this->sourceDir );
         } else {
-            if (substr($hashDir, strlen($hashDir) - strlen($exclude)) != $exclude) {
-                if (!file_exists($hashDir)) {
-                    copy($this->directory, $hashDir);
-                    chmod($hashDir, 0666);
-                } elseif (filemtime($this->directory) != filemtime($hashDir)) {
-                    copy($this->directory, $hashDir);
-                    chmod($hashDir, 0666);
+            if (substr( $hashDir, strlen( $hashDir ) - strlen( $exclude ) ) != $exclude) {
+                if ( ! file_exists( $hashDir )) {
+                    copy( $this->directory, $hashDir );
+                    chmod( $hashDir, 0666 );
+                } elseif (filemtime( $this->directory ) != filemtime( $hashDir )) {
+                    copy( $this->directory, $hashDir );
+                    chmod( $hashDir, 0666 );
                 }
             }
         }

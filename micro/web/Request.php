@@ -34,12 +34,14 @@ class Request
      * Constructor Request
      *
      * @access public
+     *
      * @param array $routes routes array
+     *
      * @result void
      */
-    public function __construct(array $routes = [])
+    public function __construct( array $routes = [ ] )
     {
-        $this->router = new Router(isset($routes['routes']) ? $routes['routes'] : []);
+        $this->router = new Router( isset( $routes['routes'] ) ? $routes['routes'] : [ ] );
         $this->initialize();
     }
 
@@ -56,7 +58,7 @@ class Request
 
     public function getUserIP()
     {
-        return isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:'127.0.0.1';
+        return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
     }
 
     /**
@@ -67,36 +69,36 @@ class Request
      */
     private function initialize()
     {
-        $uri = (isset($_GET['r']) OR !empty($_GET['r'])) ? $_GET['r'] : '/default';
+        $uri = ( isset( $_GET['r'] ) OR ! empty( $_GET['r'] ) ) ? $_GET['r'] : '/default';
 
-        if (substr($uri, -1) == '/') {
+        if (substr( $uri, - 1 ) == '/') {
             $uri = '/default';
         }
 
-        $trustUri = $this->router->parse($uri, $this->getMethod());
-        $uriBlocks = explode('/', $trustUri);
+        $trustUri  = $this->router->parse( $uri, $this->getMethod() );
+        $uriBlocks = explode( '/', $trustUri );
 
-        if (isset($uri{0}) AND $uri{0} == '/') {
-            array_shift($uriBlocks);
+        if (isset( $uri{0} ) AND $uri{0} == '/') {
+            array_shift( $uriBlocks );
         }
 
-        $this->prepareExtensions($uriBlocks);
-        $this->prepareModules($uriBlocks);
-        $this->prepareController($uriBlocks);
-        $this->prepareAction($uriBlocks);
+        $this->prepareExtensions( $uriBlocks );
+        $this->prepareModules( $uriBlocks );
+        $this->prepareController( $uriBlocks );
+        $this->prepareAction( $uriBlocks );
 
-        if (!empty($uriBlocks)) {
-            $uriBlocks = array_values($uriBlocks);
-            $countUriBlocks = count($uriBlocks);
+        if ( ! empty( $uriBlocks )) {
+            $uriBlocks      = array_values( $uriBlocks );
+            $countUriBlocks = count( $uriBlocks );
 
-            $gets = [];
+            $gets = [ ];
             for ($i = 0; $i < $countUriBlocks; $i = $i + 2) {
-                if (!isset($uriBlocks[$i + 1])) {
+                if ( ! isset( $uriBlocks[$i + 1] )) {
                     return;
                 }
                 $gets[$uriBlocks[$i]] = $uriBlocks[$i + 1];
             }
-            $_GET = array_merge($_GET, $gets);
+            $_GET = array_merge( $_GET, $gets );
         }
     }
 
@@ -104,30 +106,32 @@ class Request
      * Prepare extensions
      *
      * @access private
+     *
      * @param array $uriBlocks uri blocks from URL
+     *
      * @return bool
      */
-    private function prepareExtensions(&$uriBlocks)
+    private function prepareExtensions( &$uriBlocks )
     {
-        $extensions = [];
-        if (isset(Micro::getInstance()->config['extensions'])) {
+        $extensions = [ ];
+        if (isset( Micro::getInstance()->config['extensions'] )) {
             $extensions = Micro::getInstance()->config['extensions'];
         }
-        if (!$extensions) {
+        if ( ! $extensions) {
             return false;
         }
 
         $path = Micro::getInstance()->config['AppDir'];
 
         foreach ($uriBlocks AS $i => $block) {
-            if (file_exists($path . $this->extensions . '/extensions/' . $block)) {
+            if (file_exists( $path . $this->extensions . '/extensions/' . $block )) {
                 $this->extensions .= '/extensions/' . $block;
-                unset($uriBlocks[$i]);
+                unset( $uriBlocks[$i] );
             } else {
                 break;
             }
         }
-        $this->extensions = strtr($this->extensions, '/', '\\');
+        $this->extensions = strtr( $this->extensions, '/', '\\' );
         return true;
     }
 
@@ -135,11 +139,13 @@ class Request
      * Prepare modules
      *
      * @access private
-     * @global Micro
+     * @global      Micro
+     *
      * @param array $uriBlocks uri blocks from URL
+     *
      * @return void
      */
-    private function prepareModules(&$uriBlocks)
+    private function prepareModules( &$uriBlocks )
     {
         $path = Micro::getInstance()->config['AppDir'];
 
@@ -148,24 +154,26 @@ class Request
         }
 
         foreach ($uriBlocks AS $i => $block) {
-            if (file_exists($path . $this->modules . '/modules/' . $block)) {
+            if (file_exists( $path . $this->modules . '/modules/' . $block )) {
                 $this->modules .= '/modules/' . $block;
-                unset($uriBlocks[$i]);
+                unset( $uriBlocks[$i] );
             } else {
                 break;
             }
         }
-        $this->modules = strtr($this->modules, '/', '\\');
+        $this->modules = strtr( $this->modules, '/', '\\' );
     }
 
     /**
      * Prepare controller
      *
      * @access private
+     *
      * @param array $uriBlocks uri blocks from URL
+     *
      * @return void
      */
-    private function prepareController(&$uriBlocks)
+    private function prepareController( &$uriBlocks )
     {
         $path = Micro::getInstance()->config['AppDir'];
 
@@ -176,12 +184,12 @@ class Request
             $path .= $this->modules;
         }
 
-        $str = array_shift($uriBlocks);
-        if (file_exists(str_replace('\\' , '/' , $path . '/controllers/' . ucfirst($str).'Controller.php' ))) {
+        $str = array_shift( $uriBlocks );
+        if (file_exists( str_replace( '\\', '/', $path . '/controllers/' . ucfirst( $str ) . 'Controller.php' ) )) {
             $this->controller = $str;
         } else {
             $this->controller = 'default';
-            array_unshift($uriBlocks, $str);
+            array_unshift( $uriBlocks, $str );
         }
     }
 
@@ -189,12 +197,14 @@ class Request
      * Prepare action
      *
      * @access private
+     *
      * @param array $uriBlocks uri blocks from URL
+     *
      * @return void
      */
-    private function prepareAction(&$uriBlocks)
+    private function prepareAction( &$uriBlocks )
     {
-        $this->action = ($str = array_shift($uriBlocks)) ? $str : 'index';
+        $this->action = ( $str = array_shift( $uriBlocks ) ) ? $str : 'index';
     }
 
     /**
@@ -227,7 +237,7 @@ class Request
      */
     public function getController()
     {
-        return ucfirst($this->controller) . 'Controller';
+        return ucfirst( $this->controller ) . 'Controller';
     }
 
     /**

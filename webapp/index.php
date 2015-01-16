@@ -11,4 +11,4 @@ require $config['MicroDir'] . '/base/Autoload.php';
 require $config['MicroDir'] . '/Micro.php';
 
 // Run application
-\Micro\Micro::getInstance($config)->run();
+\Micro\Micro::getInstance( $config )->run();

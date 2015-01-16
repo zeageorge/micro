@@ -19,7 +19,7 @@ use Micro\base\Validator;
 abstract class FormModel
 {
     /** @var array $errors validation errors */
-    protected $errors = [];
+    protected $errors = [ ];
 
 
     /**
@@ -30,7 +30,7 @@ abstract class FormModel
      */
     public function rules()
     {
-        return [];
+        return [ ];
     }
 
     /**
@@ -42,9 +42,9 @@ abstract class FormModel
     public function validate()
     {
         foreach ($this->rules() AS $rule) {
-            $validator = new Validator($rule);
+            $validator = new Validator( $rule );
 
-            if (!$validator->run($this) AND $validator->errors) {
+            if ( ! $validator->run( $this ) AND $validator->errors) {
                 $this->errors[] = $validator->errors;
             }
         }
@@ -65,8 +65,8 @@ abstract class FormModel
         $result = 'jQuery(document).ready(function(){';
 
         foreach ($this->rules() AS $rule) {
-            $validator = new Validator($rule);
-            if (is_string($js = $validator->run($this, true))) {
+            $validator = new Validator( $rule );
+            if (is_string( $js = $validator->run( $this, true ) )) {
                 $result .= ' ' . $js;
             }
         }
@@ -80,10 +80,12 @@ abstract class FormModel
      * Loading data in model from array
      *
      * @access public
+     *
      * @param array $data array to change
+     *
      * @return void
      */
-    public function setModelData(array $data = [])
+    public function setModelData( array $data = [ ] )
     {
         foreach ($data AS $key => $value) {
             $this->$key = $value;
@@ -94,10 +96,12 @@ abstract class FormModel
      * Add error model
      *
      * @access public
+     *
      * @param string $description error text
+     *
      * @return void
      */
-    public function addError($description)
+    public function addError( $description )
     {
         $this->errors[] = $description;
     }
@@ -110,22 +114,24 @@ abstract class FormModel
      */
     public function getErrors()
     {
-        return $this->convertMultiArrayToArray($this->errors);
+        return $this->convertMultiArrayToArray( $this->errors );
     }
 
     /**
      * Convert results array to single array
      *
      * @access protected
+     *
      * @param array $errors merge errors
+     *
      * @return array
      */
-    private function convertMultiArrayToArray($errors)
+    private function convertMultiArrayToArray( $errors )
     {
-        static $result = [];
+        static $result = [ ];
         foreach ($errors AS $error) {
-            if (is_array($error)) {
-                $this->convertMultiArrayToArray($error);
+            if (is_array( $error )) {
+                $this->convertMultiArrayToArray( $error );
             } else {
                 $result[] = $error;
             }
@@ -141,19 +147,21 @@ abstract class FormModel
      */
     public function attributeLabels()
     {
-        return [];
+        return [ ];
     }
 
     /**
      * Get element label
      *
      * @access public
+     *
      * @param string $property property name
+     *
      * @return null
      */
-    public function getLabel($property)
+    public function getLabel( $property )
     {
         $elements = $this->attributeLabels();
-        return (isset($elements[$property])) ? $elements[$property] : null;
+        return ( isset( $elements[$property] ) ) ? $elements[$property] : null;
     }
 }

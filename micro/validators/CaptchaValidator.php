@@ -28,34 +28,38 @@ class CaptchaValidator extends Validator
      * Constructor validator
      *
      * @access public
-     * @global Registry
+     * @global      Registry
+     *
      * @param array $rule validation rule
+     *
      * @result void
      */
-    public function __construct(array $rule = [])
+    public function __construct( array $rule = [ ] )
     {
-        parent::__construct($rule);
+        parent::__construct( $rule );
 
-        $this->captcha = Registry::get('user')->getCaptcha();
+        $this->captcha = Registry::get( 'user' )->getCaptcha();
     }
 
     /**
      * Validate on server, make rule
      *
      * @access public
-     * @global Registry
+     * @global      Registry
+     *
      * @param Model $model checked model
+     *
      * @return bool
      */
-    public function validate($model)
+    public function validate( $model )
     {
         foreach ($this->elements AS $element) {
-            if (!property_exists($model, $element)) {
-                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
+            if ( ! property_exists( $model, $element )) {
+                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class( $model );
                 return false;
             }
 
-            $convert = Registry::get('user')->makeCaptcha($model->$element);
+            $convert = Registry::get( 'user' )->makeCaptcha( $model->$element );
             if ($convert != $this->captcha) {
                 return false;
             }

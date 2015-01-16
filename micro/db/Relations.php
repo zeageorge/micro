@@ -14,7 +14,8 @@ namespace Micro\db;
  * @version 1.0
  * @since 1.0
  */
-class Relations {
+class Relations
+{
     /** @var array $data relations setup */
     protected $data;
 
@@ -22,22 +23,24 @@ class Relations {
      * Setup a relation
      *
      * @access public
-     * @param $name
-     * @param bool $isMany
+     *
+     * @param        $name
+     * @param bool   $isMany
      * @param string $model
-     * @param array $on
+     * @param array  $on
      * @param string $where
-     * @param array $params
+     * @param array  $params
+     *
      * @return void
      */
-    public function add($name, $model, $isMany=false, array $on=[], $where='', array $params=[])
+    public function add( $name, $model, $isMany = false, array $on = [ ], $where = '', array $params = [ ] )
     {
         $this->data[$name] = [
-            'IsMany'=>$isMany,
-            'Model'=>$model,
-            'On'=>$on,
-            'Where'=>$where,
-            'Params'=>$params
+            'IsMany' => $isMany,
+            'Model'  => $model,
+            'On'     => $on,
+            'Where'  => $where,
+            'Params' => $params
         ];
     }
 
@@ -45,11 +48,13 @@ class Relations {
      * Get relation config by name
      *
      * @access public
+     *
      * @param string $name
+     *
      * @return array
      */
-    public function get($name)
+    public function get( $name )
     {
-        return isset($this->data[$name]) ? $this->data[$name] : FALSE;
+        return isset( $this->data[$name] ) ? $this->data[$name] : false;
     }
 } 

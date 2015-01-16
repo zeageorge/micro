@@ -30,28 +30,30 @@ class Cache
         'xcache'    => '\\Micro\\caches\\XcacheCache',
     ];
     /** @var array $servers Activated servers */
-    protected $servers=[];
+    protected $servers = [ ];
 
     /**
      * Constructor is a initialize Caches
      *
      * @access public
+     *
      * @param array $config Caching config
+     *
      * @result void
      * @throws Exception
      */
-    function __construct(array $config=[])
+    function __construct( array $config = [ ] )
     {
-        if (isset($config['servers'])) {
-            foreach ($config['servers'] AS $key=>$server) {
-                if (in_array($server['driver'], array_keys($this->drivers))) {
-                    $this->servers[$key] = new $this->drivers[$server['driver']] ($server);
+        if (isset( $config['servers'] )) {
+            foreach ($config['servers'] AS $key => $server) {
+                if (in_array( $server['driver'], array_keys( $this->drivers ) )) {
+                    $this->servers[$key] = new $this->drivers[$server['driver']] ( $server );
                 } else {
-                    throw new Exception('Cache driver ' . $server['driver'] . ' not found');
+                    throw new Exception( 'Cache driver ' . $server['driver'] . ' not found' );
                 }
             }
         } else {
-            throw new Exception('Caching not configured');
+            throw new Exception( 'Caching not configured' );
         }
     }
 
@@ -59,20 +61,22 @@ class Cache
      * Get cache server by name
      *
      * @access public
+     *
      * @param string $driver server name
+     *
      * @return mixed
      * @throws Exception
      */
-    public function get($driver=null)
+    public function get( $driver = null )
     {
-        if (!$driver) {
+        if ( ! $driver) {
             return $this->servers[0];
         }
 
-        if (in_array($driver, $this->servers)) {
+        if (in_array( $driver, $this->servers )) {
             return $this->servers[$driver];
         } else {
-            throw new Exception('Cache '.$driver.' not found.');
+            throw new Exception( 'Cache ' . $driver . ' not found.' );
         }
     }
 }

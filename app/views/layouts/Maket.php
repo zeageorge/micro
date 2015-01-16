@@ -6,17 +6,17 @@ use \Micro\Micro;
 /** @var string $content */
 /** @var \App\components\View $this */
 
-$this->registerScriptFile('/css/jquery.js');
-$this->registerCssFile('/css/main.css');
+$this->registerScriptFile( '/css/jquery.js' );
+$this->registerCssFile( '/css/main.css' );
 ?>
-<?= Html::doctype('html5') ?>
+<?= Html::doctype( 'html5' ) ?>
 <html>
 <head>
-    <?= Html::charset('utf-8') ?>
-    <?= Html::meta('language', 'ru') ?>
-    <?= Html::favicon('/favicon.png') ?>
-    <?= Html::meta('viewport', 'width=device-width, initial-scale=1.0') ?>
-    <?= Html::title($this->title) ?>
+    <?= Html::charset( 'utf-8' ) ?>
+    <?= Html::meta( 'language', 'ru' ) ?>
+    <?= Html::favicon( '/favicon.png' ) ?>
+    <?= Html::meta( 'viewport', 'width=device-width, initial-scale=1.0' ) ?>
+    <?= Html::title( $this->title ) ?>
 </head>
 <body>
 <div id="container">
@@ -24,11 +24,11 @@ $this->registerCssFile('/css/main.css');
         <span><?= Micro::getInstance()->config['company'] ?></span> <?= Micro::getInstance()->config['slogan'] ?>
     </div>
     <div id="content">
-        <?= $this->widget('\App\widgets\MenubarWidget', ['links' => $this->menu]); ?>
+        <?= $this->widget( '\App\widgets\MenubarWidget', [ 'links' => $this->menu ] ); ?>
         <?= $content ?>
     </div>
     <div id="footer">
-        &copy; <?= Micro::getInstance()->config['company'] ?> <?= date('Y') ?>
+        &copy; <?= Micro::getInstance()->config['company'] ?> <?= date( 'Y' ) ?>
     </div>
 </div>
 </body>

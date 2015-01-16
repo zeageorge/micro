@@ -35,21 +35,23 @@ class Logger
      * Export loggers
      *
      * @access public
+     *
      * @param array $params configuration array
+     *
      * @result void
      */
-    public function __construct(array $params = [])
+    public function __construct( array $params = [ ] )
     {
         foreach ($params['loggers'] AS $name => $log) {
-            if (!array_key_exists('class', $log) OR !class_exists($log['class'])) {
+            if ( ! array_key_exists( 'class', $log ) OR ! class_exists( $log['class'] )) {
                 continue;
             }
 
-            if (!array_key_exists('levels', $log) OR empty($log['levels'])) {
+            if ( ! array_key_exists( 'levels', $log ) OR empty( $log['levels'] )) {
                 continue;
             }
 
-            $this->loggers[$name] = new $log['class']($log);
+            $this->loggers[$name] = new $log['class']( $log );
         }
     }
 
@@ -57,16 +59,18 @@ class Logger
      * Send message to loggers
      *
      * @access public
+     *
      * @param string $level logger level
      * @param string $message message to write
+     *
      * @result void
      */
-    public function send($level, $message)
+    public function send( $level, $message )
     {
         foreach ($this->loggers AS $log) {
             /** @var \Micro\loggers\LogInterface $log logger */
-            if ($log->isSupportedLevel($level)) {
-                $log->sendMessage($level, $message);
+            if ($log->isSupportedLevel( $level )) {
+                $log->sendMessage( $level, $message );
             }
         }
     }

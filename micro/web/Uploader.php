@@ -19,7 +19,7 @@ namespace Micro\web;
 class Uploader
 {
     /** @var array $files upload files */
-    public $files = [];
+    public $files = [ ];
 
     /**
      * Constructor uploads
@@ -29,19 +29,19 @@ class Uploader
      */
     public function __construct()
     {
-        if (isset($_FILES)) {
-            if (isset($_FILES['name'])) {
-                $summ = count($_FILES['name']);
-                for ($i = 0; $i < $summ; $i++) {
-                    if (!isset($_FILES['name'][$i])) {
+        if (isset( $_FILES )) {
+            if (isset( $_FILES['name'] )) {
+                $summ = count( $_FILES['name'] );
+                for ($i = 0; $i < $summ; $i ++) {
+                    if ( ! isset( $_FILES['name'][$i] )) {
                         break;
                     }
                     $this->files[] = [
-                        'name' => $_FILES['name'][$i],
-                        'type' => $_FILES['type'][$i],
-                        'error' => $_FILES['error'][$i],
+                        'name'     => $_FILES['name'][$i],
+                        'type'     => $_FILES['type'][$i],
+                        'error'    => $_FILES['error'][$i],
                         'tmp_name' => $_FILES['tmp_name'][$i],
-                        'size' => $_FILES['size'][$i]
+                        'size'     => $_FILES['size'][$i]
                     ];
                 }
             } else {

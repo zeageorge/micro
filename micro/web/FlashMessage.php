@@ -41,10 +41,10 @@ class FlashMessage
      */
     public function __construct()
     {
-        if (Registry::get('session') != null) {
-            $this->session = Registry::get('session');
+        if (Registry::get( 'session' ) != null) {
+            $this->session = Registry::get( 'session' );
         } else {
-            throw new Exception('Sessions not activated');
+            throw new Exception( 'Sessions not activated' );
         }
     }
 
@@ -59,9 +59,9 @@ class FlashMessage
     {
         return [
             self::TYPE_SUCCESS => 'success',
-            self::TYPE_INFO => 'info',
+            self::TYPE_INFO    => 'info',
             self::TYPE_WARNING => 'warning',
-            self::TYPE_DANGER => 'danger'
+            self::TYPE_DANGER  => 'danger'
         ];
     }
 
@@ -69,11 +69,13 @@ class FlashMessage
      * Get label for type by id
      *
      * @access public
+     *
      * @param int $type type id
+     *
      * @return mixed
      * @static
      */
-    public static function getTypeLabel($type = self::TYPE_SUCCESS)
+    public static function getTypeLabel( $type = self::TYPE_SUCCESS )
     {
         return self::getTypeLabels()[$type];
     }
@@ -82,18 +84,20 @@ class FlashMessage
      * Push a new flash
      *
      * @access public
-     * @global Registry
-     * @param int $type type id
+     * @global       Registry
+     *
+     * @param int    $type type id
      * @param string $title title flash
      * @param string $description description flash
+     *
      * @return void
      */
-    public function push($type = FlashMessage::TYPE_SUCCESS, $title = '', $description = '')
+    public function push( $type = FlashMessage::TYPE_SUCCESS, $title = '', $description = '' )
     {
-        $flashes = $this->session->flash;
-        $flashes[] = [
-            'type' => $type,
-            'title' => $title,
+        $flashes              = $this->session->flash;
+        $flashes[]            = [
+            'type'        => $type,
+            'title'       => $title,
             'description' => $description
         ];
         $this->session->flash = $flashes;
@@ -103,14 +107,16 @@ class FlashMessage
      * Has flashes by type
      *
      * @access public
-     * @global Registry
+     * @global    Registry
+     *
      * @param int $type type of flash
+     *
      * @return bool
      */
-    public function has($type = FlashMessage::TYPE_SUCCESS)
+    public function has( $type = FlashMessage::TYPE_SUCCESS )
     {
         foreach ($this->session->flash AS $element) {
-            if (isset($element['type']) && $element['type'] == $type) {
+            if (isset( $element['type'] ) && $element['type'] == $type) {
                 return true;
             }
         }
@@ -121,16 +127,18 @@ class FlashMessage
      * Get flash by type
      *
      * @access public
-     * @global Registry
+     * @global    Registry
+     *
      * @param int $type type of flash
+     *
      * @return array|bool
      */
-    public function get($type = FlashMessage::TYPE_SUCCESS)
+    public function get( $type = FlashMessage::TYPE_SUCCESS )
     {
         foreach ($this->session->flash AS $key => $element) {
-            if (isset($element['type']) && $element['type'] == $type) {
+            if (isset( $element['type'] ) && $element['type'] == $type) {
                 $result = $element;
-                unset(Registry::get('session')->flash[$key]);
+                unset( Registry::get( 'session' )->flash[$key] );
                 return $result;
             }
         }
@@ -146,8 +154,8 @@ class FlashMessage
      */
     public function getAll()
     {
-        $result = $this->session->flash;
-        $this->session->flash = [];
+        $result               = $this->session->flash;
+        $this->session->flash = [ ];
         return $result;
     }
 }

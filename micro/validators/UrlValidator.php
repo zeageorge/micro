@@ -23,17 +23,19 @@ class UrlValidator extends Validator
      * Validate on server, make rule
      *
      * @access public
+     *
      * @param Model $model checked model
+     *
      * @return bool
      */
-    public function validate($model)
+    public function validate( $model )
     {
         foreach ($this->elements AS $element) {
-            if (!property_exists($model, $element)) {
-                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
+            if ( ! property_exists( $model, $element )) {
+                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class( $model );
                 return false;
             }
-            if (filter_var($model->$element, FILTER_VALIDATE_URL) === false) {
+            if (filter_var( $model->$element, FILTER_VALIDATE_URL ) === false) {
                 $this->errors[] = 'Parameter ' . $element . ' is not a valid URL address';
                 return false;
             }
@@ -45,13 +47,15 @@ class UrlValidator extends Validator
      * Client-side validation, make js rule
      *
      * @access public
+     *
      * @param Model $model checked model
+     *
      * @return string
      */
-    public function client($model)
+    public function client( $model )
     {
         $js = 'if (/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(this.value' .
-            ') != true) { e.preventDefault(); this.focus(); alert(\'Value is not a URL\'); }';
+              ') != true) { e.preventDefault(); this.focus(); alert(\'Value is not a URL\'); }';
         return $js;
     }
 }

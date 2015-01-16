@@ -16,23 +16,25 @@ namespace Micro\base;
 class Dispatcher
 {
     /** @var array $listeners listeners objects on events */
-    protected $listeners = [];
+    protected $listeners = [ ];
 
     /**
      * Add listener on event
      *
      * @access public
-     * @param string $listener listener name
-     * @param array $event ['Object', 'method']
+     *
+     * @param string   $listener listener name
+     * @param array    $event ['Object', 'method']
      * @param int|null $prior priority
+     *
      * @return void
      */
-    public function addListener($listener, array $event = [], $prior = null)
+    public function addListener( $listener, array $event = [ ], $prior = null )
     {
-        if (!$prior) {
+        if ( ! $prior) {
             $this->listeners[$listener][] = $event;
         } else {
-            array_splice($this->listeners, $prior, 0, $event);
+            array_splice( $this->listeners, $prior, 0, $event );
         }
     }
 
@@ -40,15 +42,17 @@ class Dispatcher
      * Send signal to run event
      *
      * @access public
+     *
      * @param string $listener listener name
+     *
      * @return void
      */
-    public function signal($listener)
+    public function signal( $listener )
     {
         if ($this->listeners) {
             foreach ($this->listeners AS $key => $obj) {
                 if ($key == $listener) {
-                    call_user_func($obj);
+                    call_user_func( $obj );
                 }
             }
         }

@@ -14,14 +14,14 @@ class ProfileController extends Controller
     {
         return [
             [
-                'class'=>'\Micro\filters\AccessFilter',
-                'actions'=>['index'],
-                'rules'=>[
+                'class'   => '\Micro\filters\AccessFilter',
+                'actions' => [ 'index' ],
+                'rules'   => [
                     [
-                        'allow'     =>false,
-                        'actions'   =>['index'],
-                        'users'     =>['?'],
-                        'message'   =>'Only for authorized!'
+                        'allow'   => false,
+                        'actions' => [ 'index' ],
+                        'users'   => [ '?' ],
+                        'message' => 'Only for authorized!'
                     ],
                 ]
             ],
@@ -31,21 +31,21 @@ class ProfileController extends Controller
     public function actionIndex()
     {
         $query = new Query;
-        $query->addWhere('id = :id');
-        $query->params = [':id' => Registry::get('session')->UserID];
+        $query->addWhere( 'id = :id' );
+        $query->params = [ ':id' => Registry::get( 'session' )->UserID ];
 
-        $user = User::finder($query, true);
-        if (!$user) {
-            $this->redirect('/logout');
+        $user = User::finder( $query, true );
+        if ( ! $user) {
+            $this->redirect( '/logout' );
         }
 
-        if (isset($_POST['Setup'])) {
+        if (isset( $_POST['Setup'] )) {
             $form = $_POST['Setup'];
-            if (!empty($form['pass'])) {
-                $user->pass = md5($form['pass']);
+            if ( ! empty( $form['pass'] )) {
+                $user->pass = md5( $form['pass'] );
             }
 
-            if (!empty($form['fio'])) {
+            if ( ! empty( $form['fio'] )) {
                 $user->fio = $form['fio'];
             }
 
@@ -53,7 +53,7 @@ class ProfileController extends Controller
         }
 
         $v = new View;
-        $v->addParameter('user',$user);
+        $v->addParameter( 'user', $user );
         return $v;
     }
 }

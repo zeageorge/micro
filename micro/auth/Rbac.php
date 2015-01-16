@@ -37,12 +37,12 @@ abstract class Rbac
     {
         $this->getConnect();
 
-        if (!$this->conn->tableExists('`rbac_user`')) {
-            $this->conn->createTable('`rbac_user`', [
+        if ( ! $this->conn->tableExists( '`rbac_user`' )) {
+            $this->conn->createTable( '`rbac_user`', [
                 '`role` varchar(127) NOT NULL',
                 '`user` int(10) unsigned NOT NULL',
                 'KEY `name` (`name`,`user`)',
-            ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8');
+            ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8' );
         }
     }
 
@@ -55,18 +55,20 @@ abstract class Rbac
      */
     public function getConnect()
     {
-        $this->conn = Registry::get('db');
+        $this->conn = Registry::get( 'db' );
     }
 
     /**
      * Assign RBAC element into user
      *
      * @access public
+     *
      * @param integer $userId user id
-     * @param string $name element name
+     * @param string  $name element name
+     *
      * @return bool
      */
-    abstract public function assign($userId, $name);
+    abstract public function assign( $userId, $name );
 
     /**
      * Get raw roles
@@ -80,19 +82,21 @@ abstract class Rbac
      * Check privileges to operation
      *
      * @access public
+     *
      * @param integer $userId user id
-     * @param string $permission permission name
-     * @param array $data action params
+     * @param string  $permission permission name
+     * @param array   $data action params
+     *
      * @return boolean
      */
-    public function check($userId, $permission, array $data = [])
+    public function check( $userId, $permission, array $data = [ ] )
     {
-        $tree = $this->tree($this->rawRoles());
+        $tree = $this->tree( $this->rawRoles() );
 
-        foreach ($this->assigned($userId) AS $role) {
-            if ($actionRole = $this->searchRoleRecursive($tree, $role['name'])) {
-                if ($trustRole = $this->searchRoleRecursive($actionRole, $permission)) {
-                    return $this->execute($trustRole[$permission], $data);
+        foreach ($this->assigned( $userId ) AS $role) {
+            if ($actionRole = $this->searchRoleRecursive( $tree, $role['name'] )) {
+                if ($trustRole = $this->searchRoleRecursive( $actionRole, $permission )) {
+                    return $this->execute( $trustRole[$permission], $data );
                 }
             }
         }
@@ -103,21 +107,23 @@ abstract class Rbac
      * Build tree from RBAC rules
      *
      * @access public
+     *
      * @param array $elements elemens array
-     * @param int $parentId parent ID
+     * @param int   $parentId parent ID
+     *
      * @return array
      */
-    public function tree(&$elements, $parentId = 0)
+    public function tree( &$elements, $parentId = 0 )
     {
-        $branch = [];
+        $branch = [ ];
         foreach ($elements AS $key => $element) {
             if ($element['based'] == $parentId) {
-                $children = $this->tree($elements, $element['name']);
+                $children = $this->tree( $elements, $element['name'] );
                 if ($children) {
                     $element['childs'] = $children;
                 }
                 $branch[$element['name']] = $element;
-                unset($elements[$key]);
+                unset( $elements[$key] );
             }
         }
         return $branch;
@@ -127,17 +133,19 @@ abstract class Rbac
      * Execute rule
      *
      * @access public
+     *
      * @param array $role element
      * @param array $data action params
+     *
      * @return bool
      */
-    public function execute(array $role, array $data)
+    public function execute( array $role, array $data )
     {
-        if (!$role['data']) {
+        if ( ! $role['data']) {
             return true;
         } else {
-            extract($data);
-            return eval('return ' . $role['data']);
+            extract( $data );
+            return eval( 'return ' . $role['data'] );
         }
     }
 
@@ -145,52 +153,58 @@ abstract class Rbac
      * Get assigned to user RBAC elements
      *
      * @access public
+     *
      * @param integer $userId user ID
+     *
      * @return mixed
      */
-    public function assigned($userId)
+    public function assigned( $userId )
     {
-        $query = new Query;
+        $query           = new Query;
         $query->distinct = true;
-        $query->select = '`role` AS `name`';
-        $query->table = '`rbac_user`';
-        $query->addWhere('`user`=' . $userId);
+        $query->select   = '`role` AS `name`';
+        $query->table    = '`rbac_user`';
+        $query->addWhere( '`user`=' . $userId );
         $query->single = false;
 
-        return $query->run(\PDO::FETCH_ASSOC);
+        return $query->run( \PDO::FETCH_ASSOC );
     }
 
     /**
      * Revoke RBAC element from user
      *
      * @access public
+     *
      * @param integer $userId user id
-     * @param string $name element name
+     * @param string  $name element name
+     *
      * @return bool
      */
-    public function revoke($userId, $name)
+    public function revoke( $userId, $name )
     {
-        return $this->conn->delete('rbac_user', 'name=:name AND user=:user', ['name' => $name, 'user' => $userId]);
+        return $this->conn->delete( 'rbac_user', 'name=:name AND user=:user', [ 'name' => $name, 'user' => $userId ] );
     }
 
     /**
      * Recursive search in roles array
      *
      * @access public
-     * @param array $roles elements
+     *
+     * @param array  $roles elements
      * @param string $finder element name to search
+     *
      * @return bool|array
      */
-    protected function searchRoleRecursive($roles, $finder)
+    protected function searchRoleRecursive( $roles, $finder )
     {
         $result = false;
         foreach ($roles AS $id => $role) {
             if ($id == $finder) {
-                $result = [$id => $role];
+                $result = [ $id => $role ];
                 break;
             } else {
-                if (isset($role['childs']) AND !empty($role['childs'])) {
-                    $result = $this->searchRoleRecursive($role['childs'], $finder);
+                if (isset( $role['childs'] ) AND ! empty( $role['childs'] )) {
+                    $result = $this->searchRoleRecursive( $role['childs'], $finder );
                     break;
                 }
             }

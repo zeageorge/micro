@@ -28,18 +28,20 @@ class FileLogger extends LogInterface
      * Open file for write messages
      *
      * @access public
+     *
      * @param array $params configuration params
+     *
      * @result void
      * @throws Exception
      */
-    public function __construct(array $params = [])
+    public function __construct( array $params = [ ] )
     {
-        parent::__construct($params);
+        parent::__construct( $params );
 
-        if (is_writeable($params['filename']) OR is_writeable(dirname($params['filename']))) {
-            $this->connect = fopen($params['filename'], 'a+');
+        if (is_writeable( $params['filename'] ) OR is_writeable( dirname( $params['filename'] ) )) {
+            $this->connect = fopen( $params['filename'], 'a+' );
         } else {
-            throw new Exception('Directory or file "' . $params['filename'] . '" is read-only');
+            throw new Exception( 'Directory or file "' . $params['filename'] . '" is read-only' );
         }
     }
 
@@ -47,17 +49,19 @@ class FileLogger extends LogInterface
      * Send message in file log
      *
      * @access public
+     *
      * @param integer $level level number
-     * @param string $message message to write
+     * @param string  $message message to write
+     *
      * @result void
      * @throws Exception error write to log
      */
-    public function sendMessage($level, $message)
+    public function sendMessage( $level, $message )
     {
-        if (is_resource($this->connect)) {
-            fwrite($this->connect, '[' . date('H:i:s d.m.Y') . '] ' . ucfirst($level) . ": {$message}\n");
+        if (is_resource( $this->connect )) {
+            fwrite( $this->connect, '[' . date( 'H:i:s d.m.Y' ) . '] ' . ucfirst( $level ) . ": {$message}\n" );
         } else {
-            throw new Exception('Error write log in file.');
+            throw new Exception( 'Error write log in file.' );
         }
     }
 
@@ -69,8 +73,8 @@ class FileLogger extends LogInterface
      */
     public function __destruct()
     {
-        if (is_resource($this->connect)) {
-            fclose($this->connect);
+        if (is_resource( $this->connect )) {
+            fclose( $this->connect );
         }
     }
 }

@@ -17,16 +17,18 @@ namespace Micro\caches;
 class ArrayCache implements Cache
 {
     /** @var array $driver array as driver */
-    protected $driver = [];
+    protected $driver = [ ];
 
     /**
      * Constructor
      *
      * @access public
+     *
      * @param array $config array config
+     *
      * @result void
      */
-    public function __construct(array $config=[])
+    public function __construct( array $config = [ ] )
     {
     }
 
@@ -38,30 +40,34 @@ class ArrayCache implements Cache
      */
     public function check()
     {
-        return TRUE;
+        return true;
     }
 
     /**
      * Get value by name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function get($name)
+    public function get( $name )
     {
-        return isset($this->driver[$name]) ? $this->driver[$name] : FALSE;
+        return isset( $this->driver[$name] ) ? $this->driver[$name] : false;
     }
 
     /**
      * Set value of element
      *
      * @access public
+     *
      * @param string $name key name
-     * @param mixed $value value
+     * @param mixed  $value value
+     *
      * @return mixed
      */
-    public function set($name, $value)
+    public function set( $name, $value )
     {
         $this->driver[$name] = $value;
     }
@@ -70,13 +76,15 @@ class ArrayCache implements Cache
      * Delete by key name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function delete($name)
+    public function delete( $name )
     {
-        if (isset($this->driver[$name])) {
-            unset($this->driver[$name]);
+        if (isset( $this->driver[$name] )) {
+            unset( $this->driver[$name] );
         }
     }
 
@@ -88,7 +96,7 @@ class ArrayCache implements Cache
      */
     public function clean()
     {
-        $this->driver = [];
+        $this->driver = [ ];
     }
 
     /**
@@ -99,33 +107,37 @@ class ArrayCache implements Cache
      */
     public function info()
     {
-        return count($this->driver);
+        return count( $this->driver );
     }
 
     /**
      * Get meta-data of key id
      *
      * @access public
+     *
      * @param string $id key id
+     *
      * @return mixed
      */
-    public function getMeta($id)
+    public function getMeta( $id )
     {
-        if (isset($this->driver[$id])) {
-            return $this->get_type($this->driver[$id]);
+        if (isset( $this->driver[$id] )) {
+            return $this->get_type( $this->driver[$id] );
         }
-        return FALSE;
+        return false;
     }
 
     /**
      * Increment value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset increment value
+     * @param int    $offset increment value
+     *
      * @return mixed
      */
-    public function increment($name, $offset = 1)
+    public function increment( $name, $offset = 1 )
     {
         $this->driver[$name] = $this->driver[$name] + $offset;
     }
@@ -134,11 +146,13 @@ class ArrayCache implements Cache
      * Decrement value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset decrement value
+     * @param int    $offset decrement value
+     *
      * @return mixed
      */
-    public function decrement($name, $offset = 1)
+    public function decrement( $name, $offset = 1 )
     {
         $this->driver[$name] = $this->driver[$name] - $offset;
     }
@@ -147,26 +161,28 @@ class ArrayCache implements Cache
      * Get type of var
      *
      * @access protected
+     *
      * @param mixed $var any object
+     *
      * @return string
      */
-    protected function get_type($var)
+    protected function get_type( $var )
     {
-        if (is_object($var)) {
-            return get_class($var);
-        } elseif (is_null($var)) {
+        if (is_object( $var )) {
+            return get_class( $var );
+        } elseif (is_null( $var )) {
             return 'null';
-        } elseif (is_string($var)) {
+        } elseif (is_string( $var )) {
             return 'string';
-        } elseif (is_array($var)) {
+        } elseif (is_array( $var )) {
             return 'array';
-        } elseif (is_int($var)) {
+        } elseif (is_int( $var )) {
             return 'integer';
-        } elseif (is_bool($var)) {
+        } elseif (is_bool( $var )) {
             return 'boolean';
-        } elseif (is_float($var)) {
+        } elseif (is_float( $var )) {
             return 'float';
-        } elseif (is_resource($var)) {
+        } elseif (is_resource( $var )) {
             return 'resource';
         } else {
             return 'unknown';

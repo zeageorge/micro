@@ -22,7 +22,8 @@ abstract class Filter
     /**
      * @param string $action current action
      */
-    public function __construct($action) {
+    public function __construct( $action )
+    {
         $this->action = $action;
     }
 
@@ -30,17 +31,21 @@ abstract class Filter
      * PreFilter
      *
      * @access public
+     *
      * @param array $params checked items and other params
+     *
      * @return boolean
      */
-    abstract public function pre(array $params);
+    abstract public function pre( array $params );
 
     /**
      * PostFilter
      *
      * @access public
+     *
      * @param array $params checked items and other params
+     *
      * @return mixed
      */
-    abstract public function post(array $params);
+    abstract public function post( array $params );
 }

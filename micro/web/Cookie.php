@@ -14,17 +14,20 @@ namespace Micro\web;
  * @version 1.0
  * @since 1.0
  */
-class Cookie {
+class Cookie
+{
     /**
      * Get cookie
      *
      * @access public
+     *
      * @param string $name cookie name
+     *
      * @return mixed|bool
      */
-    public function get($name)
+    public function get( $name )
     {
-        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : false;
+        return isset( $_COOKIE[$name] ) ? $_COOKIE[$name] : false;
     }
 
     /**
@@ -33,7 +36,8 @@ class Cookie {
      * @access public
      * @return mixed
      */
-    public function getAll() {
+    public function getAll()
+    {
         return $_COOKIE;
     }
 
@@ -41,43 +45,49 @@ class Cookie {
      * Set cookie
      *
      * @access public
+     *
      * @param string $name cookie name
-     * @param mixed $value data value
-     * @param int $expire life time
+     * @param mixed  $value data value
+     * @param int    $expire life time
      * @param string $path path access cookie
      * @param string $domain domain access cookie
-     * @param bool $secure use SSL?
-     * @param bool $httponly disable on JS?
+     * @param bool   $secure use SSL?
+     * @param bool   $httponly disable on JS?
+     *
      * @return bool
      */
-    public function set($name, $value, $expire=0, $path='/', $domain='', $secure=false, $httponly=true)
+    public function set( $name, $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = true )
     {
-        return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+        return setcookie( $name, $value, $expire, $path, $domain, $secure, $httponly );
     }
 
     /**
      * Exists cookie
      *
      * @access public
+     *
      * @param string $name cookie name
+     *
      * @return bool
      */
-    public function exists($name)
+    public function exists( $name )
     {
-        return isset($_COOKIE[$name]);
+        return isset( $_COOKIE[$name] );
     }
 
     /**
      * Delete cookie
      *
      * @access public
+     *
      * @param string $name cookie name
+     *
      * @return bool
      */
-    public function del($name)
+    public function del( $name )
     {
-        if ($this->exists($name)) {
-            return $this->set($name, false, time()-3600);
+        if ($this->exists( $name )) {
+            return $this->set( $name, false, time() - 3600 );
         }
         return false;
     }

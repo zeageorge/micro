@@ -22,14 +22,16 @@ class WincacheCache implements Cache
      * Constructor
      *
      * @access public
+     *
      * @param array $config array config
+     *
      * @result void
      * @throws Exception
      */
-    public function __construct(array $config=[])
+    public function __construct( array $config = [ ] )
     {
-        if (!$this->check()) {
-            throw new Exception('Extension WinCache not installed');
+        if ( ! $this->check()) {
+            throw new Exception( 'Extension WinCache not installed' );
         }
     }
 
@@ -41,48 +43,54 @@ class WincacheCache implements Cache
      */
     public function check()
     {
-        return (!extension_loaded('wincache')) ? TRUE : FALSE;
+        return ( ! extension_loaded( 'wincache' ) ) ? true : false;
     }
 
     /**
      * Get value by name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function get($name)
+    public function get( $name )
     {
-        $success = FALSE;
-        $data = wincache_ucache_get($name, $success);
+        $success = false;
+        $data    = wincache_ucache_get( $name, $success );
 
-        return ($success) ? $data : FALSE;
+        return ( $success ) ? $data : false;
     }
 
     /**
      * Set value of element
      *
      * @access public
-     * @param string $name key name
-     * @param mixed $value value
+     *
+     * @param string  $name key name
+     * @param mixed   $value value
      * @param integer $duration time duration
+     *
      * @return mixed
      */
-    public function set($name, $value, $duration=0)
+    public function set( $name, $value, $duration = 0 )
     {
-        return wincache_ucache_set($name, $value, $duration);
+        return wincache_ucache_set( $name, $value, $duration );
     }
 
     /**
      * Delete by key name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function delete($name)
+    public function delete( $name )
     {
-        return wincache_ucache_delete($name);
+        return wincache_ucache_delete( $name );
     }
 
     /**
@@ -104,58 +112,63 @@ class WincacheCache implements Cache
      */
     public function info()
     {
-        return wincache_ucache_info(TRUE);
+        return wincache_ucache_info( true );
     }
 
     /**
      * Get meta-data of key id
      *
      * @access public
+     *
      * @param string $id key id
+     *
      * @return mixed
      */
-    public function getMeta($id)
+    public function getMeta( $id )
     {
-        if ($stored = wincache_ucache_info(FALSE, $id))
-        {
-            $age = $stored['ucache_entries'][1]['age_seconds'];
-            $ttl = $stored['ucache_entries'][1]['ttl_seconds'];
+        if ($stored = wincache_ucache_info( false, $id )) {
+            $age      = $stored['ucache_entries'][1]['age_seconds'];
+            $ttl      = $stored['ucache_entries'][1]['ttl_seconds'];
             $hitCount = $stored['ucache_entries'][1]['hitcount'];
 
             return [ 'expire' => $ttl - $age, 'hitcount' => $hitCount, 'age' => $age, 'ttl' => $ttl ];
         }
-        return FALSE;
+        return false;
     }
 
     /**
      * Increment value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset increment value
+     * @param int    $offset increment value
+     *
      * @return mixed
      */
-    public function increment($name, $offset = 1)
+    public function increment( $name, $offset = 1 )
     {
-        $success = FALSE;
-        $value = wincache_ucache_inc($name, $offset, $success);
+        $success = false;
+        $value   = wincache_ucache_inc( $name, $offset, $success );
 
-        return ($success === TRUE) ? $value : FALSE;
+        return ( $success === true ) ? $value : false;
     }
 
     /**
      * Decrement value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset decrement value
+     * @param int    $offset decrement value
+     *
      * @return mixed
      */
-    public function decrement($name, $offset = 1)
+    public function decrement( $name, $offset = 1 )
     {
-        $success = FALSE;
-        $value = wincache_ucache_dec($name, $offset, $success);
+        $success = false;
+        $value   = wincache_ucache_dec( $name, $offset, $success );
 
-        return ($success === TRUE) ? $value : FALSE;
+        return ( $success === true ) ? $value : false;
     }
 } 

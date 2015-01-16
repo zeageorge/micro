@@ -28,26 +28,28 @@ class DbCache implements Cache
      * Constructor
      *
      * @access public
+     *
      * @param array $config config array
+     *
      * @result void
      */
-    public function __construct(array $config=[])
+    public function __construct( array $config = [ ] )
     {
         $this->table = 'cache';
-        if (isset($config['table'])) {
+        if (isset( $config['table'] )) {
             $this->table = $config['table'];
-            unset($config['table']);
+            unset( $config['table'] );
         }
 
-        $this->driver = new DbConnection($config);
+        $this->driver = new DbConnection( $config );
 
-        $this->driver->createTable($this->table, [
+        $this->driver->createTable( $this->table, [
             '`name` VARCHAR(127) NOT NULL',
             '`value` TEXT NULL',
             '`duration` INT(11) NOT NULL',
             '`date_create` INT(11) NOT NULL',
             'UNIQUE(`name`)'
-        ], '');
+        ], '' );
     }
 
     /**
@@ -58,44 +60,50 @@ class DbCache implements Cache
      */
     public function check()
     {
-        return ($this->driver instanceof DbConnection) ? TRUE : FALSE;
+        return ( $this->driver instanceof DbConnection ) ? true : false;
     }
 
     /**
      * Get value by name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function get($name)
+    public function get( $name )
     {
-        return $this->getElement($name)['value'];
+        return $this->getElement( $name )['value'];
     }
 
     /**
      * Set value of element
      *
      * @access public
+     *
      * @param string $name key name
-     * @param mixed $value value
+     * @param mixed  $value value
+     *
      * @return mixed
      */
-    public function set($name, $value)
+    public function set( $name, $value )
     {
-        return $this->driver->update($this->table, ['`name`="'.$value.'"'], 'name="'.$name.'"');
+        return $this->driver->update( $this->table, [ '`name`="' . $value . '"' ], 'name="' . $name . '"' );
     }
 
     /**
      * Delete by key name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function delete($name)
+    public function delete( $name )
     {
-        return $this->driver->delete($this->table, 'name=:name', ['name'=>$name]);
+        return $this->driver->delete( $this->table, 'name=:name', [ 'name' => $name ] );
     }
 
     /**
@@ -106,7 +114,7 @@ class DbCache implements Cache
      */
     public function clean()
     {
-        $this->driver->clearTable($this->table);
+        $this->driver->clearTable( $this->table );
     }
 
     /**
@@ -117,62 +125,70 @@ class DbCache implements Cache
      */
     public function info()
     {
-        return $this->driver->count(null, $this->table);
+        return $this->driver->count( null, $this->table );
     }
 
     /**
      * Get meta-data of key id
      *
      * @access public
+     *
      * @param string $id key id
+     *
      * @return mixed
      */
-    public function getMeta($id)
+    public function getMeta( $id )
     {
-        return $this->getElement($id);
+        return $this->getElement( $id );
     }
 
     /**
      * Increment value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset increment value
+     * @param int    $offset increment value
+     *
      * @return mixed
      */
-    public function increment($name, $offset = 1)
+    public function increment( $name, $offset = 1 )
     {
-        return $this->driver->update($this->table, ['value'=>'value+'.$offset], 'name="'.$name.'"');
+        return $this->driver->update( $this->table, [ 'value' => 'value+' . $offset ], 'name="' . $name . '"' );
     }
 
     /**
      * Decrement value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset decrement value
+     * @param int    $offset decrement value
+     *
      * @return mixed
      */
-    public function decrement($name, $offset = 1)
+    public function decrement( $name, $offset = 1 )
     {
-        return $this->driver->update($this->table, ['value'=>'value-'.$offset], 'name="'.$name.'"');
+        return $this->driver->update( $this->table, [ 'value' => 'value-' . $offset ], 'name="' . $name . '"' );
     }
 
     /**
      * Get element from DB
      *
      * @access protected
+     *
      * @param string $name key name
+     *
      * @return array|bool
      */
-    protected function getElement($name)
+    protected function getElement( $name )
     {
-        $query = new Query;
+        $query        = new Query;
         $query->table = $this->table;
-        $query->addWhere('`name`=:name');
-        $query->params = ['name'=>$name];
-        $query->limit = 1;
+        $query->addWhere( '`name`=:name' );
+        $query->params = [ 'name' => $name ];
+        $query->limit  = 1;
         $query->single = true;
-        return $query->run(\PDO::FETCH_ASSOC);
+        return $query->run( \PDO::FETCH_ASSOC );
     }
 } 

@@ -33,16 +33,16 @@ class ListViewWidget extends Widget
     /** @var int $page Current page on table */
     public $page = 1;
     /** @var array $paginationConfig parameters for PaginationWidget */
-    public $paginationConfig = [];
+    public $paginationConfig = [ ];
     /** @var array $attributes attributes for dl */
-    public $attributes = [];
+    public $attributes = [ ];
     /** @var array $attributesElement attributes for dt */
-    public $attributesElement = [];
+    public $attributesElement = [ ];
 
     /** @var int $rowCount summary lines */
     protected $rowCount = 0;
     /** @var array $rows Rows table */
-    protected $rows = [];
+    protected $rows = [ ];
     /** @var string $pathView Generate path to view file */
     protected $pathView = '';
 
@@ -55,30 +55,30 @@ class ListViewWidget extends Widget
      */
     public function init()
     {
-        if (!$this->query instanceof Query) {
-            throw new Exception('Query not defined or error type');
+        if ( ! $this->query instanceof Query) {
+            throw new Exception( 'Query not defined or error type' );
         }
-        if (!$this->controller OR !$this->view) {
-            throw new Exception('Controller or view not defined');
+        if ( ! $this->controller OR ! $this->view) {
+            throw new Exception( 'Controller or view not defined' );
         }
         if ($this->limit < 10) {
             $this->limit = 10;
         }
 
-        $cls = str_replace('\\', '/', get_class($this->controller));
-        $this->pathView = str_replace('App', Micro::getInstance()->config['AppDir'], dirname($cls));
-        $this->pathView .= '/../views/' . strtolower(str_replace('Controller', '', basename($cls)));
+        $cls            = str_replace( '\\', '/', get_class( $this->controller ) );
+        $this->pathView = str_replace( 'App', Micro::getInstance()->config['AppDir'], dirname( $cls ) );
+        $this->pathView .= '/../views/' . strtolower( str_replace( 'Controller', '', basename( $cls ) ) );
         $this->pathView .= '/' . $this->view . '.php';
 
-        if (!file_exists($this->pathView)) {
-            throw new Exception('View path not valid: ' . $this->pathView);
+        if ( ! file_exists( $this->pathView )) {
+            throw new Exception( 'View path not valid: ' . $this->pathView );
         }
 
-        $this->rows = $this->query->run(\PDO::FETCH_ASSOC);
-        $this->rowCount = count($this->rows);
+        $this->rows     = $this->query->run( \PDO::FETCH_ASSOC );
+        $this->rowCount = count( $this->rows );
 
-        $this->paginationConfig['countRows'] = $this->rowCount;
-        $this->paginationConfig['limit'] = $this->limit;
+        $this->paginationConfig['countRows']   = $this->rowCount;
+        $this->paginationConfig['limit']       = $this->limit;
         $this->paginationConfig['currentPage'] = $this->page;
     }
 
@@ -92,21 +92,21 @@ class ListViewWidget extends Widget
     {
         $st = $i = $this->page * $this->limit;
 
-        echo Html::openTag('ul', $this->attributes);
-        for (; $i < ($st + $this->limit); $i++) {
-            if (isset($this->rows[$i])) {
-                echo Html::openTag('li', $this->attributesElement);
+        echo Html::openTag( 'ul', $this->attributes );
+        for (; $i < ( $st + $this->limit ); $i ++) {
+            if (isset( $this->rows[$i] )) {
+                echo Html::openTag( 'li', $this->attributesElement );
 
                 $element = $this->rows[$i];
                 include $this->pathView;
 
-                echo Html::closeTag('li');
+                echo Html::closeTag( 'li' );
             }
         }
-        echo Html::closeTag('ul');
+        echo Html::closeTag( 'ul' );
 
         ob_start();
-        $pager = new PaginationWidget($this->paginationConfig);
+        $pager = new PaginationWidget( $this->paginationConfig );
         $pager->init();
         $pager->run();
         echo ob_get_clean();

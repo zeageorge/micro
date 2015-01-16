@@ -27,20 +27,22 @@ class User
      */
     public function isGuest()
     {
-        return ((!Registry::get('session')) OR empty(Registry::get('session')->UserID));
+        return ( ( ! Registry::get( 'session' ) ) OR empty( Registry::get( 'session' )->UserID ) );
     }
 
     /**
      * Set User ID
      *
      * @access public
-     * @global Registry
+     * @global      Registry
+     *
      * @param mixed $id user id
+     *
      * @return void
      */
-    public function setID($id)
+    public function setID( $id )
     {
-        Registry::get('session')->UserID = $id;
+        Registry::get( 'session' )->UserID = $id;
     }
 
     /**
@@ -52,22 +54,24 @@ class User
      */
     public function getID()
     {
-        return (!$this->isGuest()) ? Registry::get('session')->UserID : false;
+        return ( ! $this->isGuest() ) ? Registry::get( 'session' )->UserID : false;
     }
 
     /**
      * Check access by current user
      *
      * @access public
-     * @global Registry
+     * @global       Registry
+     *
      * @param string $permission permission to check
-     * @param array $data arguments
+     * @param array  $data arguments
+     *
      * @return bool
      */
-    public function check($permission, array $data = [])
+    public function check( $permission, array $data = [ ] )
     {
-        if (!$this->isGuest()) {
-            return Registry::get('permission')->check($this->getID(), $permission, $data);
+        if ( ! $this->isGuest()) {
+            return Registry::get( 'permission' )->check( $this->getID(), $permission, $data );
         } else {
             return false;
         }
@@ -82,18 +86,20 @@ class User
      */
     public function getCaptcha()
     {
-        return Registry::get('session')->captchaCode;
+        return Registry::get( 'session' )->captchaCode;
     }
 
     /**
      * Make captcha from source
      *
      * @access public
+     *
      * @param string $code source captcha
+     *
      * @return string
      */
-    public function makeCaptcha($code)
+    public function makeCaptcha( $code )
     {
-        return md5($code);
+        return md5( $code );
     }
 }

@@ -23,18 +23,20 @@ class RegexpValidator extends Validator
      * Validate on server, make rule
      *
      * @access public
+     *
      * @param Model $model checked model
+     *
      * @return bool
      */
-    public function validate($model)
+    public function validate( $model )
     {
         foreach ($this->elements AS $element) {
-            if (!property_exists($model, $element)) {
-                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
+            if ( ! property_exists( $model, $element )) {
+                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class( $model );
                 return false;
             }
             $elementValue = $model->$element;
-            if (preg_match($this->params['pattern'], $elementValue) === false) {
+            if (preg_match( $this->params['pattern'], $elementValue ) === false) {
                 $this->errors[] = 'Parameter ' . $element . ' not valid with regular expression';
                 return false;
             }
@@ -46,13 +48,15 @@ class RegexpValidator extends Validator
      * Client-side validation, make js rule
      *
      * @access public
+     *
      * @param Model $model checked model
+     *
      * @return string
      */
-    public function client($model)
+    public function client( $model )
     {
         $js = 'if (!this.value.match(' . $this->params['pattern'] . ')) {' .
-            ' e.preventDefault(); this.focus(); alert(\'Value not valid with regular expression\'); }';
+              ' e.preventDefault(); this.focus(); alert(\'Value not valid with regular expression\'); }';
         return $js;
     }
 }

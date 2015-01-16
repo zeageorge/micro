@@ -19,21 +19,23 @@ namespace Micro\auth;
 class FileRbac extends Rbac
 {
     /** @var array $roles RBAC role tree */
-    private $roles = [];
+    private $roles = [ ];
 
     /**
      * Redefine constructor for RBAC
      *
      * @access public
+     *
      * @param array $params configuration array
+     *
      * @result void
      */
-    public function __construct(array $params = [])
+    public function __construct( array $params = [ ] )
     {
         parent::__construct();
 
-        if (isset($params['roles'])) {
-            $this->roles = $this->tree($params['roles']);
+        if (isset( $params['roles'] )) {
+            $this->roles = $this->tree( $params['roles'] );
         }
     }
 
@@ -41,15 +43,17 @@ class FileRbac extends Rbac
      * Assign RBAC element into user
      *
      * @access public
+     *
      * @param integer $userId user id
-     * @param string $name element name
+     * @param string  $name element name
+     *
      * @return bool
      */
-    public function assign($userId, $name)
+    public function assign( $userId, $name )
     {
-        if ($this->searchRoleRecursive($this->roles, $name)) {
-            if (!$this->conn->exists('rbac_user', ['user' => $userId, 'role' => $name])) {
-                return $this->conn->insert('rbac_user', ['role' => $name, 'user' => $userId]);
+        if ($this->searchRoleRecursive( $this->roles, $name )) {
+            if ( ! $this->conn->exists( 'rbac_user', [ 'user' => $userId, 'role' => $name ] )) {
+                return $this->conn->insert( 'rbac_user', [ 'role' => $name, 'user' => $userId ] );
             }
         }
         return false;

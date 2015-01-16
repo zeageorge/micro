@@ -10,12 +10,14 @@ use \Micro\base\Exception;
  * Get public vars into object
  *
  * @access public
+ *
  * @param mixed $object
+ *
  * @return array
  */
-function getVars($object)
+function getVars( $object )
 {
-    return get_object_vars($object);
+    return get_object_vars( $object );
 }
 
 /**
@@ -37,17 +39,19 @@ abstract class Model extends FormModel
     /** @var boolean $_isNewRecord is new record? */
     protected $_isNewRecord = false;
     /** @var array $cacheRelations cached loads relations */
-    protected $cacheRelations = [];
+    protected $cacheRelations = [ ];
 
 
     /**
      * Constructor for model
      *
      * @access public
+     *
      * @param boolean $new is new model?
+     *
      * @result void
      */
-    public function __construct($new = true)
+    public function __construct( $new = true )
     {
         $this->_isNewRecord = $new;
         $this->getDbConnection();
@@ -62,7 +66,7 @@ abstract class Model extends FormModel
      */
     public function getDbConnection()
     {
-        $this->db = Registry::get('db');
+        $this->db = Registry::get( 'db' );
     }
 
     /**
@@ -80,17 +84,19 @@ abstract class Model extends FormModel
      * Finder data in DB
      *
      * @access public
-     * @param Query $query query to search
+     *
+     * @param Query   $query query to search
      * @param boolean $single is single
+     *
      * @return mixed One or more data
      * @static
      */
-    public static function finder($query = null, $single = false)
+    public static function finder( $query = null, $single = false )
     {
-        $query = ($query instanceof Query) ? $query : new Query;
-        $query->table = static::tableName() . ' `m`';
+        $query             = ( $query instanceof Query ) ? $query : new Query;
+        $query->table      = static::tableName() . ' `m`';
         $query->objectName = get_called_class();
-        $query->single = $single;
+        $query->single     = $single;
         return $query->run();
     }
 
@@ -112,24 +118,26 @@ abstract class Model extends FormModel
      * Get relation data or magic properties
      *
      * @access public
+     *
      * @param string $name
+     *
      * @return mixed
      */
-    public function __get($name)
+    public function __get( $name )
     {
-        if ($relation = $this->relations()->get($name)) {
-            if (!isset($this->cacheRelations[$name])) {
+        if ($relation = $this->relations()->get( $name )) {
+            if ( ! isset( $this->cacheRelations[$name] )) {
                 $sql = new Query;
-                $sql->addWhere('`m`.`' . $relation['On'][1] . '`="' . $this->{$relation['On'][0]} . '"');
+                $sql->addWhere( '`m`.`' . $relation['On'][1] . '`="' . $this->{$relation['On'][0]} . '"' );
 
                 if ($relation['Where']) {
-                    $sql->addWhere($relation['Where']);
+                    $sql->addWhere( $relation['Where'] );
                 }
                 if ($relation['Params']) {
                     $sql->params = $relation['Params'];
                 }
 
-                $this->cacheRelations[$name] = $relation['Model']::finder($sql, $relation['IsMany']);
+                $this->cacheRelations[$name] = $relation['Model']::finder( $sql, $relation['IsMany'] );
             }
             return $this->cacheRelations[$name];
         }
@@ -155,14 +163,14 @@ abstract class Model extends FormModel
      */
     public function create()
     {
-        if (!$this->isNewRecord()) {
+        if ( ! $this->isNewRecord()) {
             return false;
         }
         if ($this->beforeCreate()) {
-            $arr = getVars($this);
-            unset($arr['isNewRecord']);
+            $arr = getVars( $this );
+            unset( $arr['isNewRecord'] );
 
-            if ($this->db->insert($this->tableName(), $arr)) {
+            if ($this->db->insert( $this->tableName(), $arr )) {
                 $this->_isNewRecord = false;
                 $this->afterCreate();
                 return true;
@@ -180,10 +188,10 @@ abstract class Model extends FormModel
      */
     public function afterCreate()
     {
-        $pKey = isset($this->primaryKey) ? $this->primaryKey : 'id';
+        $pKey = isset( $this->primaryKey ) ? $this->primaryKey : 'id';
 
-        if (property_exists($this, $pKey)) {
-            $this->$pKey = $this->db->lastInsertId($pKey);
+        if (property_exists( $this, $pKey )) {
+            $this->$pKey = $this->db->lastInsertId( $pKey );
         }
     }
 
@@ -244,28 +252,30 @@ abstract class Model extends FormModel
      * Update changes
      *
      * @access public
+     *
      * @param string $where condition for search
+     *
      * @throws Exception
      * @return boolean
      */
-    public function update($where = null)
+    public function update( $where = null )
     {
         if ($this->isNewRecord()) {
             return false;
         }
         if ($this->beforeUpdate()) {
-            $arr = getVars($this);
-            unset($arr['isNewRecord']);
+            $arr = getVars( $this );
+            unset( $arr['isNewRecord'] );
 
-            if (!$where) {
-                if (isset($this->id) AND !empty($this->id)) {
+            if ( ! $where) {
+                if (isset( $this->id ) AND ! empty( $this->id )) {
                     $where .= 'id=:id';
                 } else {
-                    throw new Exception ('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+                    throw new Exception ( 'In table ' . $this->tableName() . ' option `id` not defined/not use.' );
                 }
             }
 
-            if ($this->db->update($this->tableName(), $arr, $where)) {
+            if ($this->db->update( $this->tableName(), $arr, $where )) {
                 $this->afterUpdate();
                 return true;
             }
@@ -307,13 +317,13 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeDelete()) {
-            if (!isset($this->id) AND empty($this->id)) {
-                throw new Exception('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+            if ( ! isset( $this->id ) AND empty( $this->id )) {
+                throw new Exception( 'In table ' . $this->tableName() . ' option `id` not defined/not use.' );
             }
 
-            if ($this->db->delete($this->tableName(), 'id=:id', ['id'=>$this->id])) {
+            if ($this->db->delete( $this->tableName(), 'id=:id', [ 'id' => $this->id ] )) {
                 $this->afterDelete();
-                unset($this);
+                unset( $this );
                 return true;
             }
         }

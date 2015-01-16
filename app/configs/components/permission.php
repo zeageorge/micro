@@ -5,17 +5,17 @@ return [
     'permission' => [
         'class' => '\Micro\auth\DbAcl',
         'roles' => [ // Permission roles
-            'roles' => [
+            'roles'      => [
                 1 => 'user',
                 2 => 'admin'
             ],
-            'perms' => [
+            'perms'      => [
                 1 => 'news_read',
                 2 => 'news_create',
                 3 => 'news_edit'
             ],
             'role_perms' => [
-                1 => [2, 3]
+                1 => [ 2, 3 ]
             ]
         ]
     ]

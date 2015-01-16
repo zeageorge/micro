@@ -20,12 +20,14 @@ class Session
      * Construct for this class
      *
      * @access public
+     *
      * @param array $config configuration array
+     *
      * @result void
      */
-    public function __construct(array $config = [])
+    public function __construct( array $config = [ ] )
     {
-        if (isset($config['autoStart']) AND ($config['autoStart'] == true)) {
+        if (isset( $config['autoStart'] ) AND ( $config['autoStart'] == true )) {
             $this->create();
         }
     }
@@ -38,7 +40,7 @@ class Session
      */
     public function create()
     {
-        if (!isset($_SESSION)) {
+        if ( ! isset( $_SESSION )) {
             session_start();
         }
     }
@@ -51,7 +53,7 @@ class Session
      */
     public function destroy()
     {
-        if (isset($_SESSION)) {
+        if (isset( $_SESSION )) {
             session_unset();
             session_destroy();
         }
@@ -61,23 +63,27 @@ class Session
      * Getter session element
      *
      * @access public
+     *
      * @param string $name element name
+     *
      * @return mixed
      */
-    public function __get($name)
+    public function __get( $name )
     {
-        return (isset($_SESSION[$name])) ? $_SESSION[$name] : null;
+        return ( isset( $_SESSION[$name] ) ) ? $_SESSION[$name] : null;
     }
 
     /**
      * Setter session element
      *
      * @access public
+     *
      * @param string $name element name
-     * @param mixed $value element value
+     * @param mixed  $value element value
+     *
      * @return void
      */
-    public function __set($name, $value)
+    public function __set( $name, $value )
     {
         $_SESSION[$name] = $value;
     }
@@ -86,23 +92,27 @@ class Session
      * Is set session element
      *
      * @access public
+     *
      * @param string $name element name
+     *
      * @return boolean
      */
-    public function __isset($name)
+    public function __isset( $name )
     {
-        return isset($_SESSION[$name]);
+        return isset( $_SESSION[$name] );
     }
 
     /**
      * Unset session element
      *
      * @access public
+     *
      * @param string $name element name
+     *
      * @return void
      */
-    public function __unset($name)
+    public function __unset( $name )
     {
-        unset($_SESSION[$name]);
+        unset( $_SESSION[$name] );
     }
 }

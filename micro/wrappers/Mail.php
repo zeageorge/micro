@@ -32,10 +32,12 @@ final class Mail
      * Constructor for class
      *
      * @access public
+     *
      * @param string $from sender e-mail
+     *
      * @result void
      */
-    public function __construct($from = '')
+    public function __construct( $from = '' )
     {
         $this->from = $from;
     }
@@ -44,10 +46,12 @@ final class Mail
      * Setting attribute from
      *
      * @access public
+     *
      * @param string $from e-mail
+     *
      * @result void
      */
-    public function setFrom($from)
+    public function setFrom( $from )
     {
         $this->from = $from;
     }
@@ -56,10 +60,12 @@ final class Mail
      * Setting attribute from name
      *
      * @access public
+     *
      * @param string $name name for e-mail
+     *
      * @result void
      */
-    public function setFromName($name)
+    public function setFromName( $name )
     {
         $this->fromName = $name;
     }
@@ -68,10 +74,12 @@ final class Mail
      * Setting message type
      *
      * @access public
+     *
      * @param string $type mime-type
+     *
      * @result void
      */
-    public function setType($type)
+    public function setType( $type )
     {
         $this->type = $type;
     }
@@ -79,10 +87,12 @@ final class Mail
     /**
      * Setting attribute notification
      * @access public
+     *
      * @param boolean $notify target read email notify?
+     *
      * @result void
      */
-    public function setNotify($notify)
+    public function setNotify( $notify )
     {
         $this->notify = $notify;
     }
@@ -91,10 +101,12 @@ final class Mail
      * Setting attribute encoding
      *
      * @access public
+     *
      * @param string $encoding set email encoding
+     *
      * @result void
      */
-    public function setEncoding($encoding)
+    public function setEncoding( $encoding )
     {
         $this->encoding = $encoding;
     }
@@ -103,25 +115,27 @@ final class Mail
      * Sending message
      *
      * @access public
+     *
      * @param string $to e-mail recipient
      * @param string $subject subject for message
      * @param string $message message text
+     *
      * @return boolean
      */
-    public function send($to, $subject, $message)
+    public function send( $to, $subject, $message )
     {
-        $from = "=?utf-8?B?" . base64_encode($this->fromName) . "?=" . " <" . $this->from . ">";
+        $from = "=?utf-8?B?" . base64_encode( $this->fromName ) . "?=" . " <" . $this->from . ">";
 
         $headers = "From: " . $from .
-            "\r\nReply-To: " . $from .
-            "\r\nContent-type: " . $this->type .
-            "; charset=" . $this->encoding . "\r\n";
+                   "\r\nReply-To: " . $from .
+                   "\r\nContent-type: " . $this->type .
+                   "; charset=" . $this->encoding . "\r\n";
 
         if ($this->notify) {
             $headers .= "Disposition-Notification-To: " . $this->from . "\r\n";
         }
-        $subject = "=?utf-8?B?" . base64_encode($subject) . "?=";
+        $subject = "=?utf-8?B?" . base64_encode( $subject ) . "?=";
 
-        return mail($to, $subject, $message, $headers);
+        return mail( $to, $subject, $message, $headers );
     }
 }

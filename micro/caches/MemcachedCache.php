@@ -25,14 +25,16 @@ class MemcachedCache implements Cache
      * Constructor
      *
      * @access public
+     *
      * @param array $config config array
+     *
      * @result void
      * @throws Exception
      */
-    public function __construct(array $config = [])
+    public function __construct( array $config = [ ] )
     {
-        if (!$this->check() OR !isset($config['type'])) {
-            throw new Exception('Memcache(d) not installed or not select type');
+        if ( ! $this->check() OR ! isset( $config['type'] )) {
+            throw new Exception( 'Memcache(d) not installed or not select type' );
         }
 
         switch ($config['type']) {
@@ -45,27 +47,27 @@ class MemcachedCache implements Cache
                 break;
             }
             default: {
-                throw new Exception('Selected type not valid in the driver');
+                throw new Exception( 'Selected type not valid in the driver' );
             }
         }
 
-        if (isset($config['servers'])) {
-            $this->driver->addServers($config['servers']);
+        if (isset( $config['servers'] )) {
+            $this->driver->addServers( $config['servers'] );
         } elseif ($config['server']) {
-            $conf = $config['server'];
+            $conf   = $config['server'];
             $server = [
-                'hostname'  => (isset($conf['hostname']) ? $conf['hostname'] : '127.0.0.1'),
-                'port'      => (isset($conf['port']) ? $conf['port'] : 11211),
-                'weight'    => (isset($conf['weight']) ? $conf['weight'] : 1)
+                'hostname' => ( isset( $conf['hostname'] ) ? $conf['hostname'] : '127.0.0.1' ),
+                'port'     => ( isset( $conf['port'] ) ? $conf['port'] : 11211 ),
+                'weight'   => ( isset( $conf['weight'] ) ? $conf['weight'] : 1 )
             ];
 
-            if (get_class($this->driver) === 'Memcached') {
+            if (get_class( $this->driver ) === 'Memcached') {
                 $this->driver->addServer( $server['hostname'], $server['port'], $server['weight'] );
             } else {
-                $this->driver->addServer( $server['hostname'], $server['port'], TRUE, $server['weight'] );
+                $this->driver->addServer( $server['hostname'], $server['port'], true, $server['weight'] );
             }
         } else {
-            throw new Exception('Server(s) not configured');
+            throw new Exception( 'Server(s) not configured' );
         }
     }
 
@@ -90,44 +92,48 @@ class MemcachedCache implements Cache
      */
     public function check()
     {
-        return ( ! extension_loaded('memcached') && ! extension_loaded('memcache')) ? FALSE : TRUE;
+        return ( ! extension_loaded( 'memcached' ) && ! extension_loaded( 'memcache' ) ) ? false : true;
     }
 
     /**
      * Get value by name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function get($name)
+    public function get( $name )
     {
-        $data = $this->driver->get($name);
-        return is_array($data) ? $data[0] : $data;
+        $data = $this->driver->get( $name );
+        return is_array( $data ) ? $data[0] : $data;
     }
 
     /**
      * Set value of element
      *
      * @access public
-     * @param string $name key name
-     * @param mixed $value value
+     *
+     * @param string  $name key name
+     * @param mixed   $value value
      * @param integer $duration time duration
+     *
      * @return mixed
      */
-    public function set($name, $value, $duration = 0)
+    public function set( $name, $value, $duration = 0 )
     {
-        switch (get_class($this->driver)) {
+        switch (get_class( $this->driver )) {
             case 'Memcached': {
-                return $this->driver->set($name, $value, $duration);
+                return $this->driver->set( $name, $value, $duration );
                 break;
             }
             case 'Memcache': {
-                return $this->driver->set($name, $value, 0, $duration);
+                return $this->driver->set( $name, $value, 0, $duration );
                 break;
             }
             default: {
-                return FALSE;
+                return false;
             }
         }
     }
@@ -136,12 +142,14 @@ class MemcachedCache implements Cache
      * Delete by key name
      *
      * @access public
+     *
      * @param string $name key name
+     *
      * @return mixed
      */
-    public function delete($name)
+    public function delete( $name )
     {
-        return $this->driver->delete($name);
+        return $this->driver->delete( $name );
     }
 
     /**
@@ -170,43 +178,49 @@ class MemcachedCache implements Cache
      * Get meta-data of key id
      *
      * @access public
+     *
      * @param string $id key id
+     *
      * @return mixed
      */
-    public function getMeta($id)
+    public function getMeta( $id )
     {
-        $stored = $this->driver->get($id);
-        if (count($stored) !== 3) {
+        $stored = $this->driver->get( $id );
+        if (count( $stored ) !== 3) {
             return false;
         }
-        list($data, $time, $ttl) = $stored;
+        list( $data, $time, $ttl ) = $stored;
 
-        return ['expire' => $time + $ttl, 'mtime' => $time, 'data' => $data];
+        return [ 'expire' => $time + $ttl, 'mtime' => $time, 'data' => $data ];
     }
 
     /**
      * Increment value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset increment value
+     * @param int    $offset increment value
+     *
      * @return mixed
      */
-    public function increment($name, $offset = 1)
+    public function increment( $name, $offset = 1 )
     {
-        return $this->driver->increment($name, $offset);
+        return $this->driver->increment( $name, $offset );
     }
 
     /**
      * Decrement value
      *
      * @access public
+     *
      * @param string $name key name
-     * @param int $offset decrement value
+     * @param int    $offset decrement value
+     *
      * @return mixed
      */
-    public function decrement($name, $offset = 1)
+    public function decrement( $name, $offset = 1 )
     {
-        return $this->driver->decrement($name, $offset);
+        return $this->driver->decrement( $name, $offset );
     }
 }

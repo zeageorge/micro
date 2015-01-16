@@ -30,32 +30,34 @@ class DetailViewWidget extends Widget
     /** @var string $condition Condition for generate with table */
     public $condition = '';
     /** @var array $keys Keys for render */
-    public $keys = [];
+    public $keys = [ ];
     /** @var array $attributes attributes for dl */
-    public $attributes = [];
+    public $attributes = [ ];
     /** @var array $attributesElement attributes for dt */
-    public $attributesElement = [];
+    public $attributesElement = [ ];
     /** @var array $attributesValue attributes for dd */
-    public $attributesValue = [];
+    public $attributesValue = [ ];
     /** @var array $attributeLabels labels for attributes */
-    public $attributeLabels = [];
+    public $attributeLabels = [ ];
 
     /** @var \Micro\db\DbConnection $conn connect to database */
     protected $conn = null;
     /** @var array $statement elements from data */
-    protected $statement = [];
+    protected $statement = [ ];
 
 
     /**
      * Re-declare constructor class
      *
      * @access public
+     *
      * @param array $args arguments
+     *
      * @result void
      */
-    public function __construct(array $args = [])
+    public function __construct( array $args = [ ] )
     {
-        parent::__construct($args);
+        parent::__construct( $args );
         $this->getConnect();
     }
 
@@ -68,7 +70,7 @@ class DetailViewWidget extends Widget
      */
     public function getConnect()
     {
-        $this->conn = Registry::get('db');
+        $this->conn = Registry::get( 'db' );
     }
 
     /**
@@ -80,31 +82,31 @@ class DetailViewWidget extends Widget
     public function init()
     {
         if ($this->model instanceof Model) {
-            $this->statement = \Micro\db\getVars($this->model);
-            $cls = get_class($this->model);
-            $this->table = $cls::tableName();
+            $this->statement = \Micro\db\getVars( $this->model );
+            $cls             = get_class( $this->model );
+            $this->table     = $cls::tableName();
         } else {
-            $query = new Query;
-            $query->table = $this->table;
-            $query->where = $this->condition;
-            $query->limit = 1;
-            $query->single = true;
-            $this->statement = $query->run(\PDO::FETCH_ASSOC);
+            $query           = new Query;
+            $query->table    = $this->table;
+            $query->where    = $this->condition;
+            $query->limit    = 1;
+            $query->single   = true;
+            $this->statement = $query->run( \PDO::FETCH_ASSOC );
         }
 
-        if (!$this->statement) {
-            throw new Exception('Elements for render not found');
+        if ( ! $this->statement) {
+            throw new Exception( 'Elements for render not found' );
         }
 
-        $fields = $this->conn->listFields($this->table);
+        $fields = $this->conn->listFields( $this->table );
 
-        $fieldKeys = [];
+        $fieldKeys = [ ];
         foreach ($fields AS $field) {
             $fieldKeys[] = $field['field'];
         }
 
         if ($this->keys) {
-            $this->keys = array_intersect($fieldKeys, $this->keys);
+            $this->keys = array_intersect( $fieldKeys, $this->keys );
         } else {
             $this->keys = $fieldKeys;
         }
@@ -118,30 +120,32 @@ class DetailViewWidget extends Widget
      */
     public function run()
     {
-        $result = Html::openTag('dl', $this->attributes);
+        $result = Html::openTag( 'dl', $this->attributes );
         foreach ($this->statement AS $key => $value) {
-            if (in_array($key, $this->keys)) {
-                $result .= Html::openTag('dt', $this->attributesElement);
-                $result .= $this->getAttributeLabel($key);
-                $result .= Html::closeTag('dt');
-                $result .= Html::openTag('dd', $this->attributesValue);
+            if (in_array( $key, $this->keys )) {
+                $result .= Html::openTag( 'dt', $this->attributesElement );
+                $result .= $this->getAttributeLabel( $key );
+                $result .= Html::closeTag( 'dt' );
+                $result .= Html::openTag( 'dd', $this->attributesValue );
                 $result .= $value;
-                $result .= Html::closeTag('dd');
+                $result .= Html::closeTag( 'dd' );
             }
         }
-        echo $result, Html::closeTag('dl');
+        echo $result, Html::closeTag( 'dl' );
     }
 
     /**
      * Get label for attribute
      *
      * @access public
+     *
      * @param string $key key of label search
+     *
      * @return string
      */
-    public function getAttributeLabel($key)
+    public function getAttributeLabel( $key )
     {
-        if (array_key_exists($key, $this->attributeLabels)) {
+        if (array_key_exists( $key, $this->attributeLabels )) {
             return $this->attributeLabels[$key];
         }
         return $key;

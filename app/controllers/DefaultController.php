@@ -15,37 +15,37 @@ class DefaultController extends Controller
     {
         return [
             [
-                'class'=>'\Micro\filters\AccessFilter',
-                'actions'=>['login','logout','index','error'],
-                'rules'=>[
+                'class'   => '\Micro\filters\AccessFilter',
+                'actions' => [ 'login', 'logout', 'index', 'error' ],
+                'rules'   => [
                     [
-                        'allow'     =>false,
-                        'actions'   =>['index'],
-                        'users'     =>['@'],
-                        'message'   =>'Only for not authorized!'
+                        'allow'   => false,
+                        'actions' => [ 'index' ],
+                        'users'   => [ '@' ],
+                        'message' => 'Only for not authorized!'
                     ],
                     [
-                        'allow'     =>false,
-                        'actions'   =>['login'],
-                        'users'     =>['@'],
-                        'message'   =>'Not authorized only'
+                        'allow'   => false,
+                        'actions' => [ 'login' ],
+                        'users'   => [ '@' ],
+                        'message' => 'Not authorized only'
                     ],
                     [
-                        'allow'     =>false,
-                        'actions'   =>['logout'],
-                        'users'     =>['?'],
-                        'message'   =>'Authorized only'
+                        'allow'   => false,
+                        'actions' => [ 'logout' ],
+                        'users'   => [ '?' ],
+                        'message' => 'Authorized only'
                     ],
                 ]
             ],
             [
-                'class'=>'\Micro\filters\CsrfFilter',
-                'actions'=>['login']
+                'class'   => '\Micro\filters\CsrfFilter',
+                'actions' => [ 'login' ]
             ],
             [
-                'class'=>'\Micro\filters\XssFilter',
-                'actions'=>['index','login','logout'],
-                'clean'=>'*'
+                'class'   => '\Micro\filters\XssFilter',
+                'actions' => [ 'index', 'login', 'logout' ],
+                'clean'   => '*'
             ]
         ];
     }
@@ -63,34 +63,34 @@ class DefaultController extends Controller
             'POST'
         );
 
-        if (isset($_POST['LoginFormModel'])) {
-            $form->setModelData($_POST['LoginFormModel']);
+        if (isset( $_POST['LoginFormModel'] )) {
+            $form->setModelData( $_POST['LoginFormModel'] );
             if ($form->validateModel() AND $form->getModel()->logined()) {
-                $this->redirect('/profile');
+                $this->redirect( '/profile' );
             }
         }
 
         $v = new View;
-        $v->addParameter('form', $form);
+        $v->addParameter( 'form', $form );
         return $v;
     }
 
     public function actionError()
     {
         $result = null;
-        if (isset($_POST['errors'])) {
+        if (isset( $_POST['errors'] )) {
             foreach ($_POST['errors'] AS $err) {
-                $result .= '<h3 class="text-danger bg-danger">'.$err.'</h3>';
+                $result .= '<h3 class="text-danger bg-danger">' . $err . '</h3>';
             }
         }
-        $v = new View;
+        $v       = new View;
         $v->data = $result ? $result : 'undefined error';
         return $v;
     }
 
     public function actionLogout()
     {
-        Registry::get('session')->destroy();
-        $this->redirect('/');
+        Registry::get( 'session' )->destroy();
+        $this->redirect( '/' );
     }
 }
