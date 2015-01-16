@@ -9,5 +9,7 @@ class UserCleanerConsoleCommand extends Command
     public function execute()
     {
         echo 'Hello, world!' , "\n";
+
+        $this->result = true;
     }
 }

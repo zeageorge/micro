@@ -138,7 +138,8 @@ final class Micro
      */
     public function runCli()
     {
-        global $argc, $argv;
+        global $argv;
+
         if (php_sapi_name() !== 'cli') {
             die('Not allowed from command');
         }
@@ -149,8 +150,8 @@ final class Micro
         /** @var \Micro\base\Command $command */
         $command = new $cls($cli->getParams());
         $command->execute();
+
         if (!$command->result) {
-            define('DEBUG_MICRO', true);
             throw new Exception($command->message);
         }
     }
