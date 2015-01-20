@@ -397,7 +397,7 @@ class Html
      * @return string
      * @static
      */
-    public static function lists( array$items = [ ], array $attributes = [ ] )
+    public static function lists( array $items = [ ], array $attributes = [ ] )
     {
         $result = null;
         foreach ($items AS $item) {
