@@ -11,7 +11,7 @@ use Micro\base\Exception;
  * Interface for loggers
  *
  * @author Oleg Lunegov <testuser@mail.linpax.org>
- * @link https://github.com/antivir88/micro
+ * @link https://github.com/lugnsk/micro
  * @copyright Copyright &copy; 2013 Oleg Lunegov
  * @license /LICENSE
  * @package micro
