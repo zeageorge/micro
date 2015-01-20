@@ -30,10 +30,10 @@ class BooleanValidator extends Validator
      */
     public function __construct( array $rule = [ ] )
     {
-        parent::__construct( $rule );
-
         $this->params['true']  = true;
         $this->params['false'] = false;
+
+        parent::__construct( $rule );
     }
 
     /**

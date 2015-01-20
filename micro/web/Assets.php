@@ -42,7 +42,7 @@ class Assets
      */
     public function __construct( $directory = '' )
     {
-        $this->directory = $directory;
+        $this->directory = rtrim($directory, '/') . '/assets';
         $this->hash      = md5( $this->directory );
 
         $tmp              = '/' . $this->assetDir . '/' . $this->hash;

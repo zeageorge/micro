@@ -30,10 +30,10 @@ class CompareValidator extends Validator
      */
     public function __construct( array $rule = [ ] )
     {
-        parent::__construct( $rule );
-
         $this->params['attribute'] = null;
         $this->params['value']     = null;
+
+        parent::__construct( $rule );
     }
 
     /**

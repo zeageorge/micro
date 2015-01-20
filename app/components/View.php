@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: casper
- * Date: 13.12.14
- * Time: 0:32
- */
 
 namespace App\components;
-
 
 use Micro\mvc\views\PhpView;
 use Micro\base\Registry;

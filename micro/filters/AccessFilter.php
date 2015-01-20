@@ -138,7 +138,7 @@ class AccessFilter extends Filter
                         break;
                     }
                     default: {
-                        if (Registry::get( 'user' )->getID() == $rule['users']) {
+                        if (Registry::get( 'user' )->getID() == $u) {
                             return true;
                         }
                     }

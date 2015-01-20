@@ -54,7 +54,7 @@ class EmailValidator extends Validator
      */
     public function client( $model )
     {
-        $js = 'if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.value) != true) {' .
+        $js = 'if (/^\w+@\w+$/.test(this.value) != true) {' .
               ' e.preventDefault(); this.focus(); alert(\'Value is not a valid e-mail\'); }';
         return $js;
     }
