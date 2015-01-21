@@ -18,10 +18,15 @@ use Micro\base\Exception;
  */
 class PoolDbConnection
 {
+    /** @var array $masters master servers */
+    protected $masters = [];
+    /** @var string $actual actual server */
+    protected $actual;
     /** @var array $servers defined servers */
     protected $servers = [];
     /** @var string $curr current server */
     protected $curr;
+
 
     /**
      * Make pool of DbConnections
@@ -37,8 +42,16 @@ class PoolDbConnection
             throw new Exception('Servers not defined');
         }
 
-        $this->curr = isset($params['current']) ? $params['current'] : $params['servers'][0];
+        if (!isset($params['masters'])) {
+            $params['masters'] = $params['servers'][ $params['servers'][0] ];
+        }
 
+        $this->curr = isset($params['current']) ? $params['current'] : $params['servers'][0];
+        $this->masters = isset($params['actual']) ? $params['actual'] : $params['masters'][0];
+
+        foreach ($params['masters'] AS $key=>$master) {
+            $this->masters[$key] = new DbConnection($master);
+        }
         foreach ($params['servers'] AS $key=>$server) {
             $this->servers[$key] = new DbConnection($server);
         }
@@ -56,10 +69,22 @@ class PoolDbConnection
      * @throws \Micro\base\Exception
      */
     public function __call($name, $args) {
+        $actual = $this->masters[$this->actual];
         $curr = $this->servers[$this->curr];
 
+        switch ($name) {
+            case 'insert':
+            case 'update':
+            case 'delete':
+            case 'createTable':
+            case 'clearTable': {
+                $curr = $actual;
+                break;
+            }
+        }
+
         if (!function_exists(array($curr, $name))) {
-            throw new Exception('Method not existed');
+            throw new Exception('Method not existed into DB');
         }
 
         return call_user_func_array(array($curr, $name), $args);
