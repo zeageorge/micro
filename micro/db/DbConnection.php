@@ -27,12 +27,13 @@ class DbConnection
      *
      * @access public
      *
-     * @param array $config configuration array
+     * @param array $config     configuration array
+     * @param bool  $ignoreFail ignore PDO fail create?
      *
      * @result void
      * @throw Exception
      */
-    public function __construct( array $config = [ ] )
+    public function __construct( array $config = [ ], $ignoreFail=false )
     {
         try {
             if ( ! isset( $config['options'] )) {
@@ -41,7 +42,9 @@ class DbConnection
             $this->conn = new \PDO( $config['connectionString'], $config['username'], $config['password'],
                 $config['options'] );
         } catch ( Exception $e ) {
-            die( 'Connect to DB failed: ' . $e->getMessage() );
+            if (!$ignoreFail) {
+                die( 'Connect to DB failed: ' . $e->getMessage() );
+            }
         }
     }
 

@@ -48,13 +48,34 @@ class PoolDbConnection
             $params['master'] = $params['servers'][ $params['servers'][0] ];
         }
 
-        $this->master = new DbConnection($params['master']);
+        $this->master = new DbConnection($params['master']); // TODO: Fixme
 
         foreach ($params['servers'] AS $key=>$server) {
-            $this->servers[$key] = new DbConnection($server);
+            $this->servers[$key] = new DbConnection($server, true);
         }
 
-        $this->curr = isset($params['current']) ? $params['current'] : $params['servers'][0];
+        $this->curr = $this->getCurrentServer();
+
+        if (!$this->curr) {
+            $this->curr = $params['servers'][0];
+        }
+    }
+
+    /**
+     * Get current slave server
+     *
+     * @access protected
+     *
+     * @return int|string|bool
+     */
+    protected function getCurrentServer()
+    {
+        foreach ($this->servers AS $key=>$server) {
+            if (is_object($server)) {
+                return $key;
+            }
+        }
+        return false;
     }
 
     /**
