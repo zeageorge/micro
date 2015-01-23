@@ -14,7 +14,7 @@ namespace Micro\tests;
  * @version 1.0
  * @since 1.0
  */
-abstract class TestCase extends PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
 
 }

@@ -14,7 +14,7 @@ namespace Micro\tests;
  * @version 1.0
  * @since 1.0
  */
-abstract class WebTestCase extends PHPUnit_Extensions_SeleniumTestCase
+abstract class WebTestCase extends \PHPUnit_Extensions_SeleniumTestCase
 {
 
 }
