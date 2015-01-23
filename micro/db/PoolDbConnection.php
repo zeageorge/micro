@@ -1,11 +1,13 @@
 <?php /** PoolDbConnectionMicro */
-/** @TODO: master-slaves configuration */
+
 namespace Micro\db;
 
 use Micro\base\Exception;
 
 /**
  * PoolDbConnection class file.
+ *
+ * For master-slave's configuration
  *
  * @author Oleg Lunegov <testuser@mail.linpax.org>
  * @link https://github.com/lugnsk/micro
@@ -18,16 +20,18 @@ use Micro\base\Exception;
  */
 class PoolDbConnection
 {
-    /** @var array $masters master servers */
-    protected $masters = [];
-    /** @var array $servers defined servers */
+    /** @var DbConnection $master master server */
+    protected $master = null;
+    /** @var array $servers defined slaves servers */
     protected $servers = [];
-    /** @var string $curr current server */
+    /** @var string $curr current slave server */
     protected $curr;
 
 
     /**
      * Make pool of DbConnections
+     *
+     * If master configuration not defined using first slave server
      *
      * @access public
      *
@@ -44,14 +48,13 @@ class PoolDbConnection
             $params['master'] = $params['servers'][ $params['servers'][0] ];
         }
 
-        $this->curr = isset($params['current']) ? $params['current'] : $params['servers'][0];
-
-        $master = array_shift($params['master']);
-        $this->masters[ $master[0] ] = new DbConnection( $master [] );
+        $this->master = new DbConnection($params['master']);
 
         foreach ($params['servers'] AS $key=>$server) {
             $this->servers[$key] = new DbConnection($server);
         }
+
+        $this->curr = isset($params['current']) ? $params['current'] : $params['servers'][0];
     }
 
     /**
@@ -66,7 +69,6 @@ class PoolDbConnection
      * @throws \Micro\base\Exception
      */
     public function __call($name, $args) {
-        //$actual = $this->masters[$this->actual];
         $curr = $this->servers[$this->curr];
 
         switch ($name) {
@@ -75,7 +77,7 @@ class PoolDbConnection
             case 'delete':
             case 'createTable':
             case 'clearTable': {
-                //$curr = $actual;
+                $curr = $this->master;
                 break;
             }
         }
