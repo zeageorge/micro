@@ -424,25 +424,31 @@ class Html
      *
      * @param array $items lists multiple array
      * @param array $attributes attributes tag
+     * @param bool  $isNumeric Is a numeric list?
      *
      * @return string
      * @static
      */
-    public static function lists( array $items = [ ], array $attributes = [ ] )
+    public static function lists( array $items = [ ], array $attributes = [ ], $isNumeric = false )
     {
+        $parentTag = ($isNumeric) ? 'ol' : 'ul';
+
         $result = null;
         foreach ($items AS $item) {
             $result .= Html::openTag( 'li', ( isset( $item['attr'] ) ) ? $item['attr'] : [ ] );
             if (isset( $item['parents'] )) {
                 $result .= ( $item['text'] ) ? $item['text'] : null;
-                $result .= self::lists( $item['parents'],
-                    ( isset( $item['parentsAttr'] ) ) ? $item['parentsAttr'] : [ ] );
+                $result .= self::lists(
+                    $item['parents'],
+                    ( isset( $item['parentsAttr'] ) ? $item['parentsAttr'] : [ ] ),
+                    ( isset( $item['parentsIsNumeric'] ) ? true : false )
+                );
             } else {
                 $result .= $item['text'];
             }
             $result .= Html::closeTag( 'li' );
         }
-        return self::openTag( 'ul', $attributes ) . $result . self::closeTag( 'ul' );
+        return self::openTag( $parentTag, $attributes ) . $result . self::closeTag( $parentTag );
     }
 
     // TABLE Elements
