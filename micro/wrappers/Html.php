@@ -350,39 +350,70 @@ class Html
     }
 
     /**
-     * Render applet tag
-     *
-     * @access public
-     * @return string
-     * @static
-     */
-    public static function applet()
-    {
-        return '';
-    }
-
-    /**
      * Render image map tag
      *
      * @access public
+     *
+     * @param string $alt Alternative text
+     * @param string $source Path to image
+     * @param string $name Map name
+     * @param array  $attributeImg Attributes for image
+     * @param array  $coordinates Coordinates for image
+     *
      * @return string
      * @static
      */
-    public static function imgmap()
+    public static function imgmap( $alt, $source, $name, array $attributeImg = [ ], array $coordinates = [ ] )
     {
-        return '';
+        $areas = '';
+        foreach ($coordinates AS $coord) {
+            $areas .= self::tag('area', $coord);
+        }
+
+        $attributeImg['usemap'] = $name;
+        return self::image($alt, $source, $attributeImg) .
+            self::openTag('map', ['name'=>$name,'id'=>$name]) .
+            $areas . self::closeTag('map');
     }
 
     /**
      * Render object tag
      *
      * @access public
+     *
+     * @param string $source Path to content
+     * @param array  $attributes Attributes for object
+     * @param array  $params Parameters for object
+     *
      * @return string
      * @static
      */
-    public static function object()
+    public static function object($source, array $attributes = [ ], $params = [ ] )
     {
-        return '';
+        $attributes['data'] = $source;
+        $paramsConverted    = '';
+
+        foreach ($params AS $key=>$val) {
+            $paramsConverted .= self::tag('param', ['name'=>$key, 'value'=>$val]);
+        }
+
+        return self::openTag('object', $attributes) . $paramsConverted . self::closeTag('object');
+    }
+
+    /**
+     * Embedding objects (video, audio, flash, etc.)
+     *
+     * @access public
+     *
+     * @param string $source Path to content
+     * @param array  $attributes Attributes for embedding
+     *
+     * @return string
+     */
+    public static function embed( $source, array $attributes = [ ] )
+    {
+        $attributes['source'] = $source;
+        return self::openTag('embed', $attributes) . self::closeTag('embed');
     }
 
     // LIST Elements
@@ -801,12 +832,7 @@ class Html
      * @return string
      * @static
      */
-    public static function checkBoxList(
-        $name,
-        array $checkboxes = [ ],
-        $format = '<p>%check% %text%</p>',
-        $selected = ''
-    ) {
+    public static function checkBoxList( $name, array $checkboxes = [ ], $format = '<p>%check% %text%</p>', $selected = '' ) {
         $checks = '';
         foreach ($checkboxes AS $checkbox) {
             if ($checkbox['value'] == $selected) {
@@ -831,12 +857,7 @@ class Html
      * @return string
      * @static
      */
-    public static function radioButtonList(
-        $name,
-        array $radios = [ ],
-        $format = '<p>%radio% %text%</p>',
-        $selected = ''
-    ) {
+    public static function radioButtonList( $name, array $radios = [ ], $format = '<p>%radio% %text%</p>', $selected = '' ) {
         $rads = '';
         foreach ($radios AS $radio) {
             if ($radio['value'] === $selected) {
