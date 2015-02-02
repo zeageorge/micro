@@ -103,7 +103,7 @@ class PoolDbConnection
             }
         }
 
-        if (!function_exists(array($curr, $name))) {
+        if (!method_exists($curr, $name)) {
             throw new Exception('Method not existed into DB');
         }
 
