@@ -161,7 +161,7 @@ abstract class Model extends FormModel
      * @access public
      * @return boolean
      */
-    public function create()
+    final public function create()
     {
         if ( ! $this->isNewRecord()) {
             return false;
@@ -212,7 +212,7 @@ abstract class Model extends FormModel
      * @access public
      * @return boolean
      */
-    public function save()
+    final public function save()
     {
         if ($this->isNewRecord()) {
             return $this->create();
@@ -258,7 +258,7 @@ abstract class Model extends FormModel
      * @throws Exception
      * @return boolean
      */
-    public function update( $where = null )
+    final public function update( $where = null )
     {
         if ($this->isNewRecord()) {
             return false;
@@ -311,7 +311,7 @@ abstract class Model extends FormModel
      * @return boolean
      * @throws Exception
      */
-    public function delete()
+    final public function delete()
     {
         if ($this->isNewRecord()) {
             return false;

@@ -24,12 +24,12 @@ class Relations
      *
      * @access public
      *
-     * @param        $name
-     * @param bool   $isMany
-     * @param string $model
-     * @param array  $on
-     * @param string $where
-     * @param array  $params
+     * @param        $name rel name
+     * @param bool   $isMany One or many results
+     * @param string $model Model class for result
+     * @param array  $on relation types
+     * @param string $where options
+     * @param array  $params arguments
      *
      * @return void
      */

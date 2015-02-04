@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 // Activate error page
 //define('DEBUG_MICRO', true);

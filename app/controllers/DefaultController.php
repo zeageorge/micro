@@ -8,6 +8,7 @@ use App\components\View;
 use Micro\web\FormBuilder;
 use App\components\Controller;
 use App\models\LoginFormModel;
+use Micro\wrappers\Html;
 
 class DefaultController extends Controller
 {
@@ -80,7 +81,7 @@ class DefaultController extends Controller
         $result = null;
         if (isset( $_POST['errors'] )) {
             foreach ($_POST['errors'] AS $err) {
-                $result .= '<h3 class="text-danger bg-danger">' . $err . '</h3>';
+                $result .= Html::heading(3, $err, ['class'=>'text-danger bg-danger']);
             }
         }
         $v       = new View;

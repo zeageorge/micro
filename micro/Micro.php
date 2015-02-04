@@ -123,7 +123,7 @@ final class Micro
             }
         }
 
-        /** @var \Micro\base\Controller $mvc ModelViewController */
+        /** @var \Micro\mvc\Controller $mvc ModelViewController */
         $mvc = new $path;
         $mvc->action( $action );
     }

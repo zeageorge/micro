@@ -13,7 +13,6 @@ class TopblogsWidget extends Widget
 
     public function run()
     {
-        //echo $this->render('topblogs');
         $v = new View;
         return $v;
     }

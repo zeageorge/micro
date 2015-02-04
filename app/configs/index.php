@@ -3,10 +3,9 @@
 // read components
 $components = [ ];
 foreach (scandir( dirname( __FILE__ ) . '/components' ) AS $fileName) {
-    if ($fileName == '.' OR $fileName == '..') {
-        continue;
+    if ($fileName != '.' AND $fileName != '..') {
+        $components = array_merge( require dirname( __FILE__ ) . '/components/' . $fileName, $components );
     }
-    $components = array_merge( require dirname( __FILE__ ) . '/components/' . $fileName, $components );
 }
 
 return [

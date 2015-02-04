@@ -30,7 +30,7 @@ class Exception extends \Exception
 
             $config = Micro::getInstance()->config;
 
-            /** @var Controller $mvc controller */
+            /** @var \Micro\mvc\Controller $mvc controller */
             $mvc = new $config['errorController'];
             $mvc->action( $config['errorAction'] );
 

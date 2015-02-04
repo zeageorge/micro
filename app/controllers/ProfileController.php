@@ -25,6 +25,15 @@ class ProfileController extends Controller
                     ],
                 ]
             ],
+            [
+                'class'   => '\Micro\filters\CsrfFilter',
+                'actions' => [ 'index' ]
+            ],
+            [
+                'class'   => '\Micro\filters\XssFilter',
+                'actions' => [ 'index' ],
+                'clean'   => '*'
+            ]
         ];
     }
 
