@@ -38,6 +38,8 @@ abstract class Model extends FormModel
     protected $db = false;
     /** @var boolean $_isNewRecord is new record? */
     protected $_isNewRecord = false;
+    /** @var string $primaryKey Primary key on table */
+    protected $primaryKey = 'id';
     /** @var array $cacheRelations cached loads relations */
     protected $cacheRelations = [ ];
 
@@ -268,8 +270,8 @@ abstract class Model extends FormModel
             unset( $arr['isNewRecord'] );
 
             if ( ! $where) {
-                if (isset( $this->id ) AND ! empty( $this->id )) {
-                    $where .= 'id=:id';
+                if (isset( $this->primaryKey ) AND ! empty( $this->primaryKey )) {
+                    $where .= $this->primaryKey . '=:'.$this->primaryKey;
                 } else {
                     throw new Exception ( 'In table ' . $this->tableName() . ' option `id` not defined/not use.' );
                 }
@@ -317,11 +319,16 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeDelete()) {
-            if ( ! isset( $this->id ) AND empty( $this->id )) {
+            if ( ! isset( $this->primaryKey ) AND empty( $this->primaryKey )) {
                 throw new Exception( 'In table ' . $this->tableName() . ' option `id` not defined/not use.' );
             }
 
-            if ($this->db->delete( $this->tableName(), 'id=:id', [ 'id' => $this->id ] )) {
+            if (
+                $this->db->delete(
+                    $this->tableName(),
+                    $this->primaryKey.'=:'.$this->primaryKey, [ $this->primaryKey => $this->{$this->primaryKey} ]
+                )
+            ) {
                 $this->afterDelete();
                 unset( $this );
                 return true;
