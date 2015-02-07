@@ -68,7 +68,7 @@ class Assets
         }
 
         if (is_dir( $this->directory )) {
-            MFile::recurseCopyIfEdited( $this->directory, $this->sourceDir );
+            MFile::recurseCopyIfEdited( $this->sourceDir, $this->directory );
         } else {
             if (substr( $hashDir, strlen( $hashDir ) - strlen( $exclude ) ) != $exclude) {
                 if ( ! file_exists( $hashDir )) {
