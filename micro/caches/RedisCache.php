@@ -31,27 +31,38 @@ class RedisCache implements Cache
      * @result void
      * @throws Exception
      */
-    public function __construct( array $config = [ ] )
+    public function __construct(array $config = [])
     {
-        if ( ! $this->check()) {
-            throw new Exception( 'Redis not installed on system' );
+        if (!$this->check()) {
+            throw new Exception('Redis not installed on system');
         }
         $this->driver = new \Redis;
 
         $result = false;
         try {
-            if (isset( $config['socket_type'] ) AND $config['socket_type'] === 'unix') {
-                $result = $this->driver->connect( $config['socket'] );
+            if (isset($config['socket_type']) AND $config['socket_type'] === 'unix') {
+                $result = $this->driver->connect($config['socket']);
             } else {
-                $result = $this->driver->connect( $config['host'], $config['port'], $config['duration'] );
+                $result = $this->driver->connect($config['host'], $config['port'], $config['duration']);
             }
-        } catch ( Exception $e ) {
-            die ( (string) $e );
+        } catch (Exception $e) {
+            die ((string)$e);
         }
 
-        if ( ! $result) {
-            throw new Exception( 'Redis configuration failed' );
+        if (!$result) {
+            throw new Exception('Redis configuration failed');
         }
+    }
+
+    /**
+     * Check driver
+     *
+     * @access public
+     * @return mixed
+     */
+    public function check()
+    {
+        return extension_loaded('redis');
     }
 
     /**
@@ -68,44 +79,19 @@ class RedisCache implements Cache
     }
 
     /**
-     * Check driver
-     *
-     * @access public
-     * @return mixed
-     */
-    public function check()
-    {
-        return extension_loaded( 'redis' );
-    }
-
-    /**
-     * Get value by name
-     *
-     * @access public
-     *
-     * @param string $name key name
-     *
-     * @return mixed
-     */
-    public function get( $name )
-    {
-        return $this->driver->get( $name );
-    }
-
-    /**
      * Set value of element
      *
      * @access public
      *
-     * @param string  $name key name
-     * @param mixed   $value value
+     * @param string $name key name
+     * @param mixed $value value
      * @param integer $duration time duration
      *
      * @return mixed
      */
-    public function set( $name, $value, $duration = 0 )
+    public function set($name, $value, $duration = 0)
     {
-        return ( $duration ) ? $this->driver->setex( $name, $duration, $value ) : $this->driver->set( $name, $value );
+        return ($duration) ? $this->driver->setex($name, $duration, $value) : $this->driver->set($name, $value);
     }
 
     /**
@@ -117,9 +103,9 @@ class RedisCache implements Cache
      *
      * @return mixed
      */
-    public function delete( $name )
+    public function delete($name)
     {
-        return ( $this->driver->delete( $name ) !== 1 ) ? false : true;
+        return ($this->driver->delete($name) !== 1) ? false : true;
     }
 
     /**
@@ -153,12 +139,26 @@ class RedisCache implements Cache
      *
      * @return mixed
      */
-    public function getMeta( $id )
+    public function getMeta($id)
     {
-        if ($value = $this->get( $id )) {
-            return [ 'expire' => time() + $this->driver->ttl( $id ), 'data' => $value ];
+        if ($value = $this->get($id)) {
+            return ['expire' => time() + $this->driver->ttl($id), 'data' => $value];
         }
         return false;
+    }
+
+    /**
+     * Get value by name
+     *
+     * @access public
+     *
+     * @param string $name key name
+     *
+     * @return mixed
+     */
+    public function get($name)
+    {
+        return $this->driver->get($name);
     }
 
     /**
@@ -167,13 +167,13 @@ class RedisCache implements Cache
      * @access public
      *
      * @param string $name key name
-     * @param int    $offset increment value
+     * @param int $offset increment value
      *
      * @return mixed
      */
-    public function increment( $name, $offset = 1 )
+    public function increment($name, $offset = 1)
     {
-        return $this->driver->incrBy( $name, $offset );
+        return $this->driver->incrBy($name, $offset);
     }
 
     /**
@@ -182,12 +182,12 @@ class RedisCache implements Cache
      * @access public
      *
      * @param string $name key name
-     * @param int    $offset decrement value
+     * @param int $offset decrement value
      *
      * @return mixed
      */
-    public function decrement( $name, $offset = 1 )
+    public function decrement($name, $offset = 1)
     {
-        return $this->driver->decrBy( $name, $offset );
+        return $this->driver->decrBy($name, $offset);
     }
 } 

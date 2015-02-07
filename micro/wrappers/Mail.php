@@ -37,7 +37,7 @@ final class Mail
      *
      * @result void
      */
-    public function __construct( $from = '' )
+    public function __construct($from = '')
     {
         $this->from = $from;
     }
@@ -51,7 +51,7 @@ final class Mail
      *
      * @result void
      */
-    public function setFrom( $from )
+    public function setFrom($from)
     {
         $this->from = $from;
     }
@@ -65,7 +65,7 @@ final class Mail
      *
      * @result void
      */
-    public function setFromName( $name )
+    public function setFromName($name)
     {
         $this->fromName = $name;
     }
@@ -79,7 +79,7 @@ final class Mail
      *
      * @result void
      */
-    public function setType( $type )
+    public function setType($type)
     {
         $this->type = $type;
     }
@@ -92,7 +92,7 @@ final class Mail
      *
      * @result void
      */
-    public function setNotify( $notify )
+    public function setNotify($notify)
     {
         $this->notify = $notify;
     }
@@ -106,7 +106,7 @@ final class Mail
      *
      * @result void
      */
-    public function setEncoding( $encoding )
+    public function setEncoding($encoding)
     {
         $this->encoding = $encoding;
     }
@@ -122,20 +122,20 @@ final class Mail
      *
      * @return boolean
      */
-    public function send( $to, $subject, $message )
+    public function send($to, $subject, $message)
     {
-        $from = "=?utf-8?B?" . base64_encode( $this->fromName ) . "?=" . " <" . $this->from . ">";
+        $from = "=?utf-8?B?" . base64_encode($this->fromName) . "?=" . " <" . $this->from . ">";
 
         $headers = "From: " . $from .
-                   "\r\nReply-To: " . $from .
-                   "\r\nContent-type: " . $this->type .
-                   "; charset=" . $this->encoding . "\r\n";
+            "\r\nReply-To: " . $from .
+            "\r\nContent-type: " . $this->type .
+            "; charset=" . $this->encoding . "\r\n";
 
         if ($this->notify) {
             $headers .= "Disposition-Notification-To: " . $this->from . "\r\n";
         }
-        $subject = "=?utf-8?B?" . base64_encode( $subject ) . "?=";
+        $subject = "=?utf-8?B?" . base64_encode($subject) . "?=";
 
-        return mail( $to, $subject, $message, $headers );
+        return mail($to, $subject, $message, $headers);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Micro\widgets;
 
-use \Micro\wrappers\Html;
-use \Micro\web\Form;
-use \Micro\mvc\Widget;
+use Micro\mvc\Widget;
+use Micro\web\Form;
+use Micro\wrappers\Html;
 
 /**
  * FormWidget class file.
@@ -29,7 +29,7 @@ class FormWidget extends Widget
     /** @var string $client client js code */
     public $client = '';
     /** @var array $attributes attributes for form element */
-    public $attributes = [ ];
+    public $attributes = [];
 
     /**
      * Initialize widget
@@ -39,9 +39,9 @@ class FormWidget extends Widget
      */
     public function init()
     {
-        $this->action             = ( $this->action ) ? $this->action : '';
+        $this->action = ($this->action) ? $this->action : '';
         $this->attributes['type'] = $this->type;
-        echo Html::beginForm( $this->action, $this->method, $this->attributes );
+        echo Html::beginForm($this->action, $this->method, $this->attributes);
         return new Form;
     }
 
@@ -55,7 +55,7 @@ class FormWidget extends Widget
     {
         echo Html::endForm();
         if ($this->client) {
-            echo Html::script( $this->client );
+            echo Html::script($this->client);
         }
     }
 }

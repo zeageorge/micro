@@ -17,7 +17,7 @@ namespace Micro\widgets;
 abstract class GridColumn
 {
     /** @var array $params configuration array */
-    public $params = [ ];
+    public $params = [];
 
 
     /**
@@ -29,7 +29,7 @@ abstract class GridColumn
      *
      * @result void
      */
-    public function __construct( $params )
+    public function __construct($params)
     {
         $this->params = $params;
     }

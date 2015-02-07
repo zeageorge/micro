@@ -3,7 +3,7 @@
 namespace Micro\auth;
 
 use Micro\base\Registry;
-use \Micro\db\DbConnection;
+use Micro\db\DbConnection;
 
 /**
  * Abstract ACL class file.
@@ -37,21 +37,21 @@ abstract class Acl
      *
      * @result void
      */
-    public function __construct( array $params = [ ] )
+    public function __construct(array $params = [])
     {
         $this->getConnect();
 
-        if (isset( $params['groupTable'] )) {
+        if (isset($params['groupTable'])) {
             $this->groupTable = $params['groupTable'];
         }
-        if ( ! $this->conn->tableExists( 'acl_user' )) {
-            $this->conn->createTable( 'acl_user', [
+        if (!$this->conn->tableExists('acl_user')) {
+            $this->conn->createTable('acl_user', [
                 '`id` int(10) unsigned NOT NULL AUTO_INCREMENT',
                 '`user` int(11) unsigned NOT NULL',
                 '`role` int(11) unsigned DEFAULT NULL',
                 '`perm` int(11) unsigned DEFAULT NULL',
                 'PRIMARY KEY (`id`)'
-            ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8' );
+            ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8');
         }
     }
 
@@ -64,7 +64,7 @@ abstract class Acl
      */
     public function getConnect()
     {
-        $this->conn = Registry::get( 'db' );
+        $this->conn = Registry::get('db');
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class Acl
      * @return array
      * @abstract
      */
-    abstract protected function rolePerms( $role );
+    abstract protected function rolePerms($role);
 
     /**
      * Check user access to permission
@@ -85,11 +85,11 @@ abstract class Acl
      * @access public
      *
      * @param integer $userId user id
-     * @param string  $permission checked permission
-     * @param array   $data for compatible, not used!
+     * @param string $permission checked permission
+     * @param array $data for compatible, not used!
      *
      * @return bool
      * @abstract
      */
-    abstract public function check( $userId, $permission, array $data = [ ] );
+    abstract public function check($userId, $permission, array $data = []);
 }

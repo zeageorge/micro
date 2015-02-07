@@ -25,22 +25,22 @@ class File
      * @return integer
      * @static
      */
-    public static function dirSize( $dirName )
+    public static function dirSize($dirName)
     {
         $totalSize = 0;
-        if ($dirStream = @opendir( $dirName )) {
-            while (false !== ( $fileName = readdir( $dirStream ) )) {
+        if ($dirStream = @opendir($dirName)) {
+            while (false !== ($fileName = readdir($dirStream))) {
                 if ($fileName != '.' && $fileName != '..') {
-                    if (is_file( $dirName . "/" . $fileName )) {
-                        $totalSize += filesize( $dirName . '/' . $fileName );
+                    if (is_file($dirName . "/" . $fileName)) {
+                        $totalSize += filesize($dirName . '/' . $fileName);
                     }
-                    if (is_dir( $dirName . "/" . $fileName )) {
-                        $totalSize += self::dirSize( $dirName . '/' . $fileName );
+                    if (is_dir($dirName . "/" . $fileName)) {
+                        $totalSize += self::dirSize($dirName . '/' . $fileName);
                     }
                 }
             }
         }
-        closedir( $dirStream );
+        closedir($dirStream);
         return $totalSize;
     }
 
@@ -54,19 +54,19 @@ class File
      * @return void
      * @static
      */
-    public static function removeDir( $path )
+    public static function removeDir($path)
     {
-        if (is_file( $path )) {
-            @unlink( $path );
+        if (is_file($path)) {
+            @unlink($path);
         } else {
-            foreach (scandir( $path ) as $dir) {
+            foreach (scandir($path) as $dir) {
                 if ($dir != '.' AND $dir != '..') {
-                    self::removeDir( $path . '/' . $dir );
+                    self::removeDir($path . '/' . $dir);
                 }
             }
-            @unlink( $path );
+            @unlink($path);
         }
-        @rmdir( $path );
+        @rmdir($path);
     }
 
     /**
@@ -80,22 +80,22 @@ class File
      * @return void
      * @static
      */
-    public static function recurseCopy( $src, $dst )
+    public static function recurseCopy($src, $dst)
     {
-        $dir = opendir( $src );
-        @mkdir( $dst, 0777 );
+        $dir = opendir($src);
+        @mkdir($dst, 0777);
 
-        while (false !== ( $file = readdir( $dir ) )) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if (is_dir( $src . '/' . $file )) {
-                    self::recurseCopy( $src . '/' . $file, $dst . '/' . $file );
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                if (is_dir($src . '/' . $file)) {
+                    self::recurseCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
-                    copy( $src . '/' . $file, $dst . '/' . $file );
-                    @chmod( $dst . '/' . $file, 0666 );
+                    copy($src . '/' . $file, $dst . '/' . $file);
+                    @chmod($dst . '/' . $file, 0666);
                 }
             }
         }
-        closedir( $dir );
+        closedir($dir);
     }
 
     /**
@@ -110,28 +110,28 @@ class File
      * @return void
      * @static
      */
-    public static function recurseCopyIfEdited( $src = '', $dst = '', $exc = '.php' )
+    public static function recurseCopyIfEdited($src = '', $dst = '', $exc = '.php')
     {
-        $dir = opendir( $src );
-        @mkdir( $dst, 0777 );
+        $dir = opendir($src);
+        @mkdir($dst, 0777);
 
-        while (false !== ( $file = readdir( $dir ) )) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if (is_dir( $src . '/' . $file )) {
-                    self::recurseCopyIfEdited( $src . '/' . $file, $dst . '/' . $file );
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                if (is_dir($src . '/' . $file)) {
+                    self::recurseCopyIfEdited($src . '/' . $file, $dst . '/' . $file);
                 } else {
-                    if (substr( $src . '/' . $file, strlen( $src . '/' . $file ) - strlen( $exc ) ) != $exc) {
-                        if ( ! file_exists( $dst . '/' . $file )) {
-                            copy( $src . '/' . $file, $dst . '/' . $file );
-                            @chmod( $dst . '/' . $file, 0666 );
-                        } elseif (filemtime( $src . '/' . $file ) != filemtime( $dst . '/' . $file )) {
-                            copy( $src . '/' . $file, $dst . '/' . $file );
-                            @chmod( $dst . '/' . $file, 0666 );
+                    if (substr($src . '/' . $file, 0 - strlen($exc)) != $exc) {
+                        if (!file_exists($dst . '/' . $file)) {
+                            copy($src . '/' . $file, $dst . '/' . $file);
+                            @chmod($dst . '/' . $file, 0666);
+                        } elseif (filemtime($src . '/' . $file) != filemtime($dst . '/' . $file)) {
+                            copy($src . '/' . $file, $dst . '/' . $file);
+                            @chmod($dst . '/' . $file, 0666);
                         }
                     }
                 }
             }
         }
-        closedir( $dir );
+        closedir($dir);
     }
 }

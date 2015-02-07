@@ -6,11 +6,16 @@ use Micro\db\Model;
 
 class User extends Model
 {
+    static public function tableName()
+    {
+        return 'users';
+    }
+
     public function rules()
     {
         return [
-            [ 'email,login', 'required' ],
-            [ 'email', 'email' ]
+            ['email,login', 'required'],
+            ['email', 'email']
         ];
     }
 
@@ -19,14 +24,9 @@ class User extends Model
         return [
             'email' => 'E-mail',
             'login' => 'Логин',
-            'pass'  => 'Пароль',
-            'fio'   => 'ФИО',
+            'pass' => 'Пароль',
+            'fio' => 'ФИО',
 
         ];
-    }
-
-    static public function tableName()
-    {
-        return 'users';
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\components;
 
-use Micro\mvc\Controller AS BaseController;
+use Micro\mvc\Controller as BaseController;
 
 class Controller extends BaseController
 {

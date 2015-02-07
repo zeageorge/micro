@@ -19,19 +19,7 @@ use Micro\base\Validator;
 abstract class FormModel
 {
     /** @var array $errors validation errors */
-    protected $errors = [ ];
-
-
-    /**
-     * Define rules for validation
-     *
-     * @access public
-     * @return array
-     */
-    public function rules()
-    {
-        return [ ];
-    }
+    protected $errors = [];
 
     /**
      * Run validation
@@ -42,9 +30,9 @@ abstract class FormModel
     public function validate()
     {
         foreach ($this->rules() AS $rule) {
-            $validator = new Validator( $rule );
+            $validator = new Validator($rule);
 
-            if ( ! $validator->run( $this ) AND $validator->errors) {
+            if (!$validator->run($this) AND $validator->errors) {
                 $this->errors[] = $validator->errors;
             }
         }
@@ -52,6 +40,17 @@ abstract class FormModel
             return false;
         }
         return true;
+    }
+
+    /**
+     * Define rules for validation
+     *
+     * @access public
+     * @return array
+     */
+    public function rules()
+    {
+        return [];
     }
 
     /**
@@ -65,8 +64,8 @@ abstract class FormModel
         $result = 'jQuery(document).ready(function(){';
 
         foreach ($this->rules() AS $rule) {
-            $validator = new Validator( $rule );
-            if (is_string( $js = $validator->run( $this, true ) )) {
+            $validator = new Validator($rule);
+            if (is_string($js = $validator->run($this, true))) {
                 $result .= ' ' . $js;
             }
         }
@@ -85,7 +84,7 @@ abstract class FormModel
      *
      * @return void
      */
-    public function setModelData( array $data = [ ] )
+    public function setModelData(array $data = [])
     {
         foreach ($data AS $key => $value) {
             $this->$key = $value;
@@ -101,7 +100,7 @@ abstract class FormModel
      *
      * @return void
      */
-    public function addError( $description )
+    public function addError($description)
     {
         $this->errors[] = $description;
     }
@@ -114,7 +113,7 @@ abstract class FormModel
      */
     public function getErrors()
     {
-        return $this->convertMultiArrayToArray( $this->errors );
+        return $this->convertMultiArrayToArray($this->errors);
     }
 
     /**
@@ -126,28 +125,17 @@ abstract class FormModel
      *
      * @return array
      */
-    private function convertMultiArrayToArray( $errors )
+    private function convertMultiArrayToArray($errors)
     {
-        static $result = [ ];
+        static $result = [];
         foreach ($errors AS $error) {
-            if (is_array( $error )) {
-                $this->convertMultiArrayToArray( $error );
+            if (is_array($error)) {
+                $this->convertMultiArrayToArray($error);
             } else {
                 $result[] = $error;
             }
         }
         return $result;
-    }
-
-    /**
-     * Define labels for elements
-     *
-     * @access public
-     * @return array
-     */
-    public function attributeLabels()
-    {
-        return [ ];
     }
 
     /**
@@ -159,9 +147,20 @@ abstract class FormModel
      *
      * @return null
      */
-    public function getLabel( $property )
+    public function getLabel($property)
     {
         $elements = $this->attributeLabels();
-        return ( isset( $elements[$property] ) ) ? $elements[$property] : null;
+        return (isset($elements[$property])) ? $elements[$property] : null;
+    }
+
+    /**
+     * Define labels for elements
+     *
+     * @access public
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [];
     }
 }

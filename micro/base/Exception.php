@@ -25,16 +25,16 @@ class Exception extends \Exception
      */
     public function __toString()
     {
-        if ( ! defined( 'DEBUG_MICRO' )) {
-            $_POST['errors'] = [ 'Error - ' . $this->getMessage() ];
+        if (!defined('DEBUG_MICRO')) {
+            $_POST['errors'] = ['Error - ' . $this->getMessage()];
 
             $config = Micro::getInstance()->config;
 
             /** @var \Micro\mvc\Controller $mvc controller */
             $mvc = new $config['errorController'];
-            $mvc->action( $config['errorAction'] );
+            $mvc->action($config['errorAction']);
 
-            error_reporting( 0 );
+            error_reporting(0);
         } else {
             return '"Error #' . $this->getCode() . ' - ' . $this->getMessage() . '"';
         }

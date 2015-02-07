@@ -16,13 +16,13 @@ namespace Micro\filters;
  */
 abstract class Filter
 {
-    protected $action;
     public $result;
+    protected $action;
 
     /**
      * @param string $action current action
      */
-    public function __construct( $action )
+    public function __construct($action)
     {
         $this->action = $action;
     }
@@ -36,7 +36,7 @@ abstract class Filter
      *
      * @return boolean
      */
-    abstract public function pre( array $params );
+    abstract public function pre(array $params);
 
     /**
      * PostFilter
@@ -47,5 +47,5 @@ abstract class Filter
      *
      * @return mixed
      */
-    abstract public function post( array $params );
+    abstract public function post(array $params);
 }

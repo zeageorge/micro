@@ -29,20 +29,20 @@ class UniqueValidator extends Validator
      *
      * @return bool
      */
-    public function validate( $model )
+    public function validate($model)
     {
         foreach ($this->elements AS $element) {
-            if ( ! property_exists( $model, $element )) {
-                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class( $model );
+            if (!property_exists($model, $element)) {
+                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
                 return false;
             }
             $elementValue = $model->$element;
 
-            $query         = new Query;
+            $query = new Query;
             $query->select = $this->params['attribute'];
-            $query->table  = $this->params['table'];
-            $query->addWhere( $this->params['attribute'] . '="' . $elementValue . '"' );
-            $query->limit  = 1;
+            $query->table = $this->params['table'];
+            $query->addWhere($this->params['attribute'] . '="' . $elementValue . '"');
+            $query->limit = 1;
             $query->single = true;
 
             if ($query->run()) {

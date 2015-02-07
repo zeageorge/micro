@@ -28,13 +28,14 @@ class Console
      * @param array $params arguments command
      * @result void
      */
-    public function __construct(array $params = []) {
+    public function __construct(array $params = [])
+    {
         array_shift($params);
         $this->command = '\\App\\consoles\\' . array_shift($params) . 'ConsoleCommand';
 
         foreach ($params AS $param) {
             $pos = strpos($param, '=');
-            $this->args[ substr($param, 0, $pos) ] = substr($param, $pos+1);
+            $this->args[substr($param, 0, $pos)] = substr($param, $pos + 1);
         }
     }
 
@@ -44,7 +45,8 @@ class Console
      * @access public
      * @return string
      */
-    public function getCommand() {
+    public function getCommand()
+    {
         return $this->command;
     }
 
@@ -54,7 +56,8 @@ class Console
      * @access public
      * @return array
      */
-    public function getParams() {
+    public function getParams()
+    {
         return $this->args;
     }
 }

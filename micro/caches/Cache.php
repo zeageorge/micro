@@ -33,7 +33,7 @@ interface Cache
      *
      * @return mixed
      */
-    public function get( $name );
+    public function get($name);
 
     /**
      * Set value of element
@@ -41,11 +41,11 @@ interface Cache
      * @access public
      *
      * @param string $name key name
-     * @param mixed  $value value
+     * @param mixed $value value
      *
      * @return mixed
      */
-    public function set( $name, $value );
+    public function set($name, $value);
 
     /**
      * Delete by key name
@@ -56,7 +56,7 @@ interface Cache
      *
      * @return mixed
      */
-    public function delete( $name );
+    public function delete($name);
 
     /**
      * Clean all data from cache
@@ -83,7 +83,7 @@ interface Cache
      *
      * @return mixed
      */
-    public function getMeta( $id );
+    public function getMeta($id);
 
     /**
      * Increment value
@@ -91,11 +91,11 @@ interface Cache
      * @access public
      *
      * @param string $name key name
-     * @param int    $offset increment value
+     * @param int $offset increment value
      *
      * @return mixed
      */
-    public function increment( $name, $offset = 1 );
+    public function increment($name, $offset = 1);
 
     /**
      * Decrement value
@@ -103,9 +103,9 @@ interface Cache
      * @access public
      *
      * @param string $name key name
-     * @param int    $offset decrement value
+     * @param int $offset decrement value
      *
      * @return mixed
      */
-    public function decrement( $name, $offset = 1 );
+    public function decrement($name, $offset = 1);
 }

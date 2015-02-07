@@ -25,9 +25,9 @@ class Cookie
      *
      * @return mixed|bool
      */
-    public function get( $name )
+    public function get($name)
     {
-        return isset( $_COOKIE[$name] ) ? $_COOKIE[$name] : false;
+        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : false;
     }
 
     /**
@@ -42,23 +42,20 @@ class Cookie
     }
 
     /**
-     * Set cookie
+     * Delete cookie
      *
      * @access public
      *
      * @param string $name cookie name
-     * @param mixed  $value data value
-     * @param int    $expire life time
-     * @param string $path path access cookie
-     * @param string $domain domain access cookie
-     * @param bool   $secure use SSL?
-     * @param bool   $httponly disable on JS?
      *
      * @return bool
      */
-    public function set( $name, $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = true )
+    public function del($name)
     {
-        return setcookie( $name, $value, $expire, $path, $domain, $secure, $httponly );
+        if ($this->exists($name)) {
+            return $this->set($name, false, time() - 3600);
+        }
+        return false;
     }
 
     /**
@@ -70,25 +67,28 @@ class Cookie
      *
      * @return bool
      */
-    public function exists( $name )
+    public function exists($name)
     {
-        return isset( $_COOKIE[$name] );
+        return isset($_COOKIE[$name]);
     }
 
     /**
-     * Delete cookie
+     * Set cookie
      *
      * @access public
      *
      * @param string $name cookie name
+     * @param mixed $value data value
+     * @param int $expire life time
+     * @param string $path path access cookie
+     * @param string $domain domain access cookie
+     * @param bool $secure use SSL?
+     * @param bool $httponly disable on JS?
      *
      * @return bool
      */
-    public function del( $name )
+    public function set($name, $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = true)
     {
-        if ($this->exists( $name )) {
-            return $this->set( $name, false, time() - 3600 );
-        }
-        return false;
+        return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
     }
 }

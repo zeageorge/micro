@@ -33,42 +33,36 @@ class Curl
 
     /** @var string USER_AGENT user agent identity */
     const USER_AGENT = 'Links (2.6; Linux 3.13.10-200.fc20.x86_64 x86_64; GNU C 4.8.1; text)';
-
-    /** @var array $_cookies cookies for request */
-    private $_cookies = array();
-    /** @var array $_headers headers for request */
-    private $_headers = array();
-
     /** @var resource $curl cURL resource */
     public $curl;
-
     /** @var bool $error is error */
     public $error = false;
     /** @var int $error_code error code */
     public $error_code = 0;
     /** @var null|string $error_message error message */
     public $error_message = null;
-
     /** @var bool $curl_error is cURL error */
     public $curl_error = false;
     /** @var int $curl_error_code cURL error code */
     public $curl_error_code = 0;
     /** @var null|string $curl_error_message cURL error message */
     public $curl_error_message = null;
-
     /** @var bool $http_error is HTTP error */
     public $http_error = false;
     /** @var int $http_status_code HTTP status code */
     public $http_status_code = 0;
     /** @var null $http_error_message HTTP error message */
     public $http_error_message = null;
-
     /** @var null $request_headers request headers */
     public $request_headers = null;
     /** @var null $response_headers response headers */
     public $response_headers = null;
     /** @var null $response response */
     public $response = null;
+    /** @var array $_cookies cookies for request */
+    private $_cookies = array();
+    /** @var array $_headers headers for request */
+    private $_headers = array();
 
     /**
      * Construct
@@ -80,15 +74,44 @@ class Curl
     public function __construct()
     {
 
-        if ( ! extension_loaded( 'curl' )) {
-            throw new Exception( 'cURL library is not loaded' );
+        if (!extension_loaded('curl')) {
+            throw new Exception('cURL library is not loaded');
         }
 
         $this->curl = curl_init();
-        $this->setUserAgent( self::USER_AGENT );
-        $this->setopt( CURLINFO_HEADER_OUT, true );
-        $this->setopt( CURLOPT_HEADER, true );
-        $this->setopt( CURLOPT_RETURNTRANSFER, true );
+        $this->setUserAgent(self::USER_AGENT);
+        $this->setopt(CURLINFO_HEADER_OUT, true);
+        $this->setopt(CURLOPT_HEADER, true);
+        $this->setopt(CURLOPT_RETURNTRANSFER, true);
+    }
+
+    /**
+     * Set user agent
+     *
+     * @access public
+     *
+     * @param string $user_agent user agent name
+     *
+     * @return void
+     */
+    public function setUserAgent($user_agent)
+    {
+        $this->setopt(CURLOPT_USERAGENT, $user_agent);
+    }
+
+    /**
+     * Set option
+     *
+     * @access public
+     *
+     * @param mixed $option
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public function setOpt($option, $value)
+    {
+        return curl_setopt($this->curl, $option, $value);
     }
 
     /**
@@ -97,19 +120,53 @@ class Curl
      * @access public
      *
      * @param string $url URL
-     * @param array  $data data
+     * @param array $data data
      *
      * @return void
      */
-    public function get( $url, $data = array() )
+    public function get($url, $data = array())
     {
-        if (count( $data ) > 0) {
-            $this->setopt( CURLOPT_URL, $url . '?' . http_build_query( $data ) );
+        if (count($data) > 0) {
+            $this->setopt(CURLOPT_URL, $url . '?' . http_build_query($data));
         } else {
-            $this->setopt( CURLOPT_URL, $url );
+            $this->setopt(CURLOPT_URL, $url);
         }
-        $this->setopt( CURLOPT_HTTPGET, true );
+        $this->setopt(CURLOPT_HTTPGET, true);
         $this->_exec();
+    }
+
+    /**
+     * Execute
+     *
+     * @access public
+     * @return int|mixed
+     */
+    public function _exec()
+    {
+        $this->response = curl_exec($this->curl);
+        $this->curl_error_code = curl_errno($this->curl);
+        $this->curl_error_message = curl_error($this->curl);
+        $this->curl_error = !($this->curl_error_code === 0);
+        $this->http_status_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        $this->http_error = in_array(floor($this->http_status_code / 100), array(4, 5));
+        $this->error = $this->curl_error || $this->http_error;
+        $this->error_code = $this->error ? ($this->curl_error ? $this->curl_error_code : $this->http_status_code) : 0;
+
+        $this->request_headers = preg_split('/\r\n/', curl_getinfo($this->curl, CURLINFO_HEADER_OUT), null,
+            PREG_SPLIT_NO_EMPTY);
+        $this->response_headers = '';
+        if (!(strpos($this->response, "\r\n\r\n") === false)) {
+            list($response_header, $this->response) = explode("\r\n\r\n", $this->response, 2);
+            if ($response_header === 'HTTP/1.1 100 Continue') {
+                list($response_header, $this->response) = explode("\r\n\r\n", $this->response, 2);
+            }
+            $this->response_headers = preg_split('/\r\n/', $response_header, null, PREG_SPLIT_NO_EMPTY);
+        }
+
+        $this->http_error_message = $this->error ? (isset($this->response_headers['0']) ? $this->response_headers['0'] : '') : '';
+        $this->error_message = $this->curl_error ? $this->curl_error_message : $this->http_error_message;
+
+        return $this->error_code;
     }
 
     /**
@@ -118,16 +175,16 @@ class Curl
      * @access public
      *
      * @param string $url URL
-     * @param array  $data data
+     * @param array $data data
      *
      * @return void
      */
-    public function post( $url, $data = array() )
+    public function post($url, $data = array())
     {
-        $this->setopt( CURLOPT_URL, $url );
-        $this->setopt( CURLOPT_POST, true );
-        $data = http_build_query( $data );
-        $this->setopt( CURLOPT_POSTFIELDS, $data );
+        $this->setopt(CURLOPT_URL, $url);
+        $this->setopt(CURLOPT_POST, true);
+        $data = http_build_query($data);
+        $this->setopt(CURLOPT_POSTFIELDS, $data);
         $this->_exec();
     }
 
@@ -137,14 +194,14 @@ class Curl
      * @access public
      *
      * @param string $url URL
-     * @param array  $data data
+     * @param array $data data
      *
      * @return void
      */
-    public function put( $url, $data = array() )
+    public function put($url, $data = array())
     {
-        $this->setopt( CURLOPT_URL, $url . '?' . http_build_query( $data ) );
-        $this->setopt( CURLOPT_CUSTOMREQUEST, 'PUT' );
+        $this->setopt(CURLOPT_URL, $url . '?' . http_build_query($data));
+        $this->setopt(CURLOPT_CUSTOMREQUEST, 'PUT');
         $this->_exec();
     }
 
@@ -154,15 +211,15 @@ class Curl
      * @access public
      *
      * @param string $url URL
-     * @param array  $data data
+     * @param array $data data
      *
      * @return void
      */
-    public function patch( $url, $data = array() )
+    public function patch($url, $data = array())
     {
-        $this->setopt( CURLOPT_URL, $url );
-        $this->setopt( CURLOPT_CUSTOMREQUEST, 'PATCH' );
-        $this->setopt( CURLOPT_POSTFIELDS, $data );
+        $this->setopt(CURLOPT_URL, $url);
+        $this->setopt(CURLOPT_CUSTOMREQUEST, 'PATCH');
+        $this->setopt(CURLOPT_POSTFIELDS, $data);
         $this->_exec();
     }
 
@@ -172,14 +229,14 @@ class Curl
      * @access public
      *
      * @param string $url URL
-     * @param array  $data data
+     * @param array $data data
      *
      * @return void
      */
-    public function delete( $url, $data = array() )
+    public function delete($url, $data = array())
     {
-        $this->setopt( CURLOPT_URL, $url . '?' . http_build_query( $data ) );
-        $this->setopt( CURLOPT_CUSTOMREQUEST, 'DELETE' );
+        $this->setopt(CURLOPT_URL, $url . '?' . http_build_query($data));
+        $this->setopt(CURLOPT_CUSTOMREQUEST, 'DELETE');
         $this->_exec();
     }
 
@@ -193,10 +250,10 @@ class Curl
      *
      * @return void
      */
-    public function setBasicAuthentication( $username, $password )
+    public function setBasicAuthentication($username, $password)
     {
-        $this->setHttpAuth( self::AUTH_BASIC );
-        $this->setopt( CURLOPT_USERPWD, $username . ':' . $password );
+        $this->setHttpAuth(self::AUTH_BASIC);
+        $this->setopt(CURLOPT_USERPWD, $username . ':' . $password);
     }
 
     /**
@@ -208,9 +265,9 @@ class Curl
      *
      * @return void
      */
-    protected function setHttpAuth( $httpauth )
+    protected function setHttpAuth($httpauth)
     {
-        $this->setOpt( CURLOPT_HTTPAUTH, $httpauth );
+        $this->setOpt(CURLOPT_HTTPAUTH, $httpauth);
     }
 
     /**
@@ -223,24 +280,10 @@ class Curl
      *
      * @return void
      */
-    public function setHeader( $key, $value )
+    public function setHeader($key, $value)
     {
         $this->_headers[$key] = $key . ': ' . $value;
-        $this->setopt( CURLOPT_HTTPHEADER, array_values( $this->_headers ) );
-    }
-
-    /**
-     * Set user agent
-     *
-     * @access public
-     *
-     * @param string $user_agent user agent name
-     *
-     * @return void
-     */
-    public function setUserAgent( $user_agent )
-    {
-        $this->setopt( CURLOPT_USERAGENT, $user_agent );
+        $this->setopt(CURLOPT_HTTPHEADER, array_values($this->_headers));
     }
 
     /**
@@ -252,9 +295,9 @@ class Curl
      *
      * @return void
      */
-    public function setReferrer( $referrer )
+    public function setReferrer($referrer)
     {
-        $this->setopt( CURLOPT_REFERER, $referrer );
+        $this->setopt(CURLOPT_REFERER, $referrer);
     }
 
     /**
@@ -267,25 +310,10 @@ class Curl
      *
      * @return void
      */
-    public function setCookie( $key, $value )
+    public function setCookie($key, $value)
     {
         $this->_cookies[$key] = $value;
-        $this->setopt( CURLOPT_COOKIE, http_build_query( $this->_cookies, '', '; ' ) );
-    }
-
-    /**
-     * Set option
-     *
-     * @access public
-     *
-     * @param mixed $option
-     * @param mixed $value
-     *
-     * @return bool
-     */
-    public function setOpt( $option, $value )
-    {
-        return curl_setopt( $this->curl, $option, $value );
+        $this->setopt(CURLOPT_COOKIE, http_build_query($this->_cookies, '', '; '));
     }
 
     /**
@@ -297,56 +325,9 @@ class Curl
      *
      * @return void
      */
-    public function verbose( $on = true )
+    public function verbose($on = true)
     {
-        $this->setopt( CURLOPT_VERBOSE, $on );
-    }
-
-    /**
-     * Close
-     *
-     * @access public
-     * @return void
-     */
-    public function close()
-    {
-        if (is_resource( $this->curl )) {
-            curl_close( $this->curl );
-        }
-    }
-
-    /**
-     * Execute
-     *
-     * @access public
-     * @return int|mixed
-     */
-    public function _exec()
-    {
-        $this->response           = curl_exec( $this->curl );
-        $this->curl_error_code    = curl_errno( $this->curl );
-        $this->curl_error_message = curl_error( $this->curl );
-        $this->curl_error         = ! ( $this->curl_error_code === 0 );
-        $this->http_status_code   = curl_getinfo( $this->curl, CURLINFO_HTTP_CODE );
-        $this->http_error         = in_array( floor( $this->http_status_code / 100 ), array( 4, 5 ) );
-        $this->error              = $this->curl_error || $this->http_error;
-        $this->error_code         = $this->error ? ( $this->curl_error ? $this->curl_error_code : $this->http_status_code ) : 0;
-
-        $this->request_headers  = preg_split( '/\r\n/', curl_getinfo( $this->curl, CURLINFO_HEADER_OUT ), null,
-            PREG_SPLIT_NO_EMPTY );
-        $this->response_headers = '';
-        if ( ! ( strpos( $this->response, "\r\n\r\n" ) === false )) {
-            list( $response_header, $this->response ) = explode( "\r\n\r\n", $this->response, 2 );
-            if ($response_header === 'HTTP/1.1 100 Continue') {
-                list( $response_header, $this->response ) = explode( "\r\n\r\n", $this->response, 2 );
-            }
-            $this->response_headers = preg_split( '/\r\n/', $response_header, null, PREG_SPLIT_NO_EMPTY );
-        }
-
-        $this->http_error_message = $this->error ? ( isset( $this->response_headers['0'] ) ? $this->response_headers['0'] : '' ) : '';
-        $this->error_message      = $this->curl_error ? $this->curl_error_message : $this->http_error_message;
-
-        return $this->error_code;
+        $this->setopt(CURLOPT_VERBOSE, $on);
     }
 
     /**
@@ -358,5 +339,18 @@ class Curl
     public function __destruct()
     {
         $this->close();
+    }
+
+    /**
+     * Close
+     *
+     * @access public
+     * @return void
+     */
+    public function close()
+    {
+        if (is_resource($this->curl)) {
+            curl_close($this->curl);
+        }
     }
 }

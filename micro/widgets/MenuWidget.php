@@ -2,8 +2,8 @@
 
 namespace Micro\widgets;
 
-use \Micro\wrappers\Html;
-use \Micro\mvc\Widget;
+use Micro\mvc\Widget;
+use Micro\wrappers\Html;
 
 /**
  * MenuWidget class file.
@@ -20,9 +20,9 @@ use \Micro\mvc\Widget;
 class MenuWidget extends Widget
 {
     /** @var array $menu multiple menu array */
-    public $menu = [ ];
+    public $menu = [];
     /** @var array $attributes attributes of menu */
-    public $attributes = [ ];
+    public $attributes = [];
 
     /**
      * Constructor for widget
@@ -34,11 +34,11 @@ class MenuWidget extends Widget
      *
      * @result void
      */
-    public function __construct( array $items = [ ], array $attributes = [ ] )
+    public function __construct(array $items = [], array $attributes = [])
     {
         parent::__construct();
 
-        $this->menu       = $items;
+        $this->menu = $items;
         $this->attributes = $attributes;
     }
 
@@ -50,7 +50,7 @@ class MenuWidget extends Widget
      */
     public function run()
     {
-        echo Html::lists( $this->menu, $this->attributes );
+        echo Html::lists($this->menu, $this->attributes);
     }
 
     /**

@@ -2,12 +2,12 @@
 
 namespace App\controllers;
 
-use Micro\Micro;
-use Micro\base\Registry;
-use App\components\View;
-use Micro\web\FormBuilder;
 use App\components\Controller;
+use App\components\View;
 use App\models\LoginFormModel;
+use Micro\base\Registry;
+use Micro\Micro;
+use Micro\web\FormBuilder;
 use Micro\wrappers\Html;
 
 class DefaultController extends Controller
@@ -16,37 +16,37 @@ class DefaultController extends Controller
     {
         return [
             [
-                'class'   => '\Micro\filters\AccessFilter',
-                'actions' => [ 'login', 'logout', 'index', 'error' ],
-                'rules'   => [
+                'class' => '\Micro\filters\AccessFilter',
+                'actions' => ['login', 'logout', 'index', 'error'],
+                'rules' => [
                     [
-                        'allow'   => false,
-                        'actions' => [ 'index' ],
-                        'users'   => [ '@' ],
+                        'allow' => false,
+                        'actions' => ['index'],
+                        'users' => ['@'],
                         'message' => 'Only for not authorized!'
                     ],
                     [
-                        'allow'   => false,
-                        'actions' => [ 'login' ],
-                        'users'   => [ '@' ],
+                        'allow' => false,
+                        'actions' => ['login'],
+                        'users' => ['@'],
                         'message' => 'Not authorized only'
                     ],
                     [
-                        'allow'   => false,
-                        'actions' => [ 'logout' ],
-                        'users'   => [ '?' ],
+                        'allow' => false,
+                        'actions' => ['logout'],
+                        'users' => ['?'],
                         'message' => 'Authorized only'
                     ],
                 ]
             ],
             [
-                'class'   => '\Micro\filters\CsrfFilter',
-                'actions' => [ 'login' ]
+                'class' => '\Micro\filters\CsrfFilter',
+                'actions' => ['login']
             ],
             [
-                'class'   => '\Micro\filters\XssFilter',
-                'actions' => [ 'index', 'login', 'logout' ],
-                'clean'   => '*'
+                'class' => '\Micro\filters\XssFilter',
+                'actions' => ['index', 'login', 'logout'],
+                'clean' => '*'
             ]
         ];
     }
@@ -64,34 +64,34 @@ class DefaultController extends Controller
             'POST'
         );
 
-        if (isset( $_POST['LoginFormModel'] )) {
-            $form->setModelData( $_POST['LoginFormModel'] );
+        if (isset($_POST['LoginFormModel'])) {
+            $form->setModelData($_POST['LoginFormModel']);
             if ($form->validateModel() AND $form->getModel()->logined()) {
-                $this->redirect( '/profile' );
+                $this->redirect('/profile');
             }
         }
 
         $v = new View;
-        $v->addParameter( 'form', $form );
+        $v->addParameter('form', $form);
         return $v;
     }
 
     public function actionError()
     {
         $result = null;
-        if (isset( $_POST['errors'] )) {
+        if (isset($_POST['errors'])) {
             foreach ($_POST['errors'] AS $err) {
-                $result .= Html::heading(3, $err, ['class'=>'text-danger bg-danger']);
+                $result .= Html::heading(3, $err, ['class' => 'text-danger bg-danger']);
             }
         }
-        $v       = new View;
+        $v = new View;
         $v->data = $result ? $result : 'undefined error';
         return $v;
     }
 
     public function actionLogout()
     {
-        Registry::get( 'session' )->destroy();
-        $this->redirect( '/' );
+        Registry::get('session')->destroy();
+        $this->redirect('/');
     }
 }

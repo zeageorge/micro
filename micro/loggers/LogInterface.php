@@ -2,8 +2,8 @@
 
 namespace Micro\loggers;
 
-use Micro\base\Logger;
 use Micro\base\Exception;
+use Micro\base\Logger;
 
 /**
  * Base logger class file.
@@ -34,16 +34,16 @@ abstract class LogInterface
      * @throws Exception
      * @result void
      */
-    public function __construct( array $params = [ ] )
+    public function __construct(array $params = [])
     {
-        $levels = explode( ',', strtr( strtolower( $params['levels'] ), ' ', '' ) );
+        $levels = explode(',', strtr(strtolower($params['levels']), ' ', ''));
         foreach ($levels AS $level) {
-            if (array_search( $level, Logger::$supportedLevels )) {
+            if (array_search($level, Logger::$supportedLevels)) {
                 $this->supportedLevels[] = $level;
             }
         }
-        if ( ! $levels) {
-            throw new Exception( 'Logger ' . get_class( $this ) . ' empty levels.' );
+        if (!$levels) {
+            throw new Exception('Logger ' . get_class($this) . ' empty levels.');
         }
     }
 
@@ -56,9 +56,9 @@ abstract class LogInterface
      *
      * @return bool
      */
-    public function isSupportedLevel( $level )
+    public function isSupportedLevel($level)
     {
-        return ( array_search( $level, $this->supportedLevels ) === false ) ? false : true;
+        return (array_search($level, $this->supportedLevels) === false) ? false : true;
     }
 
     /**
@@ -67,9 +67,9 @@ abstract class LogInterface
      * @access public
      *
      * @param integer $level level number
-     * @param string  $message message to write
+     * @param string $message message to write
      *
      * @return void
      */
-    abstract public function sendMessage( $level, $message );
+    abstract public function sendMessage($level, $message);
 }

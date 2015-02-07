@@ -37,14 +37,43 @@ class FileAcl extends Acl
      *
      * @result void
      */
-    public function __construct( array $params = [ ] )
+    public function __construct(array $params = [])
     {
-        parent::__construct( $params );
+        parent::__construct($params);
 
-        $roles                  = ( isset( $params['roles'] ) ) ? $params['roles'] : [ ];
-        $this->roles            = isset( $roles['roles'] ) ? $roles['roles'] : [ ];
-        $this->perms            = isset( $roles['perms'] ) ? $roles['perms'] : [ ];
-        $this->rolePermsCompare = isset( $roles['role_perms'] ) ? $roles['role_perms'] : [ ];
+        $roles = (isset($params['roles'])) ? $params['roles'] : [];
+        $this->roles = isset($roles['roles']) ? $roles['roles'] : [];
+        $this->perms = isset($roles['perms']) ? $roles['perms'] : [];
+        $this->rolePermsCompare = isset($roles['role_perms']) ? $roles['role_perms'] : [];
+    }
+
+    /**
+     * Check user access to permission
+     *
+     * @access public
+     *
+     * @param integer $userId user id
+     * @param string $permission checked permission
+     * @param array $data not used, added for compatible!
+     *
+     * @return bool
+     */
+    public function check($userId, $permission, array $data = [])
+    {
+        $permissionId = array_search($permission, $this->perms);
+        $assigned = $this->assigned($userId);
+        if (!$assigned) {
+            return false;
+        }
+
+        foreach ($assigned AS $assign) {
+            if ($assign['perm'] AND $assign['perm'] == $permissionId) {
+                return true;
+            } elseif ($assign['role'] AND in_array($permissionId, $this->rolePerms($assign['role']))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -56,12 +85,12 @@ class FileAcl extends Acl
      *
      * @return mixed
      */
-    public function assigned( $userId )
+    public function assigned($userId)
     {
-        $query         = new Query;
+        $query = new Query;
         $query->select = '*';
-        $query->table  = 'acl_user';
-        $query->addWhere( '`user`=' . $userId );
+        $query->table = 'acl_user';
+        $query->addWhere('`user`=' . $userId);
         $query->single = false;
         return $query->run();
     }
@@ -75,37 +104,8 @@ class FileAcl extends Acl
      *
      * @return array
      */
-    protected function rolePerms( $role )
+    protected function rolePerms($role)
     {
         return $this->rolePermsCompare[$role];
-    }
-
-    /**
-     * Check user access to permission
-     *
-     * @access public
-     *
-     * @param integer $userId user id
-     * @param string  $permission checked permission
-     * @param array   $data not used, added for compatible!
-     *
-     * @return bool
-     */
-    public function check( $userId, $permission, array $data = [ ] )
-    {
-        $permissionId = array_search( $permission, $this->perms );
-        $assigned     = $this->assigned( $userId );
-        if ( ! $assigned) {
-            return false;
-        }
-
-        foreach ($assigned AS $assign) {
-            if ($assign['perm'] AND $assign['perm'] == $permissionId) {
-                return true;
-            } elseif ($assign['role'] AND in_array( $permissionId, $this->rolePerms( $assign['role'] ) )) {
-                return true;
-            }
-        }
-        return false;
     }
 }

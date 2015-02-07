@@ -2,9 +2,9 @@
 
 namespace Micro\web;
 
+use Micro\db\Model;
+use Micro\widgets\FormWidget;
 use Micro\wrappers\Html;
-use \Micro\db\Model;
-use \Micro\widgets\FormWidget;
 
 /**
  * Class FormBuilder.
@@ -35,32 +35,32 @@ class FormBuilder
      *
      * @access public
      *
-     * @param array           $config
+     * @param array $config
      * @param \Micro\db\Model $model
-     * @param string          $method method of request
-     * @param string          $type type data
-     * @param string          $action path URL action
-     * @param array           $attr attributes for form
+     * @param string $method method of request
+     * @param string $type type data
+     * @param string $action path URL action
+     * @param array $attr attributes for form
      *
      * @result void
      */
     public function __construct(
-        array $config = [ ],
+        array $config = [],
         $model = null,
         $method = 'GET',
         $type = 'text/plain',
         $action = '',
-        $attr = [ ]
+        $attr = []
     ) {
         $this->config = $config;
-        $this->model  = $model;
-        $this->widget = new FormWidget( [
-            'action'     => $action,
-            'method'     => $method,
-            'type'       => $type,
-            'client'     => $model->getClient(),
+        $this->model = $model;
+        $this->widget = new FormWidget([
+            'action' => $action,
+            'method' => $method,
+            'type' => $type,
+            'client' => $model->getClient(),
             'attributes' => $attr
-        ] );
+        ]);
     }
 
     /**
@@ -74,9 +74,9 @@ class FormBuilder
      *
      * @return void
      */
-    public function setModelData( array $data = [ ] )
+    public function setModelData(array $data = [])
     {
-        $this->model->setModelData( $data );
+        $this->model->setModelData($data);
     }
 
     /**
@@ -149,21 +149,21 @@ class FormBuilder
     public function beginRender()
     {
         $this->form = $this->widget->init();
-        if (isset( $this->config['legend'] )) {
-            echo Html::openTag( 'fieldset' );
-            echo Html::legend( $this->config['legend'] );
+        if (isset($this->config['legend'])) {
+            echo Html::openTag('fieldset');
+            echo Html::legend($this->config['legend']);
         }
-        if (isset( $this->config['description'] )) {
-            echo Html::openTag( 'div',
-                [ 'class' => 'description' ] ), $this->config['description'], Html::closeTag( 'div' );
+        if (isset($this->config['description'])) {
+            echo Html::openTag('div',
+                ['class' => 'description']), $this->config['description'], Html::closeTag('div');
         }
         if ($this->model) {
             if ($errors = $this->getModelErrors()) {
-                echo Html::openTag( 'div', [ 'class' => 'errors' ] );
+                echo Html::openTag('div', ['class' => 'errors']);
                 foreach ($errors AS $error) {
-                    echo Html::openTag( 'div', [ 'class' => 'error' ] ), $error, Html::closeTag( 'div' );
+                    echo Html::openTag('div', ['class' => 'error']), $error, Html::closeTag('div');
                 }
-                echo Html::closeTag( 'div' );
+                echo Html::closeTag('div');
             }
         }
     }
@@ -176,8 +176,8 @@ class FormBuilder
      */
     public function endRender()
     {
-        if (isset( $this->config['legend'] )) {
-            echo Html::closeTag( 'fieldset' );
+        if (isset($this->config['legend'])) {
+            echo Html::closeTag('fieldset');
         }
         $this->widget->run();
     }
@@ -191,21 +191,21 @@ class FormBuilder
      *
      * @return void
      */
-    public function contentRender( $conf = null )
+    public function contentRender($conf = null)
     {
-        if ( ! $conf) {
+        if (!$conf) {
             $conf = $this->config;
         }
         foreach ($conf['elements'] AS $key => $value) {
-            if (is_array( $conf['elements'][$key] )) {
+            if (is_array($conf['elements'][$key])) {
                 if ($value['type'] == 'form') {
-                    $subForm = new FormBuilder( $value, ( isset( $value['model'] ) ) ? $value['model'] : null );
+                    $subForm = new FormBuilder($value, (isset($value['model'])) ? $value['model'] : null);
                     echo $subForm;
                 } elseif ($this->model) {
-                    echo $this->form->$value['type']( $this->model, $key,
-                        ( isset( $value['options'] ) ) ? $value['options'] : [ ] );
+                    echo $this->form->$value['type']($this->model, $key,
+                        (isset($value['options'])) ? $value['options'] : []);
                 } else {
-                    echo Html::$value['type']( $key, $value['value'], $value['options'] );
+                    echo Html::$value['type']($key, $value['value'], $value['options']);
                 }
             } else {
                 echo $conf['elements'][$key];
@@ -213,7 +213,7 @@ class FormBuilder
         }
         foreach ($this->config['buttons'] AS $button) {
             $type = $button['type'] . 'Button';
-            echo Html::$type( $button['label'], ( isset( $button['options'] ) ) ? $button['options'] : [ ] );
+            echo Html::$type($button['label'], (isset($button['options'])) ? $button['options'] : []);
         }
     }
 }

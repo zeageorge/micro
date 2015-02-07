@@ -39,18 +39,19 @@ class PoolDbConnection
      *
      * @throws \Micro\base\Exception
      */
-    public function __construct( array $params = [] ) {
+    public function __construct(array $params = [])
+    {
         if (!isset($params['servers'])) {
             throw new Exception('Servers not defined');
         }
 
         if (!isset($params['master'])) {
-            $params['master'] = $params['servers'][ $params['servers'][0] ];
+            $params['master'] = $params['servers'][$params['servers'][0]];
         }
 
         $this->master = new DbConnection($params['master']); // TODO: Fixme
 
-        foreach ($params['servers'] AS $key=>$server) {
+        foreach ($params['servers'] AS $key => $server) {
             $this->servers[$key] = new DbConnection($server, true);
         }
 
@@ -70,7 +71,7 @@ class PoolDbConnection
      */
     protected function getCurrentServer()
     {
-        foreach ($this->servers AS $key=>$server) {
+        foreach ($this->servers AS $key => $server) {
             if (is_object($server)) {
                 return $key;
             }
@@ -89,7 +90,8 @@ class PoolDbConnection
      * @return mixed
      * @throws \Micro\base\Exception
      */
-    public function __call($name, $args) {
+    public function __call($name, $args)
+    {
         $curr = $this->servers[$this->curr];
 
         switch ($name) {

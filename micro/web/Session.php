@@ -25,9 +25,9 @@ class Session
      *
      * @result void
      */
-    public function __construct( array $config = [ ] )
+    public function __construct(array $config = [])
     {
-        if (isset( $config['autoStart'] ) AND ( $config['autoStart'] == true )) {
+        if (isset($config['autoStart']) AND ($config['autoStart'] == true)) {
             $this->create();
         }
     }
@@ -40,7 +40,7 @@ class Session
      */
     public function create()
     {
-        if ( ! isset( $_SESSION )) {
+        if (!isset($_SESSION)) {
             session_start();
         }
     }
@@ -53,7 +53,7 @@ class Session
      */
     public function destroy()
     {
-        if (isset( $_SESSION )) {
+        if (isset($_SESSION)) {
             session_unset();
             session_destroy();
         }
@@ -68,9 +68,9 @@ class Session
      *
      * @return mixed
      */
-    public function __get( $name )
+    public function __get($name)
     {
-        return ( isset( $_SESSION[$name] ) ) ? $_SESSION[$name] : null;
+        return (isset($_SESSION[$name])) ? $_SESSION[$name] : null;
     }
 
     /**
@@ -79,11 +79,11 @@ class Session
      * @access public
      *
      * @param string $name element name
-     * @param mixed  $value element value
+     * @param mixed $value element value
      *
      * @return void
      */
-    public function __set( $name, $value )
+    public function __set($name, $value)
     {
         $_SESSION[$name] = $value;
     }
@@ -97,9 +97,9 @@ class Session
      *
      * @return boolean
      */
-    public function __isset( $name )
+    public function __isset($name)
     {
-        return isset( $_SESSION[$name] );
+        return isset($_SESSION[$name]);
     }
 
     /**
@@ -111,8 +111,8 @@ class Session
      *
      * @return void
      */
-    public function __unset( $name )
+    public function __unset($name)
     {
-        unset( $_SESSION[$name] );
+        unset($_SESSION[$name]);
     }
 }

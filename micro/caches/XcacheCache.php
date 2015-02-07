@@ -28,10 +28,10 @@ class XcacheCache implements Cache
      * @result void
      * @throws Exception
      */
-    public function __construct( array $config = [ ] )
+    public function __construct(array $config = [])
     {
-        if ( ! $this->check()) {
-            throw new Exception( 'Extension XCache not installed' );
+        if (!$this->check()) {
+            throw new Exception('Extension XCache not installed');
         }
     }
 
@@ -43,37 +43,7 @@ class XcacheCache implements Cache
      */
     public function check()
     {
-        return extension_loaded( 'xcache' ) ? true : false;
-    }
-
-    /**
-     * Get value by name
-     *
-     * @access public
-     *
-     * @param string $name key name
-     *
-     * @return mixed
-     */
-    public function get( $name )
-    {
-        return xcache_isset( $name ) ? xcache_get( $name ) : false;
-    }
-
-    /**
-     * Set value of element
-     *
-     * @access public
-     *
-     * @param string  $name key name
-     * @param mixed   $value value
-     * @param integer $duration time duration
-     *
-     * @return mixed
-     */
-    public function set( $name, $value, $duration = 0 )
-    {
-        return xcache_set( $name, $value, $duration );
+        return extension_loaded('xcache') ? true : false;
     }
 
     /**
@@ -85,9 +55,9 @@ class XcacheCache implements Cache
      *
      * @return mixed
      */
-    public function delete( $name )
+    public function delete($name)
     {
-        return xcache_unset( $name );
+        return xcache_unset($name);
     }
 
     /**
@@ -98,8 +68,8 @@ class XcacheCache implements Cache
      */
     public function clean()
     {
-        for ($i = 0, $cnt = xcache_count( XC_TYPE_VAR ); $i < $cnt; $i ++) {
-            if (xcache_clear_cache( XC_TYPE_VAR, $i ) === false) {
+        for ($i = 0, $cnt = xcache_count(XC_TYPE_VAR); $i < $cnt; $i++) {
+            if (xcache_clear_cache(XC_TYPE_VAR, $i) === false) {
                 return false;
             }
         }
@@ -114,7 +84,7 @@ class XcacheCache implements Cache
      */
     public function info()
     {
-        return xcache_count( XC_TYPE_VAR );
+        return xcache_count(XC_TYPE_VAR);
     }
 
     /**
@@ -126,7 +96,7 @@ class XcacheCache implements Cache
      *
      * @return mixed
      */
-    public function getMeta( $id )
+    public function getMeta($id)
     {
         return false;
     }
@@ -137,14 +107,44 @@ class XcacheCache implements Cache
      * @access public
      *
      * @param string $name key name
-     * @param int    $offset increment value
+     * @param int $offset increment value
      *
      * @return mixed
      */
-    public function increment( $name, $offset = 1 )
+    public function increment($name, $offset = 1)
     {
-        $val = $this->get( $name ) + $offset;
-        return $this->set( $name, $val );
+        $val = $this->get($name) + $offset;
+        return $this->set($name, $val);
+    }
+
+    /**
+     * Get value by name
+     *
+     * @access public
+     *
+     * @param string $name key name
+     *
+     * @return mixed
+     */
+    public function get($name)
+    {
+        return xcache_isset($name) ? xcache_get($name) : false;
+    }
+
+    /**
+     * Set value of element
+     *
+     * @access public
+     *
+     * @param string $name key name
+     * @param mixed $value value
+     * @param integer $duration time duration
+     *
+     * @return mixed
+     */
+    public function set($name, $value, $duration = 0)
+    {
+        return xcache_set($name, $value, $duration);
     }
 
     /**
@@ -153,13 +153,13 @@ class XcacheCache implements Cache
      * @access public
      *
      * @param string $name key name
-     * @param int    $offset decrement value
+     * @param int $offset decrement value
      *
      * @return mixed
      */
-    public function decrement( $name, $offset = 1 )
+    public function decrement($name, $offset = 1)
     {
-        $val = $this->get( $name ) - $offset;
-        return $this->set( $name, $val );
+        $val = $this->get($name) - $offset;
+        return $this->set($name, $val);
     }
 } 

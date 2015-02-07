@@ -17,7 +17,7 @@ namespace Micro\base;
 abstract class Command
 {
     /** @var array $args arguments for command */
-    public $args = [ ];
+    public $args = [];
     /** @var bool $result status of execute command */
     public $result = false;
     /** @var string $message status message of execute command */
@@ -33,7 +33,7 @@ abstract class Command
      *
      * @result void
      */
-    public function __construct( array $args = [ ] )
+    public function __construct(array $args = [])
     {
         $this->args = $args;
     }

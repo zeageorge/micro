@@ -19,7 +19,7 @@ namespace Micro\web;
 class Router
 {
     /** @var array $routes routes for routing */
-    public $routes = [ ];
+    public $routes = [];
 
 
     /**
@@ -29,9 +29,9 @@ class Router
      *
      * @param array $routes
      */
-    public function __construct( array $routes = [ ] )
+    public function __construct(array $routes = [])
     {
-        $this->routes = array_merge( $this->routes, $routes );
+        $this->routes = array_merge($this->routes, $routes);
     }
 
     /**
@@ -44,7 +44,7 @@ class Router
      *
      * @return string
      */
-    public function parse( $uri, $method = 'GET' )
+    public function parse($uri, $method = 'GET')
     {
         // default path
         if ($uri == '/' OR $uri == '') {
@@ -53,12 +53,12 @@ class Router
 
         // scan routes
         foreach ($this->routes AS $condition => $config) {
-            if (is_array( $config ) AND isset( $config['route'] )) {
-                if (isset( $config['verb'] ) AND ( $config['verb'] != $method )) {
+            if (is_array($config) AND isset($config['route'])) {
+                if (isset($config['verb']) AND ($config['verb'] != $method)) {
                     continue;
                 }
                 $replacement = $config['route'];
-            } elseif (is_string( $config )) {
+            } elseif (is_string($config)) {
                 $replacement = $config;
             } else {
                 continue;
@@ -68,7 +68,7 @@ class Router
                 return $replacement;
             }
             // pattern path
-            if ($validated = $this->validatedRule( $uri, $condition, $replacement )) {
+            if ($validated = $this->validatedRule($uri, $condition, $replacement)) {
                 return $validated;
             }
         }
@@ -87,31 +87,31 @@ class Router
      *
      * @return string
      */
-    private function validatedRule( $uri, $pattern, $replacement )
+    private function validatedRule($uri, $pattern, $replacement)
     {
-        $uriBlocks = explode( '/', $uri );
+        $uriBlocks = explode('/', $uri);
         if ($uriBlocks[0] == '') {
-            array_shift( $uriBlocks );
+            array_shift($uriBlocks);
         }
-        $patBlocks = explode( '/', $pattern );
+        $patBlocks = explode('/', $pattern);
         if ($patBlocks[0] == '') {
-            array_shift( $patBlocks );
+            array_shift($patBlocks);
         }
-        $repBlocks = explode( '/', $replacement );
+        $repBlocks = explode('/', $replacement);
         if ($repBlocks[0] == '') {
-            array_shift( $repBlocks );
+            array_shift($repBlocks);
         }
 
-        $attributes = [ ];
-        $result     = null;
+        $attributes = [];
+        $result = null;
 
-        if (count( $uriBlocks ) != count( $patBlocks )) {
+        if (count($uriBlocks) != count($patBlocks)) {
             return false;
         }
-        if ( ! $attributes = $this->parseUri( $uriBlocks, $patBlocks )) {
+        if (!$attributes = $this->parseUri($uriBlocks, $patBlocks)) {
             return false;
         }
-        $result = $this->buildResult( $attributes, $repBlocks );
+        $result = $this->buildResult($attributes, $repBlocks);
         if ($result == null OR $result == false) {
             return false;
         }
@@ -133,17 +133,17 @@ class Router
      *
      * @return array|bool
      */
-    private function parseUri( array $uriBlocks = [ ], array $patBlocks = [ ] )
+    private function parseUri(array $uriBlocks = [], array $patBlocks = [])
     {
-        $attr = [ ];
+        $attr = [];
 
-        $countUriBlocks = count( $uriBlocks );
-        for ($i = 0; $i < $countUriBlocks; $i ++) {
+        $countUriBlocks = count($uriBlocks);
+        for ($i = 0; $i < $countUriBlocks; $i++) {
             if ($patBlocks[$i]{0} == '<') {
-                $cut = strpos( $patBlocks[$i], ':' );
+                $cut = strpos($patBlocks[$i], ':');
 
-                if (preg_match( '/' . substr( $patBlocks[$i], $cut + 1, - 1 ) . '/', $uriBlocks[$i] )) {
-                    $attr[substr( $patBlocks[$i], 1, $cut - 1 )] = $uriBlocks[$i];
+                if (preg_match('/' . substr($patBlocks[$i], $cut + 1, -1) . '/', $uriBlocks[$i])) {
+                    $attr[substr($patBlocks[$i], 1, $cut - 1)] = $uriBlocks[$i];
                 } else {
                     return false;
                 }
@@ -167,18 +167,18 @@ class Router
      *
      * @return bool|null|string
      */
-    private function buildResult( &$attr, $repBlocks )
+    private function buildResult(&$attr, $repBlocks)
     {
         $result = null;
         foreach ($repBlocks AS $value) {
             if ($value{0} != '<') {
                 $result .= '/' . $value;
-                unset( $attr[$value] );
+                unset($attr[$value]);
             } else {
-                $element = substr( $value, 1, - 1 );
-                if (isset( $attr[$element] )) {
+                $element = substr($value, 1, -1);
+                if (isset($attr[$element])) {
                     $result .= '/' . $attr[$element];
-                    unset( $attr[$element] );
+                    unset($attr[$element]);
                 } else {
                     return false;
                 }

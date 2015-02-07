@@ -28,14 +28,14 @@ class RequiredValidator extends Validator
      *
      * @return bool
      */
-    public function validate( $model )
+    public function validate($model)
     {
         foreach ($this->elements AS $element) {
-            if ( ! property_exists( $model, $element )) {
-                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class( $model );
+            if (!property_exists($model, $element)) {
+                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
                 return false;
             }
-            if (empty( $model->$element )) {
+            if (empty($model->$element)) {
                 $this->errors[] = $element . ' error: required element is empty.';
                 return false;
             }
@@ -52,7 +52,7 @@ class RequiredValidator extends Validator
      *
      * @return string
      */
-    public function client( $model )
+    public function client($model)
     {
         return 'if (!this.value) { e.preventDefault(); this.focus(); alert(\'Required element!\'); }';
     }

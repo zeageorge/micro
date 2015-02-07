@@ -20,10 +20,10 @@ use Micro\base\Registry;
  */
 class DbLogger extends LogInterface
 {
-    /** @var \Micro\db\DbConnection $conn connect to DB */
-    protected $conn;
     /** @var string $tableName logger table name */
     public $tableName;
+    /** @var \Micro\db\DbConnection $conn connect to DB */
+    protected $conn;
 
     /**
      * Constructor prepare DB
@@ -34,14 +34,14 @@ class DbLogger extends LogInterface
      *
      * @result void
      */
-    public function __construct( array $params = [ ] )
+    public function __construct(array $params = [])
     {
-        parent::__construct( $params );
+        parent::__construct($params);
         $this->getConnect();
 
-        $this->tableName = ( isset( $params['table'] ) AND ! empty( $params['table'] ) ) ? $params['table'] : 'logs';
+        $this->tableName = (isset($params['table']) AND !empty($params['table'])) ? $params['table'] : 'logs';
 
-        if ( ! $this->conn->tableExists( $this->tableName )) {
+        if (!$this->conn->tableExists($this->tableName)) {
             $this->conn->createTable(
                 $this->tableName,
                 array(
@@ -65,7 +65,7 @@ class DbLogger extends LogInterface
      */
     public function getConnect()
     {
-        $this->conn = Registry::get( 'db' );
+        $this->conn = Registry::get('db');
     }
 
     /**
@@ -74,16 +74,16 @@ class DbLogger extends LogInterface
      * @access public
      *
      * @param integer $level level number
-     * @param string  $message message to write
+     * @param string $message message to write
      *
      * @return void
      */
-    public function sendMessage( $level, $message )
+    public function sendMessage($level, $message)
     {
-        $this->conn->insert( $this->tableName, [
-            'level'       => $level,
-            'message'     => $message,
+        $this->conn->insert($this->tableName, [
+            'level' => $level,
+            'message' => $message,
             'date_create' => $_SERVER['REQUEST_TIME'],
-        ] );
+        ]);
     }
 }

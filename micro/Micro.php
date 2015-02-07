@@ -2,9 +2,9 @@
 
 namespace Micro;
 
+use Micro\base\Autoload;
 use Micro\base\Console;
 use Micro\base\Exception;
-use Micro\base\Autoload;
 use Micro\base\Registry;
 
 /**
@@ -55,10 +55,10 @@ final class Micro
      * @return Micro this
      * @static
      */
-    public static function getInstance( array $config = [ ] )
+    public static function getInstance(array $config = [])
     {
         if (self::$_app == null) {
-            self::$_app = new Micro( $config );
+            self::$_app = new Micro($config);
         }
 
         return self::$_app;
@@ -77,18 +77,18 @@ final class Micro
      *
      * @result void
      */
-    private function __construct( array $config = [ ] )
+    private function __construct(array $config = [])
     {
         $this->config = $config;
 
-        Autoload::setAlias( 'Micro', $config['MicroDir'] );
-        Autoload::setAlias( 'App', $config['AppDir'] );
+        Autoload::setAlias('Micro', $config['MicroDir']);
+        Autoload::setAlias('App', $config['AppDir']);
 
-        if (isset( $config['VendorDir'] )) {
-            Autoload::setAlias( 'Vendor', $config['VendorDir'] );
+        if (isset($config['VendorDir'])) {
+            Autoload::setAlias('Vendor', $config['VendorDir']);
         }
 
-        spl_autoload_register( [ '\Micro\base\Autoload', 'loader' ] );
+        spl_autoload_register(['\Micro\base\Autoload', 'loader']);
     }
 
     /**
@@ -107,25 +107,25 @@ final class Micro
             die('Not allowed from web');
         }
 
-        $path   = $this->prepareController();
-        $action = Registry::get( 'request' )->getAction();
+        $path = $this->prepareController();
+        $action = Registry::get('request')->getAction();
 
-        if ( ! class_exists( $path )) {
-            if (isset( $this->config['errorController'] ) AND $this->config['errorController']) {
-                if ( ! Autoload::loader( $this->config['errorController'] )) {
-                    throw new Exception( 'Error controller not valid' );
+        if (!class_exists($path)) {
+            if (isset($this->config['errorController']) AND $this->config['errorController']) {
+                if (!Autoload::loader($this->config['errorController'])) {
+                    throw new Exception('Error controller not valid');
                 }
 
-                $path   = $this->config['errorController'];
-                $action = isset( $config['errorAction'] ) ? $config['errorAction'] : 'error';
+                $path = $this->config['errorController'];
+                $action = isset($config['errorAction']) ? $config['errorAction'] : 'error';
             } else {
-                throw new Exception( 'ErrorController not defined or empty' );
+                throw new Exception('ErrorController not defined or empty');
             }
         }
 
         /** @var \Micro\mvc\Controller $mvc ModelViewController */
         $mvc = new $path;
-        $mvc->action( $action );
+        $mvc->action($action);
     }
 
     /**
@@ -169,9 +169,9 @@ final class Micro
     private function prepareController()
     {
         /** @var \Micro\web\Request $request current request */
-        $request = Registry::get( 'request' );
-        if ( ! $request) {
-            throw new Exception( 'Component request not loaded.' );
+        $request = Registry::get('request');
+        if (!$request) {
+            throw new Exception('Component request not loaded.');
         }
 
         $path = 'App';

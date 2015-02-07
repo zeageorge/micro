@@ -27,6 +27,23 @@ abstract class Identity
     public $error;
 
     /**
+     * Initialize identity element
+     *
+     * @access public
+     *
+     * @param string $username
+     * @param string $password
+     *
+     * @result void
+     */
+    public function __construct($username, $password)
+    {
+        $this->username = $username;
+        $this->password = $password;
+        $this->error = null;
+    }
+
+    /**
      * Authenticate
      *
      * @access public
@@ -37,36 +54,19 @@ abstract class Identity
     abstract public function authenticate();
 
     /**
-     * Initialize identity element
-     *
-     * @access public
-     *
-     * @param string $username
-     * @param string $password
-     *
-     * @result void
-     */
-    public function __construct( $username, $password )
-    {
-        $this->username = $username;
-        $this->password = $password;
-        $this->error    = null;
-    }
-
-    /**
      * Add data into session
      *
      * @access public
      * @global       Registry
      *
      * @param string $name session parameter name
-     * @param mixed  $value session parameter value
+     * @param mixed $value session parameter value
      *
      * @return mixed
      */
-    public function addSession( $name, $value )
+    public function addSession($name, $value)
     {
-        return Registry::get( 'session' )->$name = $value;
+        return Registry::get('session')->$name = $value;
     }
 
     /**
@@ -76,12 +76,12 @@ abstract class Identity
      * @global       Registry
      *
      * @param string $name cookie name
-     * @param mixed  $value data value
-     * @param int    $expire life time
+     * @param mixed $value data value
+     * @param int $expire life time
      * @param string $path path access cookie
      * @param string $domain domain access cookie
-     * @param bool   $secure use SSL?
-     * @param bool   $httpOnly disable on JS?
+     * @param bool $secure use SSL?
+     * @param bool $httpOnly disable on JS?
      *
      * @return mixed
      */
@@ -94,6 +94,6 @@ abstract class Identity
         $secure = false,
         $httpOnly = true
     ) {
-        return Registry::get( 'cookie' )->set( $name, $value, $expire, $path, $domain, $secure, $httpOnly );
+        return Registry::get('cookie')->set($name, $value, $expire, $path, $domain, $secure, $httpOnly);
     }
 }

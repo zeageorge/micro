@@ -20,31 +20,10 @@ class MongoDbConnection
 {
     /** @var \MongoClient $conn Connection to MongoDB */
     public $conn;
+    /** @var array $collection lazy load collections */
+    protected $collections = [];
     /** @var string $dbName Database name */
     private $dbName;
-    /** @var array $collection lazy load collections */
-    protected $collections = [ ];
-
-    /**
-     * Get collection
-     *
-     * @access protected
-     *
-     * @param string  $collectionName collection name
-     * @param boolean $force is a force load
-     *
-     * @return \MongoCollection
-     */
-    protected function getCollection( $collectionName, $force = false )
-    {
-        if ($force) {
-            return $this->conn->selectCollection( $this->dbName, $collectionName );
-        }
-        if ( ! isset( $this->collections[$collectionName] )) {
-            $this->collections[$collectionName] = $this->conn->selectCollection( $this->dbName, $collectionName );
-        }
-        return $this->collections[$collectionName];
-    }
 
     /**
      * Construct MongoDB
@@ -56,22 +35,22 @@ class MongoDbConnection
      * @result void
      * @throws Exception
      */
-    public function __construct( array $config = [ ] )
+    public function __construct(array $config = [])
     {
-        if (isset( $config['dbname'] )) {
+        if (isset($config['dbname'])) {
             $this->dbName = $config['dbname'];
         } else {
-            throw new Exception( 'MongoDB database name not defined!' );
+            throw new Exception('MongoDB database name not defined!');
         }
 
-        if (isset( $config['connectionString'] )) {
-            $this->conn = new \MongoClient( $config['connectionString'], $config['options'] );
+        if (isset($config['connectionString'])) {
+            $this->conn = new \MongoClient($config['connectionString'], $config['options']);
         } else {
             $this->conn = new \MongoClient;
         }
 
-        if ( ! $this->conn instanceof \MongoClient) {
-            throw new Exception( 'MongoDB error connect to database' );
+        if (!$this->conn instanceof \MongoClient) {
+            throw new Exception('MongoDB error connect to database');
         }
     }
 
@@ -92,14 +71,35 @@ class MongoDbConnection
      * @access public
      *
      * @param string $collectionName collection name
-     * @param array  $params params
-     * @param array  $options options
+     * @param array $params params
+     * @param array $options options
      *
      * @return array
      */
-    public function aggregate( $collectionName, array $params = [ ], array $options = [ ] )
+    public function aggregate($collectionName, array $params = [], array $options = [])
     {
-        return $this->getCollection( $collectionName )->aggregate( $params, $options );
+        return $this->getCollection($collectionName)->aggregate($params, $options);
+    }
+
+    /**
+     * Get collection
+     *
+     * @access protected
+     *
+     * @param string $collectionName collection name
+     * @param boolean $force is a force load
+     *
+     * @return \MongoCollection
+     */
+    protected function getCollection($collectionName, $force = false)
+    {
+        if ($force) {
+            return $this->conn->selectCollection($this->dbName, $collectionName);
+        }
+        if (!isset($this->collections[$collectionName])) {
+            $this->collections[$collectionName] = $this->conn->selectCollection($this->dbName, $collectionName);
+        }
+        return $this->collections[$collectionName];
     }
 
     /**
@@ -108,22 +108,22 @@ class MongoDbConnection
      * @access public
      *
      * @param string $collectionName collection name
-     * @param array  $keys indexes
-     * @param array  $options options
+     * @param array $keys indexes
+     * @param array $options options
      *
      * @return bool
      */
-    public function addIndexes( $collectionName, array $keys = [ ], array $options = [ ] )
+    public function addIndexes($collectionName, array $keys = [], array $options = [])
     {
         if ($keys) {
             foreach ($keys as $col => $val) {
-                if ($val == - 1 || $val === false || strtolower( $val ) == 'desc') {
-                    $keys[$col] = - 1;
+                if ($val == -1 || $val === false || strtolower($val) == 'desc') {
+                    $keys[$col] = -1;
                 } else {
                     $keys[$col] = 1;
                 }
             }
-            return $this->getCollection( $collectionName )->ensureIndex( $keys, $options );
+            return $this->getCollection($collectionName)->ensureIndex($keys, $options);
         }
         return false;
     }
@@ -137,9 +137,9 @@ class MongoDbConnection
      *
      * @return array
      */
-    public function listIndexes( $collectionName )
+    public function listIndexes($collectionName)
     {
-        return $this->getCollection( $collectionName )->getIndexInfo();
+        return $this->getCollection($collectionName)->getIndexInfo();
     }
 
     /**
@@ -148,16 +148,16 @@ class MongoDbConnection
      * @access public
      *
      * @param string $collectionName collection name
-     * @param array  $keys indexes
+     * @param array $keys indexes
      *
      * @return array
      */
-    public function removeIndexes( $collectionName, array $keys = [ ] )
+    public function removeIndexes($collectionName, array $keys = [])
     {
         if ($keys) {
-            return $this->getCollection( $collectionName )->deleteIndex( $keys );
+            return $this->getCollection($collectionName)->deleteIndex($keys);
         }
-        return $this->getCollection( $collectionName )->deleteIndexes();
+        return $this->getCollection($collectionName)->deleteIndexes();
     }
 
     /**
@@ -170,9 +170,9 @@ class MongoDbConnection
      *
      * @return array
      */
-    public function createReference( $collectionName, $idObject )
+    public function createReference($collectionName, $idObject)
     {
-        return \MongoDBRef::create( $collectionName, $idObject, $this->dbName );
+        return \MongoDBRef::create($collectionName, $idObject, $this->dbName);
     }
 
     /**
@@ -181,13 +181,13 @@ class MongoDbConnection
      * @access public
      *
      * @param \MongoDB $dbObject document object
-     * @param array    $referenceArray reference array
+     * @param array $referenceArray reference array
      *
      * @return array|null
      */
-    public function getReference( \MongoDB $dbObject, array $referenceArray )
+    public function getReference(\MongoDB $dbObject, array $referenceArray)
     {
-        return \MongoDBRef::get( $dbObject, $referenceArray );
+        return \MongoDBRef::get($dbObject, $referenceArray);
     }
 
     /**
@@ -196,16 +196,16 @@ class MongoDbConnection
      * @access public
      *
      * @param string $collectionName collection name
-     * @param array  $params params
-     * @param array  $fields fields
-     * @param bool   $single return single document?
+     * @param array $params params
+     * @param array $fields fields
+     * @param bool $single return single document?
      *
      * @return array|\MongoCursor|null
      */
-    public function rawQuery( $collectionName, array $params = [ ], array $fields = [ ], $single = false )
+    public function rawQuery($collectionName, array $params = [], array $fields = [], $single = false)
     {
-        $collect = $this->getCollection( $collectionName );
-        return $single ? $collect->findOne( $params, $fields ) : $collect->find( $params, $fields );
+        $collect = $this->getCollection($collectionName);
+        return $single ? $collect->findOne($params, $fields) : $collect->find($params, $fields);
     }
 
     /**
@@ -228,13 +228,13 @@ class MongoDbConnection
      *
      * @return array
      */
-    public function deleteTable( $collectionName )
+    public function deleteTable($collectionName)
     {
-        if (isset( $this->collections[$collectionName] )) {
-            unset( $this->collections[$collectionName] );
+        if (isset($this->collections[$collectionName])) {
+            unset($this->collections[$collectionName]);
         }
 
-        return $this->getCollection( $collectionName )->drop();
+        return $this->getCollection($collectionName)->drop();
     }
 
     /**
@@ -246,7 +246,7 @@ class MongoDbConnection
      *
      * @return void
      */
-    public function switchDatabase( $dbName )
+    public function switchDatabase($dbName)
     {
         $this->dbName = $dbName;
     }
@@ -257,13 +257,13 @@ class MongoDbConnection
      * @access public
      *
      * @param string $collectionName collection name
-     * @param array  $document
+     * @param array $document
      *
      * @return array|bool
      */
-    public function insert( $collectionName, array $document = [ ] )
+    public function insert($collectionName, array $document = [])
     {
-        return $this->getCollection( $collectionName )->insert( $document );
+        return $this->getCollection($collectionName)->insert($document);
     }
 
     /**
@@ -272,34 +272,34 @@ class MongoDbConnection
      * @access public
      *
      * @param string $collectionName collection name
-     * @param array  $conditions
-     * @param array  $newDocument
-     * @param array  $options
+     * @param array $conditions
+     * @param array $newDocument
+     * @param array $options
      *
      * @return bool
      */
-    public function update( $collectionName, array $conditions = [ ], array $newDocument = [ ], array $options = [ ] )
+    public function update($collectionName, array $conditions = [], array $newDocument = [], array $options = [])
     {
-        return $this->getCollection( $collectionName )->update( $conditions, $newDocument, $options );
+        return $this->getCollection($collectionName)->update($conditions, $newDocument, $options);
     }
 
     /**
      * Delete documents from collection
      * @access public
      *
-     * @param string            $collectionName collection name
+     * @param string $collectionName collection name
      * @param string|array|null $keys key or keys to dilete
      *
      * @return mixed
      */
-    public function delete( $collectionName, $keys = null )
+    public function delete($collectionName, $keys = null)
     {
-        $collection = $this->getCollection( $collectionName );
+        $collection = $this->getCollection($collectionName);
 
         if ($keys == null) {
             return $collection->deleteIndexes();
         } else {
-            return $collection->deleteIndex( $keys );
+            return $collection->deleteIndex($keys);
         }
     }
 }

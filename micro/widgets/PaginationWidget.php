@@ -28,11 +28,11 @@ class PaginationWidget extends Widget
     /** @var string $url url for pagination links */
     public $url = '';
     /** @var array $attributes attributes for list */
-    public $attributes = [ ];
+    public $attributes = [];
     /** @var array $attributesElement attributes for list element */
-    public $attributesElement = [ ];
+    public $attributesElement = [];
     /** @var array $attributesLink attributes for links */
-    public $attributesLink = [ ];
+    public $attributesLink = [];
 
     /** @var int $totalPages count pages */
     private $totalPages = 0;
@@ -47,7 +47,7 @@ class PaginationWidget extends Widget
     public function init()
     {
         if ($this->countRows < 1) {
-            $this->totalPages  = 0;
+            $this->totalPages = 0;
             $this->currentPage = 0;
             return;
         }
@@ -62,8 +62,8 @@ class PaginationWidget extends Widget
             $this->totalPages = 1;
         }
 
-        if ($a = ( $this->countRows % $this->limit )) {
-            $this->totalPages ++;
+        if ($a = ($this->countRows % $this->limit)) {
+            $this->totalPages++;
         }
 
         if ($this->currentPage < 0) {
@@ -83,22 +83,22 @@ class PaginationWidget extends Widget
      */
     public function run()
     {
-        $items = [ ];
+        $items = [];
         if ($this->totalPages > 0) {
-            for ($i = 0; ( $i + 1 ) <= $this->totalPages; $i ++) {
+            for ($i = 0; ($i + 1) <= $this->totalPages; $i++) {
                 if ($i != $this->currentPage) {
                     $items[] = [
-                        'text' => Html::href( $i + 1, $this->url . $i, $this->attributesLink ),
+                        'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
                         'attr' => $this->attributesElement
                     ];
                 } else {
                     $items[] = [
-                        'text' => Html::href( $i + 1, $this->url . $i, $this->attributesLink ),
-                        'attr' => $this->attributesElement + [ 'class' => 'active' ]
+                        'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
+                        'attr' => $this->attributesElement + ['class' => 'active']
                     ];
                 }
             }
         }
-        echo Html::lists( $items, $this->attributes );
+        echo Html::lists($items, $this->attributes);
     }
 }

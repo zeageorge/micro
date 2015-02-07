@@ -25,21 +25,21 @@ class Relations
      * @access public
      *
      * @param        $name rel name
-     * @param bool   $isMany One or many results
+     * @param bool $isMany One or many results
      * @param string $model Model class for result
-     * @param array  $on relation types
+     * @param array $on relation types
      * @param string $where options
-     * @param array  $params arguments
+     * @param array $params arguments
      *
      * @return void
      */
-    public function add( $name, $model, $isMany = false, array $on = [ ], $where = '', array $params = [ ] )
+    public function add($name, $model, $isMany = false, array $on = [], $where = '', array $params = [])
     {
         $this->data[$name] = [
             'IsMany' => $isMany,
-            'Model'  => $model,
-            'On'     => $on,
-            'Where'  => $where,
+            'Model' => $model,
+            'On' => $on,
+            'Where' => $where,
             'Params' => $params
         ];
     }
@@ -53,8 +53,8 @@ class Relations
      *
      * @return array
      */
-    public function get( $name )
+    public function get($name)
     {
-        return isset( $this->data[$name] ) ? $this->data[$name] : false;
+        return isset($this->data[$name]) ? $this->data[$name] : false;
     }
 } 

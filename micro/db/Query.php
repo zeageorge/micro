@@ -36,11 +36,11 @@ class Query
     /** @var string $having condition for result rows */
     public $having = '';
     /** @var integer $limit count result rows */
-    public $limit = - 1;
+    public $limit = -1;
     /** @var integer $offset offset on strart result rows */
-    public $ofset = - 1;
+    public $ofset = -1;
     /** @var array $params masks for where */
-    public $params = [ ];
+    public $params = [];
     /** @var string $table table for query */
     public $table = '';
     /** @var string $objectName class name form fetching */
@@ -68,7 +68,25 @@ class Query
      */
     public function getDbConnection()
     {
-        $this->conn = Registry::get( 'db' );
+        $this->conn = Registry::get('db');
+    }
+
+    /**
+     * Add search where
+     *
+     * @access public
+     *
+     * @param string $column column name
+     * @param string $keyword keyword for search
+     * @param boolean $escaped escaping keyword?
+     * @param string $operand before added element
+     *
+     * @return void
+     */
+    public function addSearch($column, $keyword, $escaped = false, $operand = 'AND')
+    {
+        $keyword = ($escaped) ? $keyword : '"%' . $keyword . '%"';
+        $this->addWhere($column . ' LIKE ' . $keyword, $operand);
     }
 
     /**
@@ -81,27 +99,9 @@ class Query
      *
      * @return void
      */
-    public function addWhere( $sql, $operand = 'AND' )
+    public function addWhere($sql, $operand = 'AND')
     {
-        $this->where .= ( $this->where ) ? ' ' . $operand . ' (' . $sql . ')' : ' ' . $this->where . ' (' . $sql . ')';
-    }
-
-    /**
-     * Add search where
-     *
-     * @access public
-     *
-     * @param string  $column column name
-     * @param string  $keyword keyword for search
-     * @param boolean $escaped escaping keyword?
-     * @param string  $operand before added element
-     *
-     * @return void
-     */
-    public function addSearch( $column, $keyword, $escaped = false, $operand = 'AND' )
-    {
-        $keyword = ( $escaped ) ? $keyword : '"%' . $keyword . '%"';
-        $this->addWhere( $column . ' LIKE ' . $keyword, $operand );
+        $this->where .= ($this->where) ? ' ' . $operand . ' (' . $sql . ')' : ' ' . $this->where . ' (' . $sql . ')';
     }
 
     /**
@@ -109,17 +109,17 @@ class Query
      *
      * @access public
      *
-     * @param string  $column column name
-     * @param string  $keyword keyword for search
+     * @param string $column column name
+     * @param string $keyword keyword for search
      * @param boolean $escaped escaping keyword?
-     * @param string  $operand before added element
+     * @param string $operand before added element
      *
      * @return void
      */
-    public function addNotSearch( $column, $keyword, $escaped, $operand = 'AND' )
+    public function addNotSearch($column, $keyword, $escaped, $operand = 'AND')
     {
-        $keyword = ( $escaped ) ? $keyword : '"%' . $keyword . '%"';
-        $this->addWhere( $column . ' NOT LIKE ' . $keyword, $operand );
+        $keyword = ($escaped) ? $keyword : '"%' . $keyword . '%"';
+        $this->addWhere($column . ' NOT LIKE ' . $keyword, $operand);
     }
 
     /**
@@ -127,19 +127,19 @@ class Query
      *
      * @access public
      *
-     * @param string       $column column name
+     * @param string $column column name
      * @param array|string $params array values or string
-     * @param string       $operand before added element
+     * @param string $operand before added element
      *
      * @return void
      */
-    public function addIn( $column, $params, $operand = 'AND' )
+    public function addIn($column, $params, $operand = 'AND')
     {
-        if (is_array( $params )) {
-            $params = "'" . implode( "','", $params ) . "'";
+        if (is_array($params)) {
+            $params = "'" . implode("','", $params) . "'";
         }
 
-        $this->addWhere( $column . ' IN (' . $params . ')', $operand );
+        $this->addWhere($column . ' IN (' . $params . ')', $operand);
     }
 
     /**
@@ -147,19 +147,19 @@ class Query
      *
      * @access public
      *
-     * @param string       $column column name
+     * @param string $column column name
      * @param array|string $params array values or string
-     * @param string       $operand before added element
+     * @param string $operand before added element
      *
      * @return void
      */
-    public function addNotIn( $column, $params, $operand = 'AND' )
+    public function addNotIn($column, $params, $operand = 'AND')
     {
-        if (is_array( $params )) {
-            $params = "'" . implode( "','", $params ) . "'";
+        if (is_array($params)) {
+            $params = "'" . implode("','", $params) . "'";
         }
 
-        $this->addWhere( $column . ' NOT IN (' . $params . ')', $operand );
+        $this->addWhere($column . ' NOT IN (' . $params . ')', $operand);
     }
 
     /**
@@ -168,15 +168,15 @@ class Query
      * @access public
      *
      * @param string $column column name
-     * @param mixed  $start start value
-     * @param mixed  $stop stop value
+     * @param mixed $start start value
+     * @param mixed $stop stop value
      * @param string $operand before added element
      *
      * @return void
      */
-    public function addBetween( $column, $start, $stop, $operand = 'AND' )
+    public function addBetween($column, $start, $stop, $operand = 'AND')
     {
-        $this->addWhere( $column . ' BETWEEN ' . $start . ' AND ' . $stop, $operand );
+        $this->addWhere($column . ' BETWEEN ' . $start . ' AND ' . $stop, $operand);
     }
 
     /**
@@ -185,15 +185,15 @@ class Query
      * @access public
      *
      * @param string $column column name
-     * @param mixed  $start start value
-     * @param mixed  $stop stop value
+     * @param mixed $start start value
+     * @param mixed $stop stop value
      * @param string $operand before added element
      *
      * @return void
      */
-    public function addNotBetween( $column, $start, $stop, $operand = 'AND' )
+    public function addNotBetween($column, $start, $stop, $operand = 'AND')
     {
-        $this->addWhere( $column . ' BETWEEN ' . $start . ' AND ' . $stop, $operand );
+        $this->addWhere($column . ' BETWEEN ' . $start . ' AND ' . $stop, $operand);
     }
 
     /**
@@ -207,42 +207,9 @@ class Query
      *
      * @return void
      */
-    public function addJoin( $table, $condition, $type = 'LEFT' )
+    public function addJoin($table, $condition, $type = 'LEFT')
     {
         $this->join .= ' ' . $type . ' JOIN ' . $table . ' ON ' . $condition;
-    }
-
-    /**
-     * Generate query string
-     *
-     * @access public
-     * @return string
-     */
-    public function getQuery()
-    {
-        $query = 'SELECT ';
-        $query .= ( $this->distinct ) ? 'DISTINCT ' : '';
-        $query .= $this->select . ' FROM ' . $this->table;
-        $query .= ( $this->join ) ? ' ' . $this->join : '';
-        $query .= ( $this->where ) ? ' WHERE ' . $this->where : '';
-        $query .= ( $this->group ) ? ' GROUP BY ' . $this->group : '';
-        $query .= ( $this->having ) ? ' HAVING ' . $this->having : '';
-        $query .= ( $this->order ) ? ' ORDER BY ' . $this->order : '';
-
-        if ($this->limit != - 1 OR $this->ofset != - 1) {
-            $query .= ' LIMIT ';
-
-            if ($this->ofset != - 1) {
-                $query .= $this->ofset;
-            }
-            if ($this->limit != - 1 AND $this->ofset != - 1) {
-                $query .= ',';
-            }
-            if ($this->limit != - 1) {
-                $query .= $this->limit;
-            }
-        }
-        return $query;
     }
 
     /**
@@ -254,13 +221,46 @@ class Query
      *
      * @return mixed
      */
-    public function run( $as = \PDO::FETCH_CLASS )
+    public function run($as = \PDO::FETCH_CLASS)
     {
-        $res = $this->conn->rawQuery( $this->getQuery(), $this->params, $as, ucfirst( $this->objectName ) );
+        $res = $this->conn->rawQuery($this->getQuery(), $this->params, $as, ucfirst($this->objectName));
         if ($this->single) {
             return $res[0];
         } else {
             return $res;
         }
+    }
+
+    /**
+     * Generate query string
+     *
+     * @access public
+     * @return string
+     */
+    public function getQuery()
+    {
+        $query = 'SELECT ';
+        $query .= ($this->distinct) ? 'DISTINCT ' : '';
+        $query .= $this->select . ' FROM ' . $this->table;
+        $query .= ($this->join) ? ' ' . $this->join : '';
+        $query .= ($this->where) ? ' WHERE ' . $this->where : '';
+        $query .= ($this->group) ? ' GROUP BY ' . $this->group : '';
+        $query .= ($this->having) ? ' HAVING ' . $this->having : '';
+        $query .= ($this->order) ? ' ORDER BY ' . $this->order : '';
+
+        if ($this->limit != -1 OR $this->ofset != -1) {
+            $query .= ' LIMIT ';
+
+            if ($this->ofset != -1) {
+                $query .= $this->ofset;
+            }
+            if ($this->limit != -1 AND $this->ofset != -1) {
+                $query .= ',';
+            }
+            if ($this->limit != -1) {
+                $query .= $this->limit;
+            }
+        }
+        return $query;
     }
 }

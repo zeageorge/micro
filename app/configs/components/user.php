@@ -3,7 +3,7 @@
 // User
 return [
     'user' => [
-        'class'   => '\Micro\web\User',
+        'class' => '\Micro\web\User',
         'depends' => 'session'
     ]
 ];

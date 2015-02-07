@@ -30,14 +30,14 @@ class DbRbac extends Rbac
     {
         parent::__construct();
 
-        if ( ! $this->conn->tableExists( '`rbac_role`' )) {
-            $this->conn->createTable( '`rbac_role`', [
+        if (!$this->conn->tableExists('`rbac_role`')) {
+            $this->conn->createTable('`rbac_role`', [
                 '`name` varchar(127) NOT NULL',
                 '`type` int(11) NOT NULL DEFAULT \'0\'',
                 '`based` varchar(127)',
                 '`data` text',
                 'UNIQUE KEY `name` (`name`)'
-            ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8' );
+            ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8');
         }
     }
 
@@ -47,36 +47,18 @@ class DbRbac extends Rbac
      * @access public
      *
      * @param integer $userId user ID
-     * @param string  $name assign element name
+     * @param string $name assign element name
      *
      * @return bool
      */
-    public function assign( $userId, $name )
+    public function assign($userId, $name)
     {
-        if ($this->conn->exists( 'rbac_role', [ 'name' => $name ] ) AND $this->conn->exists( 'user',
-                [ 'id' => $userId ] )
+        if ($this->conn->exists('rbac_role', ['name' => $name]) AND $this->conn->exists('user',
+                ['id' => $userId])
         ) {
-            return $this->conn->insert( 'rbac_user', [ 'role' => $name, 'user' => $userId ] );
+            return $this->conn->insert('rbac_user', ['role' => $name, 'user' => $userId]);
         }
         return false;
-    }
-
-    /**
-     * Get raw roles
-     *
-     * @access public
-     *
-     * @param int $pdo PHPDataObject fetch key
-     *
-     * @return mixed
-     */
-    public function rawRoles( $pdo = \PDO::FETCH_ASSOC )
-    {
-        $query         = new Query;
-        $query->table  = 'rbac_role';
-        $query->order  = '`type` ASC';
-        $query->single = false;
-        return $query->run( $pdo );
     }
 
     /**
@@ -85,18 +67,18 @@ class DbRbac extends Rbac
      * @access public
      *
      * @param integer $userId user id
-     * @param string  $action checked action
-     * @param array   $data action params
+     * @param string $action checked action
+     * @param array $data action params
      *
      * @return boolean
      */
-    public function check( $userId, $action, array $data = [ ] )
+    public function check($userId, $action, array $data = [])
     {
-        if ( ! $this->conn->exists( 'rbac_role', [ 'name' => $action ] )) {
+        if (!$this->conn->exists('rbac_role', ['name' => $action])) {
             return false;
         }
 
-        return parent::check( $userId, $action, $data );
+        return parent::check($userId, $action, $data);
     }
 
     /**
@@ -105,19 +87,19 @@ class DbRbac extends Rbac
      * @access public
      *
      * @param string $name element name
-     * @param int    $type element type
+     * @param int $type element type
      * @param string $based based element name
      * @param string $data element params
      *
      * @return bool
      */
-    public function create( $name, $type = self::TYPE_ROLE, $based = null, $data = null )
+    public function create($name, $type = self::TYPE_ROLE, $based = null, $data = null)
     {
-        if ($this->conn->exists( 'rbac_role', [ 'name' => $name ] )) {
+        if ($this->conn->exists('rbac_role', ['name' => $name])) {
             return false;
         }
 
-        if ( ! empty( $based ) AND ! $this->conn->exists( 'rbac_role', [ 'name' => $based ] )) {
+        if (!empty($based) AND !$this->conn->exists('rbac_role', ['name' => $based])) {
             return false;
         }
 
@@ -131,8 +113,8 @@ class DbRbac extends Rbac
                 break;
         }
 
-        return $this->conn->insert( 'rbac_role',
-            [ 'name' => $name, 'type' => $type, 'based' => $based, 'data' => $data ] );
+        return $this->conn->insert('rbac_role',
+            ['name' => $name, 'type' => $type, 'based' => $based, 'data' => $data]);
     }
 
     /**
@@ -144,12 +126,30 @@ class DbRbac extends Rbac
      *
      * @result void
      */
-    public function delete( $name )
+    public function delete($name)
     {
-        $tree = $this->searchRoleRecursive( $this->tree( $this->rawRoles() ), $name );
+        $tree = $this->searchRoleRecursive($this->tree($this->rawRoles()), $name);
         if ($tree) {
-            $this->recursiveDelete( $tree, $name );
+            $this->recursiveDelete($tree, $name);
         }
+    }
+
+    /**
+     * Get raw roles
+     *
+     * @access public
+     *
+     * @param int $pdo PHPDataObject fetch key
+     *
+     * @return mixed
+     */
+    public function rawRoles($pdo = \PDO::FETCH_ASSOC)
+    {
+        $query = new Query;
+        $query->table = 'rbac_role';
+        $query->order = '`type` ASC';
+        $query->single = false;
+        return $query->run($pdo);
     }
 
     /**
@@ -161,16 +161,16 @@ class DbRbac extends Rbac
      *
      * @return void
      */
-    public function recursiveDelete( &$tree )
+    public function recursiveDelete(&$tree)
     {
         foreach ($tree AS $key => $element) {
-            $this->conn->delete( 'rbac_user', 'role=:name', [ 'name' => $element['name'] ] );
-            $this->conn->delete( 'rbac_role', 'name=:name', [ 'name' => $element['name'] ] );
+            $this->conn->delete('rbac_user', 'role=:name', ['name' => $element['name']]);
+            $this->conn->delete('rbac_role', 'name=:name', ['name' => $element['name']]);
 
-            if (isset( $tree['childs'] )) {
-                $this->recursiveDelete( $element['childs'] );
+            if (isset($tree['childs'])) {
+                $this->recursiveDelete($element['childs']);
             }
-            unset( $tree[$key] );
+            unset($tree[$key]);
         }
     }
 }

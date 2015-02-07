@@ -28,12 +28,12 @@ class CompareValidator extends Validator
      *
      * @result void
      */
-    public function __construct( array $rule = [ ] )
+    public function __construct(array $rule = [])
     {
         $this->params['attribute'] = null;
-        $this->params['value']     = null;
+        $this->params['value'] = null;
 
-        parent::__construct( $rule );
+        parent::__construct($rule);
     }
 
     /**
@@ -45,22 +45,22 @@ class CompareValidator extends Validator
      *
      * @return bool
      */
-    public function validate( $model )
+    public function validate($model)
     {
-        if ( ! $this->params['attribute'] AND ! $this->params['value']) {
+        if (!$this->params['attribute'] AND !$this->params['value']) {
             return false;
         }
 
         foreach ($this->elements AS $element) {
-            if ( ! property_exists( $model, $element )) {
-                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class( $model );
+            if (!property_exists($model, $element)) {
+                $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
                 return false;
             }
             $elementValue = $model->$element;
-            if (isset( $this->params['value'] ) AND ( $this->params['value'] != $elementValue )) {
+            if (isset($this->params['value']) AND ($this->params['value'] != $elementValue)) {
                 $this->errors[] = 'Parameter ' . $element . ' not equal ' . $this->params['value'];
                 return false;
-            } elseif (isset( $this->params['attribute'] ) AND ( $model->{$this->params['attribute']} != $elementValue )) {
+            } elseif (isset($this->params['attribute']) AND ($model->{$this->params['attribute']} != $elementValue)) {
                 $this->errors[] = 'Parameter ' . $element . ' not equal ' . $model->{$this->params['attribute']};
                 return false;
             }
@@ -77,12 +77,12 @@ class CompareValidator extends Validator
      *
      * @return string
      */
-    public function client( $model )
+    public function client($model)
     {
         $value = $this->params['value'];
-        if ( ! $value) {
+        if (!$value) {
             $attribute = $this->params['attribute'];
-            $value     = $model->$attribute;
+            $value = $model->$attribute;
         }
 
         $js = 'if (this.value!="' . $value . '") { e.preventDefault(); this.focus(); alert(\'Value is not compatible\'); }';

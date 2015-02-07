@@ -31,12 +31,12 @@ class RabbitMQ
      *
      * @result void
      */
-    public function __construct( array $params = [ ] )
+    public function __construct(array $params = [])
     {
-        $this->connect = new \AMQPConnection( $params );
+        $this->connect = new \AMQPConnection($params);
         $this->connect->connect();
 
-        $this->channel = new \AMQPChannel( $this->connect );
+        $this->channel = new \AMQPChannel($this->connect);
     }
 
     /**
@@ -61,11 +61,11 @@ class RabbitMQ
      *
      * @return void
      */
-    public function send( $message, $route, $chat )
+    public function send($message, $route, $chat)
     {
-        $exchange = new \AMQPExchange( $this->channel );
-        $exchange->setName( $chat );
-        $exchange->publish( $message, $route );
+        $exchange = new \AMQPExchange($this->channel);
+        $exchange->setName($chat);
+        $exchange->publish($message, $route);
     }
 
     /**
@@ -79,16 +79,16 @@ class RabbitMQ
      *
      * @return \AMQPEnvelope|bool
      */
-    public function read( $chat, $route, $nameReader = 'random' )
+    public function read($chat, $route, $nameReader = 'random')
     {
-        $queue = new \AMQPQueue( $this->channel );
-        $queue->setName( $nameReader );
+        $queue = new \AMQPQueue($this->channel);
+        $queue->setName($nameReader);
         $queue->declare();
-        $queue->bind( $chat, $route );
+        $queue->bind($chat, $route);
 
         $envelop = $queue->get();
         if ($envelop) {
-            $queue->ack( $envelop->getDeliveryTag() );
+            $queue->ack($envelop->getDeliveryTag());
             return $envelop;
         }
         return false;
@@ -105,16 +105,16 @@ class RabbitMQ
      *
      * @return array
      */
-    public function readAll( $chat, $route, $nameReader )
+    public function readAll($chat, $route, $nameReader)
     {
-        $queue = new \AMQPQueue( $this->channel );
-        $queue->setName( $nameReader );
+        $queue = new \AMQPQueue($this->channel);
+        $queue->setName($nameReader);
         $queue->declare();
-        $queue->bind( $chat, $route );
+        $queue->bind($chat, $route);
 
-        $result = [ ];
+        $result = [];
         while ($envelop = $queue->get()) {
-            $queue->ack( $envelop->getDeliveryTag() );
+            $queue->ack($envelop->getDeliveryTag());
             $result[] = $envelop;
         }
         return $result;

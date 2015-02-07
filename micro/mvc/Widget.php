@@ -25,7 +25,7 @@ abstract class Widget
      *
      * @result void
      */
-    public function __construct( array $args = [ ] )
+    public function __construct(array $args = [])
     {
         foreach ($args AS $name => $value) {
             $this->$name = $value;

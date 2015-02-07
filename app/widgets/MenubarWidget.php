@@ -13,9 +13,9 @@ class MenubarWidget extends Widget
 
     public function run()
     {
-        $v           = new View;
-        $v->path     = get_class( $this );
-        $v->view     = 'menubar';
+        $v = new View;
+        $v->path = get_class($this);
+        $v->view = 'menubar';
         $v->asWidget = true;
 
         return $v;
