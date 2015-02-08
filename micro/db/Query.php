@@ -223,7 +223,7 @@ class Query
      */
     public function run($as = \PDO::FETCH_CLASS)
     {
-        $res = $this->conn->rawQuery($this->getQuery(), $this->params, $as, ucfirst($this->objectName));
+        $res = $this->conn->rawQuery($this->getQuery(), $this->params, $as, $this->objectName);
         if ($this->single) {
             return $res[0];
         } else {

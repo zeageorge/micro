@@ -130,6 +130,7 @@ abstract class Model extends FormModel
         if ($relation = $this->relations()->get($name)) {
             if (!isset($this->cacheRelations[$name])) {
                 $sql = new Query;
+
                 $sql->addWhere('`m`.`' . $relation['On'][1] . '`="' . $this->{$relation['On'][0]} . '"');
 
                 if ($relation['Where']) {

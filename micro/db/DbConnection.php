@@ -88,7 +88,7 @@ class DbConnection
         if ($st->execute()) {
             return $st->fetchAll();
         } else {
-            throw new Exception($st->errorCode() . ': ' . $st->errorInfo());
+            throw new Exception($st->errorCode() . ': ' . print_r($st->errorInfo()));
         }
     }
 

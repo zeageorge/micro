@@ -24,20 +24,23 @@ class ListViewWidget extends Widget
 {
     /** @var string $query query to database */
     public $query = null;
-    /** @var \Micro\mvc\Controller $controller caller controller */
-    public $controller = null;
+    /** @var int $elemsType elements of return query type */
+    public $elemsType = \PDO::FETCH_ASSOC;
     /** @var string $view Name of view file */
     public $view = null;
     /** @var int $limit Limit current rows */
     public $limit = 10;
     /** @var int $page Current page on table */
-    public $page = 1;
+    public $page = 0;
     /** @var array $paginationConfig parameters for PaginationWidget */
     public $paginationConfig = [];
     /** @var array $attributes attributes for dl */
     public $attributes = [];
     /** @var array $attributesElement attributes for dt */
     public $attributesElement = [];
+    public $attributesCounter = [];
+    public $counterText = '';
+    public $template = '{counter}{elements}{pager}';
 
     /** @var int $rowCount summary lines */
     protected $rowCount = 0;
@@ -58,23 +61,22 @@ class ListViewWidget extends Widget
         if (!$this->query instanceof Query) {
             throw new Exception('Query not defined or error type');
         }
-        if (!$this->controller OR !$this->view) {
+
+        if (!$this->pathView OR !$this->view) {
             throw new Exception('Controller or view not defined');
         }
+
         if ($this->limit < 10) {
             $this->limit = 10;
         }
 
-        $cls = str_replace('\\', '/', get_class($this->controller));
-        $this->pathView = str_replace('App', Micro::getInstance()->config['AppDir'], dirname($cls));
-        $this->pathView .= '/../views/' . strtolower(str_replace('Controller', '', basename($cls)));
         $this->pathView .= '/' . $this->view . '.php';
 
         if (!file_exists($this->pathView)) {
             throw new Exception('View path not valid: ' . $this->pathView);
         }
 
-        $this->rows = $this->query->run(\PDO::FETCH_ASSOC);
+        $this->rows = $this->query->run($this->elemsType);
         $this->rowCount = count($this->rows);
 
         $this->paginationConfig['countRows'] = $this->rowCount;
@@ -92,6 +94,8 @@ class ListViewWidget extends Widget
     {
         $st = $i = $this->page * $this->limit;
 
+        ob_start();
+
         echo Html::openTag('ul', $this->attributes);
         for (; $i < ($st + $this->limit); $i++) {
             if (isset($this->rows[$i])) {
@@ -105,10 +109,22 @@ class ListViewWidget extends Widget
         }
         echo Html::closeTag('ul');
 
+        $elements = ob_get_clean();
+
         ob_start();
         $pager = new PaginationWidget($this->paginationConfig);
         $pager->init();
         $pager->run();
-        echo ob_get_clean();
+        $pagers = ob_get_clean();
+
+        echo str_replace(
+            array('{counter}','{elements}','{pager}'),
+            array(
+                Html::openTag('div',$this->attributesCounter).$this->counterText.$this->rowCount.Html::closeTag('div'),
+                $elements,
+                $pagers
+            ),
+            $this->template
+        );
     }
 }
