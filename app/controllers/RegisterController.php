@@ -20,7 +20,7 @@ class RegisterController extends Controller
                         'actions' => ['index', 'success', 'error', 'post'],
                         'users' => ['@'],
                         'message' => 'Only for not authorized!'
-                    ],
+                    ]
                 ]
             ],
             [
@@ -54,7 +54,7 @@ class RegisterController extends Controller
 
     public function actionPost()
     {
-        if (isset($_POST['User'])) {
+        if (array_key_exists('User', $_POST)) {
             $user = new User;
             $user->setModelData($_POST['User']);
             $user->pass = md5($_POST['User']['pass']);

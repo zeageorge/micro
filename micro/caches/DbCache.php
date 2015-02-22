@@ -36,7 +36,7 @@ class DbCache implements Cache
     public function __construct(array $config = [])
     {
         $this->table = 'cache';
-        if (isset($config['table'])) {
+        if (array_key_exists('table', $config)) {
             $this->table = $config['table'];
             unset($config['table']);
         }
@@ -60,7 +60,7 @@ class DbCache implements Cache
      */
     public function check()
     {
-        return ($this->driver instanceof DbConnection) ? true : false;
+        return ($this->driver instanceof DbConnection) ?: false;
     }
 
     /**

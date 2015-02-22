@@ -34,7 +34,7 @@ class FileRbac extends Rbac
     {
         parent::__construct();
 
-        if (isset($params['roles'])) {
+        if (array_key_exists('roles', $params)) {
             $this->roles = $this->tree($params['roles']);
         }
     }

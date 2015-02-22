@@ -58,7 +58,7 @@ class PaginationWidget extends Widget
 
         $this->totalPages = $this->countRows / $this->limit;
 
-        if ($this->totalPages == 0) {
+        if ($this->totalPages === 0) {
             $this->totalPages = 1;
         }
 
@@ -86,15 +86,15 @@ class PaginationWidget extends Widget
         $items = [];
         if ($this->totalPages > 0) {
             for ($i = 0; ($i + 1) <= $this->totalPages; $i++) {
-                if ($i != $this->currentPage) {
+                $items[] = [
+                    'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
+                    'attr' => array_merge($this->attributesElement , ['class' => 'active'] )
+                ];
+
+                if ($i !== $this->currentPage) {
                     $items[] = [
                         'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
                         'attr' => $this->attributesElement
-                    ];
-                } else {
-                    $items[] = [
-                        'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
-                        'attr' => $this->attributesElement + ['class' => 'active']
                     ];
                 }
             }

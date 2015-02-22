@@ -36,7 +36,7 @@ class DefaultController extends Controller
                         'actions' => ['logout'],
                         'users' => ['?'],
                         'message' => 'Authorized only'
-                    ],
+                    ]
                 ]
             ],
             [
@@ -64,7 +64,7 @@ class DefaultController extends Controller
             'POST'
         );
 
-        if (isset($_POST['LoginFormModel'])) {
+        if (array_key_exists('LoginFormModel', $_POST)) {
             $form->setModelData($_POST['LoginFormModel']);
             if ($form->validateModel() AND $form->getModel()->logined()) {
                 $this->redirect('/profile');
@@ -79,13 +79,13 @@ class DefaultController extends Controller
     public function actionError()
     {
         $result = null;
-        if (isset($_POST['errors'])) {
+        if (array_key_exists('errors', $_POST)) {
             foreach ($_POST['errors'] AS $err) {
                 $result .= Html::heading(3, $err, ['class' => 'text-danger bg-danger']);
             }
         }
         $v = new View;
-        $v->data = $result ? $result : 'undefined error';
+        $v->data = $result ?: 'undefined error';
         return $v;
     }
 

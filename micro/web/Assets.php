@@ -70,11 +70,11 @@ class Assets
         if (is_dir($this->directory)) {
             MFile::recurseCopyIfEdited($this->directory, $this->sourceDir);
         } else {
-            if (substr($hashDir, strlen($hashDir) - strlen($exclude)) != $exclude) {
+            if (substr($hashDir, strlen($hashDir) - strlen($exclude)) !== $exclude) {
                 if (!file_exists($hashDir)) {
                     copy($this->directory, $hashDir);
                     chmod($hashDir, 0666);
-                } elseif (filemtime($this->directory) != filemtime($hashDir)) {
+                } elseif (filemtime($this->directory) !== filemtime($hashDir)) {
                     copy($this->directory, $hashDir);
                     chmod($hashDir, 0666);
                 }

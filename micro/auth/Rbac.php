@@ -41,7 +41,7 @@ abstract class Rbac
             $this->conn->createTable('`rbac_user`', [
                 '`role` varchar(127) NOT NULL',
                 '`user` int(10) unsigned NOT NULL',
-                'KEY `name` (`name`,`user`)',
+                'KEY `name` (`name`,`user`)'
             ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8');
         }
     }
@@ -93,9 +93,17 @@ abstract class Rbac
     {
         $tree = $this->tree($this->rawRoles());
 
-        foreach ($this->assigned($userId) AS $role) {
-            if ($actionRole = $this->searchRoleRecursive($tree, $role['name'])) {
-                if ($trustRole = $this->searchRoleRecursive($actionRole, $permission)) {
+        $roles = $this->assigned($userId);
+        if (!$roles) {
+            return false;
+        }
+
+        foreach ($roles AS $role) {
+
+            $actionRole = $this->searchRoleRecursive($tree, $role['name']);
+            if ($actionRole) {
+                $trustRole = $this->searchRoleRecursive($actionRole, $permission);
+                if ($trustRole) {
                     return $this->execute($trustRole[$permission], $data);
                 }
             }
@@ -108,7 +116,7 @@ abstract class Rbac
      *
      * @access public
      *
-     * @param array $elements elemens array
+     * @param array $elements elements array
      * @param int $parentId parent ID
      *
      * @return array
@@ -117,7 +125,7 @@ abstract class Rbac
     {
         $branch = [];
         foreach ($elements AS $key => $element) {
-            if ($element['based'] == $parentId) {
+            if ($element['based'] === $parentId) {
                 $children = $this->tree($elements, $element['name']);
                 if ($children) {
                     $element['childs'] = $children;
@@ -199,11 +207,11 @@ abstract class Rbac
     {
         $result = false;
         foreach ($roles AS $id => $role) {
-            if ($id == $finder) {
+            if ($id === $finder) {
                 $result = [$id => $role];
                 break;
             } else {
-                if (isset($role['childs']) AND !empty($role['childs'])) {
+                if (array_key_exists('childs', $role) AND $role['childs']) {
                     $result = $this->searchRoleRecursive($role['childs'], $finder);
                     break;
                 }

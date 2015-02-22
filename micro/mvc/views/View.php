@@ -115,7 +115,7 @@ abstract class View
             throw new Exception('Widget ' . $name . ' not found.');
         }
 
-        if (isset($GLOBALS['widgetStack'][$name])) {
+        if (array_key_exists($name, $GLOBALS['widgetStack'])) {
             throw new Exception('This widget (' . $name . ') already started!');
         }
 
@@ -144,7 +144,7 @@ abstract class View
             return;
         }
 
-        if (!class_exists($name) OR !isset($GLOBALS['widgetStack'][$name])) {
+        if (!class_exists($name) OR !array_key_exists($name, $GLOBALS['widgetStack'])) {
             throw new Exception('Widget ' . $name . ' not started.');
         }
 

@@ -21,7 +21,7 @@ use Micro\base\Exception;
 class PoolDbConnection
 {
     /** @var DbConnection $master master server */
-    protected $master = null;
+    protected $master;
     /** @var array $servers defined slaves servers */
     protected $servers = [];
     /** @var string $curr current slave server */
@@ -41,11 +41,11 @@ class PoolDbConnection
      */
     public function __construct(array $params = [])
     {
-        if (!isset($params['servers'])) {
+        if (!array_key_exists('servers', $params)) {
             throw new Exception('Servers not defined');
         }
 
-        if (!isset($params['master'])) {
+        if (!array_key_exists('master', $params)) {
             $params['master'] = $params['servers'][$params['servers'][0]];
         }
 

@@ -128,7 +128,7 @@ abstract class Model extends FormModel
     public function __get($name)
     {
         if ($relation = $this->relations()->get($name)) {
-            if (!isset($this->cacheRelations[$name])) {
+            if (!array_key_exists($name, $this->cacheRelations)) {
                 $sql = new Query;
 
                 $sql->addWhere('`m`.`' . $relation['On'][1] . '`="' . $this->{$relation['On'][0]} . '"');
@@ -173,7 +173,7 @@ abstract class Model extends FormModel
             $arr = getVars($this);
             unset($arr['isNewRecord']);
 
-            if ($this->db->insert($this->tableName(), $arr)) {
+            if ($this->db->insert($this->tableName, $arr)) {
                 $this->_isNewRecord = false;
                 $this->afterCreate();
                 return true;
@@ -271,14 +271,14 @@ abstract class Model extends FormModel
             unset($arr['isNewRecord']);
 
             if (!$where) {
-                if (isset($this->primaryKey) AND !empty($this->primaryKey)) {
+                if (isset($this->primaryKey) AND $this->primaryKey) {
                     $where .= $this->primaryKey . '=:' . $this->primaryKey;
                 } else {
-                    throw new Exception ('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+                    throw new Exception ('In table ' . $this->tableName . ' option `id` not defined/not use.');
                 }
             }
 
-            if ($this->db->update($this->tableName(), $arr, $where)) {
+            if ($this->db->update($this->tableName, $arr, $where)) {
                 $this->afterUpdate();
                 return true;
             }
@@ -320,13 +320,13 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeDelete()) {
-            if (!isset($this->primaryKey) AND empty($this->primaryKey)) {
-                throw new Exception('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+            if (!isset($this->primaryKey) AND $this->primaryKey) {
+                throw new Exception('In table ' . $this->tableName . ' option `id` not defined/not use.');
             }
 
             if (
             $this->db->delete(
-                $this->tableName(),
+                $this->tableName,
                 $this->primaryKey . '=:' . $this->primaryKey, [$this->primaryKey => $this->{$this->primaryKey}]
             )
             ) {

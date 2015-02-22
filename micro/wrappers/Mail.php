@@ -20,11 +20,11 @@ final class Mail
     /** @var string $form sender mail */
     private $from;
     /** @var string $fromName sender name */
-    private $fromName = "";
+    private $fromName = '';
     /** @var string $type type of message */
-    private $type = "text/html";
+    private $type = 'text/html';
     /** @var string $encoding encoding */
-    private $encoding = "utf-8";
+    private $encoding = 'utf-8';
     /** @var bool $notify notification of read */
     private $notify = false;
 
@@ -124,17 +124,15 @@ final class Mail
      */
     public function send($to, $subject, $message)
     {
-        $from = "=?utf-8?B?" . base64_encode($this->fromName) . "?=" . " <" . $this->from . ">";
+        $from = '=?utf-8?B?' . base64_encode($this->fromName) . '?=' . ' <' . $this->from . '>';
 
-        $headers = "From: " . $from .
-            "\r\nReply-To: " . $from .
-            "\r\nContent-type: " . $this->type .
-            "; charset=" . $this->encoding . "\r\n";
+        $headers = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $from . "\r\n" . 'Content-type: ' . $this->type .
+            '; charset=' . $this->encoding . "\r\n";
 
         if ($this->notify) {
-            $headers .= "Disposition-Notification-To: " . $this->from . "\r\n";
+            $headers .= 'Disposition-Notification-To: ' . $this->from . "\r\n";
         }
-        $subject = "=?utf-8?B?" . base64_encode($subject) . "?=";
+        $subject = '=?utf-8?B?' . base64_encode($subject) . '?=';
 
         return mail($to, $subject, $message, $headers);
     }

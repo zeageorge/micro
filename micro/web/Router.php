@@ -47,14 +47,14 @@ class Router
     public function parse($uri, $method = 'GET')
     {
         // default path
-        if ($uri == '/' OR $uri == '') {
+        if ($uri === '/' OR $uri === '') {
             return '/default';
         }
 
         // scan routes
         foreach ($this->routes AS $condition => $config) {
-            if (is_array($config) AND isset($config['route'])) {
-                if (isset($config['verb']) AND ($config['verb'] != $method)) {
+            if (is_array($config) AND array_key_exists('route', $config)) {
+                if (array_key_exists('verb', $config) AND ($config['verb'] !== $method)) {
                     continue;
                 }
                 $replacement = $config['route'];
@@ -64,7 +64,7 @@ class Router
                 continue;
             }
             // slice path
-            if ($uri == $condition) {
+            if ($uri === $condition) {
                 return $replacement;
             }
             // pattern path
@@ -90,29 +90,29 @@ class Router
     private function validatedRule($uri, $pattern, $replacement)
     {
         $uriBlocks = explode('/', $uri);
-        if ($uriBlocks[0] == '') {
+        if ($uriBlocks[0] === '') {
             array_shift($uriBlocks);
         }
         $patBlocks = explode('/', $pattern);
-        if ($patBlocks[0] == '') {
+        if ($patBlocks[0] === '') {
             array_shift($patBlocks);
         }
         $repBlocks = explode('/', $replacement);
-        if ($repBlocks[0] == '') {
+        if ($repBlocks[0] === '') {
             array_shift($repBlocks);
         }
 
         $attributes = [];
         $result = null;
 
-        if (count($uriBlocks) != count($patBlocks)) {
+        if (count($uriBlocks) !== count($patBlocks)) {
             return false;
         }
         if (!$attributes = $this->parseUri($uriBlocks, $patBlocks)) {
             return false;
         }
         $result = $this->buildResult($attributes, $repBlocks);
-        if ($result == null OR $result == false) {
+        if ($result === null OR $result === false) {
             return false;
         }
 
@@ -139,7 +139,7 @@ class Router
 
         $countUriBlocks = count($uriBlocks);
         for ($i = 0; $i < $countUriBlocks; $i++) {
-            if ($patBlocks[$i]{0} == '<') {
+            if ($patBlocks[$i]{0} === '<') {
                 $cut = strpos($patBlocks[$i], ':');
 
                 if (preg_match('/' . substr($patBlocks[$i], $cut + 1, -1) . '/', $uriBlocks[$i])) {
@@ -148,7 +148,7 @@ class Router
                     return false;
                 }
 
-            } elseif ($uriBlocks[$i] != $patBlocks[$i]) {
+            } elseif ($uriBlocks[$i] !== $patBlocks[$i]) {
                 return false;
             } else {
                 $attr[$uriBlocks[$i]] = $patBlocks[$i];
@@ -171,12 +171,12 @@ class Router
     {
         $result = null;
         foreach ($repBlocks AS $value) {
-            if ($value{0} != '<') {
+            if ($value{0} !== '<') {
                 $result .= '/' . $value;
                 unset($attr[$value]);
             } else {
                 $element = substr($value, 1, -1);
-                if (isset($attr[$element])) {
+                if (array_key_exists($element, $attr)) {
                     $result .= '/' . $attr[$element];
                     unset($attr[$element]);
                 } else {

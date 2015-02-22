@@ -136,7 +136,7 @@ class Query
     public function addIn($column, $params, $operand = 'AND')
     {
         if (is_array($params)) {
-            $params = "'" . implode("','", $params) . "'";
+            $params = "'" . implode('\',\'', $params) . '\'';
         }
 
         $this->addWhere($column . ' IN (' . $params . ')', $operand);
@@ -156,7 +156,7 @@ class Query
     public function addNotIn($column, $params, $operand = 'AND')
     {
         if (is_array($params)) {
-            $params = "'" . implode("','", $params) . "'";
+            $params = "'" . implode('\',\'', $params) . '\'';
         }
 
         $this->addWhere($column . ' NOT IN (' . $params . ')', $operand);
@@ -248,16 +248,16 @@ class Query
         $query .= ($this->having) ? ' HAVING ' . $this->having : '';
         $query .= ($this->order) ? ' ORDER BY ' . $this->order : '';
 
-        if ($this->limit != -1 OR $this->ofset != -1) {
+        if ($this->limit !== -1 OR $this->ofset !== -1) {
             $query .= ' LIMIT ';
 
-            if ($this->ofset != -1) {
+            if ($this->ofset !== -1) {
                 $query .= $this->ofset;
             }
-            if ($this->limit != -1 AND $this->ofset != -1) {
+            if ($this->limit !== -1 AND $this->ofset !== -1) {
                 $query .= ',';
             }
-            if ($this->limit != -1) {
+            if ($this->limit !== -1) {
                 $query .= $this->limit;
             }
         }

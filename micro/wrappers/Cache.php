@@ -27,7 +27,7 @@ class Cache
         'memcached' => '\\Micro\\caches\\MemcacheCache',
         'redis' => '\\Micro\\caches\\RedisCache',
         'wincache' => '\\Micro\\caches\\WincacheCache',
-        'xcache' => '\\Micro\\caches\\XcacheCache',
+        'xcache' => '\\Micro\\caches\\XcacheCache'
     ];
     /** @var array $servers Activated servers */
     protected $servers = [];
@@ -42,11 +42,11 @@ class Cache
      * @result void
      * @throws Exception
      */
-    function __construct(array $config = [])
+    public function __construct(array $config = [])
     {
-        if (isset($config['servers'])) {
+        if (array_key_exists('servers', $config)) {
             foreach ($config['servers'] AS $key => $server) {
-                if (in_array($server['driver'], array_keys($this->drivers))) {
+                if (in_array($server['driver'], array_keys($this->drivers), true)) {
                     $this->servers[$key] = new $this->drivers[$server['driver']] ($server);
                 } else {
                     throw new Exception('Cache driver ' . $server['driver'] . ' not found');
@@ -73,7 +73,7 @@ class Cache
             return $this->servers[0];
         }
 
-        if (in_array($driver, $this->servers)) {
+        if (in_array($driver, $this->servers, true)) {
             return $this->servers[$driver];
         } else {
             throw new Exception('Cache ' . $driver . ' not found.');

@@ -35,7 +35,7 @@ class MultiDbConnection
      */
     public function __construct(array $params = [])
     {
-        if (!isset($params['servers'])) {
+        if (!array_key_exists('servers', $params)) {
             throw new Exception('Servers not defined');
         }
 
@@ -77,6 +77,6 @@ class MultiDbConnection
      */
     public function switchDB($name)
     {
-        $this->curr = in_array($name, array_keys($this->servers)) ? $name : $this->servers[0];
+        $this->curr = in_array($name, array_keys($this->servers), true) ? $name : $this->servers[0];
     }
 }

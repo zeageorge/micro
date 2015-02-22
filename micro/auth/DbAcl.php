@@ -34,21 +34,21 @@ class DbAcl extends Acl
         parent::__construct($params);
 
         $tables = $this->conn->listTables();
-        if (!isset($tables['acl_role'])) {
+        if (!array_key_exists('acl_role', $tables)) {
             $this->conn->createTable('acl_role', [
                 '`id` int(10) unsigned NOT NULL AUTO_INCREMENT',
                 '`name` varchar(255) NOT NULL',
                 'PRIMARY KEY (`id`)'
             ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8');
         }
-        if (!isset($tables['acl_perm'])) {
+        if (!array_key_exists('acl_perm', $tables)) {
             $this->conn->createTable('acl_perm', [
                 '`id` int(10) unsigned NOT NULL AUTO_INCREMENT',
                 '`name` varchar(255) NOT NULL',
                 'PRIMARY KEY (`id`)'
             ], 'ENGINE=MyISAM DEFAULT CHARSET=utf8');
         }
-        if (!isset($tables['acl_role_perm'])) {
+        if (!array_key_exists('acl_role_perm', $tables)) {
             $this->conn->createTable('acl_role_perm', [
                 '`id` int(10) unsigned NOT NULL AUTO_INCREMENT',
                 '`role` int(11) unsigned DEFAULT NOT NULL',

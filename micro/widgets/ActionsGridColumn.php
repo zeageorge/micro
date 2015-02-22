@@ -26,28 +26,28 @@ class ActionsGridColumn extends GridColumn
      */
     public function __toString()
     {
-        if (!isset($this->params['link']) OR empty($this->params['link'])) {
+        if (!array_key_exists('link', $this->params) OR empty($this->params['link'])) {
             return 'Link for actions column not defined!';
         }
-        if (!isset($this->params['template']) OR empty($this->params['template'])) {
+        if (!array_key_exists('template', $this->params) OR empty($this->params['template'])) {
             $this->params['template'] = '{view} {edit} {delete}';
         }
 
-        $viewLink = (isset($this->params['viewLink']) ? $this->params['viewLink'] : $this->params['link'] . '/');
+        $viewLink = (array_key_exists('viewLink', $this->params) ? $this->params['viewLink'] : $this->params['link'] . '/');
         $r = Html::href(
-            isset($this->params['viewText']) ? $this->params['viewText'] : 'view',
+            array_key_exists('viewText', $this->params) ? $this->params['viewText'] : 'view',
             $viewLink . $this->params['pKey']
         );
 
-        $editLink = (isset($this->params['editLink']) ? $this->params['editLink'] : $this->params['link'] . '/edit/');
+        $editLink = (array_key_exists('editLink', $this->params) ? $this->params['editLink'] : $this->params['link'] . '/edit/');
         $w = Html::href(
-            isset($this->params['editText']) ? $this->params['editText'] : 'edit',
+            array_key_exists('editText', $this->params) ? $this->params['editText'] : 'edit',
             $editLink . $this->params['pKey']
         );
 
-        $deleteLink = (isset($this->params['deleteLink']) ? $this->params['deleteLink'] : $this->params['link'] . '/del/');
+        $deleteLink = (array_key_exists('deleteLink', $this->params) ? $this->params['deleteLink'] : $this->params['link'] . '/del/');
         $d = Html::href(
-            isset($this->params['deleteText']) ? $this->params['deleteText'] : 'delete',
+            array_key_exists('deleteText', $this->params) ? $this->params['deleteText'] : 'delete',
             $deleteLink . $this->params['pKey'],
             ['onclick' => 'return confirm(\'Are you sure?\')']
         );

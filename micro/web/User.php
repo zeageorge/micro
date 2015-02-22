@@ -62,7 +62,7 @@ class User
      */
     public function isGuest()
     {
-        return ((!Registry::get('session')) OR empty(Registry::get('session')->UserID));
+        return !Registry::get('session') || !Registry::get('session')->UserID;
     }
 
     /**

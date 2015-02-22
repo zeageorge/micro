@@ -22,7 +22,7 @@ class ProfileController extends Controller
                         'actions' => ['index'],
                         'users' => ['?'],
                         'message' => 'Only for authorized!'
-                    ],
+                    ]
                 ]
             ],
             [
@@ -41,14 +41,14 @@ class ProfileController extends Controller
     {
         $query = new Query;
         $query->addWhere('id = :id');
-        $query->params = [':id' => Registry::get('session')->UserID];
+        $query->params = ['id' => Registry::get('session')->UserID];
 
         $user = User::finder($query, true);
         if (!$user) {
             $this->redirect('/logout');
         }
 
-        if (isset($_POST['Setup'])) {
+        if (array_key_exists('Setup', $_POST)) {
             $form = $_POST['Setup'];
             if (!empty($form['pass'])) {
                 $user->pass = md5($form['pass']);

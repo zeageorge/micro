@@ -24,7 +24,7 @@ class Relations
      *
      * @access public
      *
-     * @param        $name rel name
+     * @param string $name rel name
      * @param bool $isMany One or many results
      * @param string $model Model class for result
      * @param array $on relation types
@@ -55,6 +55,6 @@ class Relations
      */
     public function get($name)
     {
-        return isset($this->data[$name]) ? $this->data[$name] : false;
+        return array_key_exists($name, $this->data) ? $this->data[$name] : false;
     }
 } 

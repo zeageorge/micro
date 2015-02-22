@@ -37,13 +37,13 @@ class StringValidator extends Validator
             }
             $elementValue = $model->$element;
 
-            if (isset($this->params['min']) AND !empty($this->params['min'])) {
+            if (array_key_exists('min', $this->params) AND $this->params['min']) {
                 if ((integer)$this->params['min'] > strlen($elementValue)) {
                     $this->errors[] = $element . ' error: minimal characters not valid.';
                     return false;
                 }
             }
-            if (isset($this->params['max']) AND !empty($this->params['max'])) {
+            if (array_key_exists('max', $this->params) AND $this->params['max']) {
                 if ((integer)$this->params['max'] < strlen($elementValue)) {
                     $this->errors[] = $element . ' error: maximal characters not valid.';
                     return false;
@@ -65,11 +65,11 @@ class StringValidator extends Validator
     public function client($model)
     {
         $action = '';
-        if (isset($this->params['min'])) {
+        if (array_key_exists('min', $this->params)) {
             $action .= ' if (this.value.length < ' . $this->params['min'] . ') { e.preventDefault(); this.focus();' .
                 ' alert(\'Value lowest, minimum ' . $this->params['min'] . ' symbols\'); }';
         }
-        if (isset($this->params['max'])) {
+        if (array_key_exists('max', $this->params)) {
             $action .= ' if (this.value.length > ' . $this->params['max'] . ') { e.preventDefault(); this.focus();' .
                 ' alert(\'Value highest, maximum ' . $this->params['max'] . ' symbols\'); }';
         }

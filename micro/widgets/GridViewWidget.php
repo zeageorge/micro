@@ -101,7 +101,7 @@ class GridViewWidget extends Widget
         }
 
         // Upgrade rows
-        if (is_object($this->rows[0]) == true) {
+        if (is_object($this->rows[0]) === true) {
             foreach ($this->rows AS $key => $row) {
                 $this->rows[$key] = (array)$row;
                 foreach ($this->rows[$key] AS $num => $val) {
@@ -158,7 +158,7 @@ class GridViewWidget extends Widget
      */
     private function makeArrRows()
     {
-        $this->query = ($this->query) ? null : $this->query;
+        $this->query = $this->query ? null : $this->query;
         $this->rowCount = count($this->rows);
 
         // cut current
@@ -184,13 +184,13 @@ class GridViewWidget extends Widget
                     'header' => $key,
                     'filter' => '<input type="text" name="' . $key . '" value="" />',
                     'value' => null,
-                    'class' => null,
+                    'class' => null
                 ];
             }
         }
 
         foreach ($this->tableConfig AS $conf) {
-            if (isset($conf['filter'])) {
+            if (array_key_exists('filter', $conf)) {
                 $this->filters = true;
                 break;
             }
@@ -255,7 +255,7 @@ class GridViewWidget extends Widget
         if ($this->tableConfig) {
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('th');
-                $result .= isset($row['header']) ? $row['header'] : $key;
+                $result .= array_key_exists('header', $row) ? $row['header'] : $key;
                 $result .= Html::closeTag('th');
             }
         } else {
@@ -280,7 +280,7 @@ class GridViewWidget extends Widget
             $result .= Html::openTag('tr');
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('td');
-                $result .= isset($row['filter']) ? $row['filter'] : null;
+                $result .= array_key_exists('filter', $row) ? $row['filter'] : null;
                 $result .= Html::closeTag('td');
             }
             $result .= Html::closeTag('tr');
@@ -298,20 +298,19 @@ class GridViewWidget extends Widget
     private function renderRows()
     {
         $result = null;
-        foreach ($this->rows AS $elem) {
+        foreach ($this->rows AS $data) {
             $result .= Html::openTag('tr');
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('td');
-                if (isset($row['class']) AND is_subclass_of($row['class'], 'Micro\widgets\GridColumn')) {
-                    $primaryKey = $elem[isset($row['key']) ? $row['key'] : 'id'];
+                if (array_key_exists('class', $row) AND is_subclass_of($row['class'], 'Micro\widgets\GridColumn')) {
+                    $primaryKey = $data[array_key_exists('key', $row) ? $row['key'] : 'id'];
                     $result .= new $row['class'](
-                        $row + ['str' => isset($elem) ? $elem : null, 'pKey' => $primaryKey]
+                        $row + ['str' => isset($data) ? $data : null, 'pKey' => $primaryKey]
                     );
-                } elseif (isset($row['value'])) {
-                    $data = $elem;
+                } elseif (array_key_exists('value', $row)) {
                     $result .= eval('return ' . $row['value'] . ';');
                 } else {
-                    $result .= isset($elem[$key]) ? $elem[$key] : null;
+                    $result .= array_key_exists($key, $data) ? $data[$key] : null;
                 }
                 $result .= Html::closeTag('td');
             }

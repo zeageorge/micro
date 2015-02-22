@@ -38,7 +38,7 @@ abstract class LogInterface
     {
         $levels = explode(',', strtr(strtolower($params['levels']), ' ', ''));
         foreach ($levels AS $level) {
-            if (array_search($level, Logger::$supportedLevels)) {
+            if (in_array($level, Logger::$supportedLevels, true)) {
                 $this->supportedLevels[] = $level;
             }
         }
@@ -58,7 +58,7 @@ abstract class LogInterface
      */
     public function isSupportedLevel($level)
     {
-        return (array_search($level, $this->supportedLevels) === false) ? false : true;
+        return in_array($level, $this->supportedLevels, false) === false ?: true;
     }
 
     /**

@@ -24,7 +24,7 @@ use Micro\wrappers\Html;
 class DetailViewWidget extends Widget
 {
     /** @var Model $model Model for details */
-    public $model = null;
+    public $model;
     /** @var string $table Table for details */
     public $table = '';
     /** @var string $condition Condition for generate with table */
@@ -41,7 +41,7 @@ class DetailViewWidget extends Widget
     public $attributeLabels = [];
 
     /** @var \Micro\db\DbConnection $conn connect to database */
-    protected $conn = null;
+    protected $conn;
     /** @var array $statement elements from data */
     protected $statement = [];
 
@@ -122,7 +122,7 @@ class DetailViewWidget extends Widget
     {
         $result = Html::openTag('dl', $this->attributes);
         foreach ($this->statement AS $key => $value) {
-            if (in_array($key, $this->keys)) {
+            if (in_array($key, $this->keys, true)) {
                 $result .= Html::openTag('dt', $this->attributesElement);
                 $result .= $this->getAttributeLabel($key);
                 $result .= Html::closeTag('dt');

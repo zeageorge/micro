@@ -99,7 +99,7 @@ class DbRbac extends Rbac
             return false;
         }
 
-        if (!empty($based) AND !$this->conn->exists('rbac_role', ['name' => $based])) {
+        if ($based AND !$this->conn->exists('rbac_role', ['name' => $based])) {
             return false;
         }
 
@@ -167,7 +167,7 @@ class DbRbac extends Rbac
             $this->conn->delete('rbac_user', 'role=:name', ['name' => $element['name']]);
             $this->conn->delete('rbac_role', 'name=:name', ['name' => $element['name']]);
 
-            if (isset($tree['childs'])) {
+            if (array_key_exists('childs', $tree)) {
                 $this->recursiveDelete($element['childs']);
             }
             unset($tree[$key]);

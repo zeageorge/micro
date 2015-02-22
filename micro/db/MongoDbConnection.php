@@ -37,13 +37,13 @@ class MongoDbConnection
      */
     public function __construct(array $config = [])
     {
-        if (isset($config['dbname'])) {
+        if (array_key_exists('dbname', $config)) {
             $this->dbName = $config['dbname'];
         } else {
             throw new Exception('MongoDB database name not defined!');
         }
 
-        if (isset($config['connectionString'])) {
+        if (array_key_exists('connectionString', $config)) {
             $this->conn = new \MongoClient($config['connectionString'], $config['options']);
         } else {
             $this->conn = new \MongoClient;
@@ -96,7 +96,7 @@ class MongoDbConnection
         if ($force) {
             return $this->conn->selectCollection($this->dbName, $collectionName);
         }
-        if (!isset($this->collections[$collectionName])) {
+        if (!array_key_exists($collectionName, $this->collections)) {
             $this->collections[$collectionName] = $this->conn->selectCollection($this->dbName, $collectionName);
         }
         return $this->collections[$collectionName];
@@ -117,10 +117,10 @@ class MongoDbConnection
     {
         if ($keys) {
             foreach ($keys as $col => $val) {
-                if ($val == -1 || $val === false || strtolower($val) == 'desc') {
-                    $keys[$col] = -1;
-                } else {
-                    $keys[$col] = 1;
+                $keys[$col] = 1;
+
+                if ($val === -1 || $val === false || strtolower($val) === 'desc') {
+                    --$keys[$col];
                 }
             }
             return $this->getCollection($collectionName)->ensureIndex($keys, $options);
@@ -230,7 +230,7 @@ class MongoDbConnection
      */
     public function deleteTable($collectionName)
     {
-        if (isset($this->collections[$collectionName])) {
+        if (array_key_exists($collectionName, $this->collections)) {
             unset($this->collections[$collectionName]);
         }
 
@@ -296,7 +296,7 @@ class MongoDbConnection
     {
         $collection = $this->getCollection($collectionName);
 
-        if ($keys == null) {
+        if ($keys === null) {
             return $collection->deleteIndexes();
         } else {
             return $collection->deleteIndex($keys);

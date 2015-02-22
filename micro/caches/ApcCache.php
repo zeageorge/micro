@@ -79,7 +79,7 @@ class ApcCache implements Cache
      */
     public function set($name, $value, $duration = 300, $new = false)
     {
-        if ($new == true) {
+        if ($new === true) {
             return apc_add($name, $value, $duration);
         } else {
             return apc_store($name, $value, $duration);

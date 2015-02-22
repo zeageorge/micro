@@ -4,6 +4,6 @@
 return [
     'session' => [
         'class' => '\Micro\web\Session',
-        'autoStart' => true,
+        'autoStart' => true
     ]
 ];

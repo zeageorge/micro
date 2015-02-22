@@ -51,7 +51,7 @@ class Dispatcher
     {
         if ($this->listeners) {
             foreach ($this->listeners AS $key => $obj) {
-                if ($key == $listener) {
+                if ($key === $listener) {
                     call_user_func($obj);
                 }
             }

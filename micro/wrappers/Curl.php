@@ -40,29 +40,29 @@ class Curl
     /** @var int $error_code error code */
     public $error_code = 0;
     /** @var null|string $error_message error message */
-    public $error_message = null;
+    public $error_message;
     /** @var bool $curl_error is cURL error */
     public $curl_error = false;
     /** @var int $curl_error_code cURL error code */
     public $curl_error_code = 0;
     /** @var null|string $curl_error_message cURL error message */
-    public $curl_error_message = null;
+    public $curl_error_message;
     /** @var bool $http_error is HTTP error */
     public $http_error = false;
     /** @var int $http_status_code HTTP status code */
     public $http_status_code = 0;
     /** @var null $http_error_message HTTP error message */
-    public $http_error_message = null;
+    public $http_error_message;
     /** @var null $request_headers request headers */
-    public $request_headers = null;
+    public $request_headers;
     /** @var null $response_headers response headers */
-    public $response_headers = null;
+    public $response_headers;
     /** @var null $response response */
-    public $response = null;
+    public $response;
     /** @var array $_cookies cookies for request */
-    private $_cookies = array();
+    private $_cookies = [];
     /** @var array $_headers headers for request */
-    private $_headers = array();
+    private $_headers = [];
 
     /**
      * Construct
@@ -124,7 +124,7 @@ class Curl
      *
      * @return void
      */
-    public function get($url, $data = array())
+    public function get($url, array $data = [] )
     {
         if (count($data) > 0) {
             $this->setopt(CURLOPT_URL, $url . '?' . http_build_query($data));
@@ -148,7 +148,7 @@ class Curl
         $this->curl_error_message = curl_error($this->curl);
         $this->curl_error = !($this->curl_error_code === 0);
         $this->http_status_code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-        $this->http_error = in_array(floor($this->http_status_code / 100), array(4, 5));
+        $this->http_error = in_array(floor($this->http_status_code / 100), array(4, 5), true);
         $this->error = $this->curl_error || $this->http_error;
         $this->error_code = $this->error ? ($this->curl_error ? $this->curl_error_code : $this->http_status_code) : 0;
 
@@ -163,7 +163,11 @@ class Curl
             $this->response_headers = preg_split('/\r\n/', $response_header, null, PREG_SPLIT_NO_EMPTY);
         }
 
-        $this->http_error_message = $this->error ? (isset($this->response_headers['0']) ? $this->response_headers['0'] : '') : '';
+        $this->http_error_message = '';
+        if ($this->error) {
+            $this->http_error_message = array_key_exists(0, $this->response_headers) ? $this->response_headers[0] : '';
+        }
+
         $this->error_message = $this->curl_error ? $this->curl_error_message : $this->http_error_message;
 
         return $this->error_code;
@@ -179,7 +183,7 @@ class Curl
      *
      * @return void
      */
-    public function post($url, $data = array())
+    public function post($url, array $data = [] )
     {
         $this->setopt(CURLOPT_URL, $url);
         $this->setopt(CURLOPT_POST, true);
@@ -198,7 +202,7 @@ class Curl
      *
      * @return void
      */
-    public function put($url, $data = array())
+    public function put($url, array $data = [] )
     {
         $this->setopt(CURLOPT_URL, $url . '?' . http_build_query($data));
         $this->setopt(CURLOPT_CUSTOMREQUEST, 'PUT');
@@ -215,7 +219,7 @@ class Curl
      *
      * @return void
      */
-    public function patch($url, $data = array())
+    public function patch($url, array $data = [] )
     {
         $this->setopt(CURLOPT_URL, $url);
         $this->setopt(CURLOPT_CUSTOMREQUEST, 'PATCH');
@@ -233,7 +237,7 @@ class Curl
      *
      * @return void
      */
-    public function delete($url, $data = array())
+    public function delete($url, array $data = [] )
     {
         $this->setopt(CURLOPT_URL, $url . '?' . http_build_query($data));
         $this->setopt(CURLOPT_CUSTOMREQUEST, 'DELETE');

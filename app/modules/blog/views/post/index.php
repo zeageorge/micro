@@ -8,7 +8,7 @@ use Micro\wrappers\Html;
 /** @var Language $lang */
 
 $currPage = 0;
-if (isset($_GET['page'])) {
+if (array_key_exists('page', $_GET)) {
     $currPage = $_GET['page'];
 }
 
@@ -25,13 +25,13 @@ if (!$blogs) {
     <?php endforeach; ?>
     <p>
         <?php for ($page = 0; $page < $pages; $page++): ?>
-            <?php if ($page != $currPage): ?>
+            <?php if ($page !== $currPage): ?>
                 <?= Html::openTag('a', ['href' => '/blog/post/index/' . $page]) ?>
             <?php endif; ?>
 
             <?= $page + 1; ?>
 
-            <?php if ($page != $currPage): ?>
+            <?php if ($page !== $currPage): ?>
                 <?= Html::closeTag('a') ?>
             <?php endif; ?>
         <?php endfor; ?>

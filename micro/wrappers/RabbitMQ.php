@@ -57,7 +57,7 @@ class RabbitMQ
      *
      * @param string $message message text
      * @param string $route name route
-     * @param string $chat name chatroom
+     * @param string $chat name chat room
      *
      * @return void
      */
@@ -73,7 +73,7 @@ class RabbitMQ
      *
      * @access public
      *
-     * @param string $chat name chatroom
+     * @param string $chat name chat room
      * @param string $route name route
      * @param string $nameReader name queue
      *
@@ -99,7 +99,7 @@ class RabbitMQ
      *
      * @access public
      *
-     * @param string $chat name chatroom
+     * @param string $chat name chat room
      * @param string $route name route
      * @param string $nameReader name queue
      *

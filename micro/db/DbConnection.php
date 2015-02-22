@@ -36,7 +36,7 @@ class DbConnection
     public function __construct(array $config = [], $ignoreFail = false)
     {
         try {
-            if (!isset($config['options'])) {
+            if (!array_key_exists('options', $config)) {
                 $config['options'] = null;
             }
             $this->conn = new \PDO($config['connectionString'], $config['username'], $config['password'],
@@ -76,7 +76,7 @@ class DbConnection
     {
         $st = $this->conn->prepare($query);
 
-        if ($fetchType == \PDO::FETCH_CLASS) {
+        if ($fetchType === \PDO::FETCH_CLASS) {
             $st->setFetchMode($fetchType, ucfirst($fetchClass), ['new' => false]);
         } else {
             $st->setFetchMode($fetchType);
@@ -130,7 +130,7 @@ class DbConnection
                 'rows' => $row['Rows'],
                 'length' => $row['Avg_row_length'],
                 'increment' => $row['Auto_increment'],
-                'collation' => $row['Collation'],
+                'collation' => $row['Collation']
             ];
         }
         return $result;
@@ -147,7 +147,7 @@ class DbConnection
      */
     public function tableExists($table)
     {
-        return (bool)array_search($table, $this->listTables());
+        return (bool)in_array($table, $this->listTables(), true);
     }
 
     /**
@@ -209,7 +209,7 @@ class DbConnection
     public function fieldExists($field, $table)
     {
         foreach ($this->listFields($table) AS $tbl) {
-            if ($tbl['field'] == $field) {
+            if ($tbl['field'] === $field) {
                 return true;
             }
         }
@@ -237,7 +237,7 @@ class DbConnection
                 'null' => $row['Null'],
                 'key' => $row['Key'],
                 'default' => $row['Default'],
-                'extra' => $row['Extra'],
+                'extra' => $row['Extra']
             ];
         }
         return $result;
@@ -270,7 +270,7 @@ class DbConnection
      */
     public function switchDatabase($dbName)
     {
-        if ($this->conn->exec('USE ' . $dbName . ';') != false) {
+        if ($this->conn->exec('USE ' . $dbName . ';') !== false) {
             return true;
         } else {
             return false;
@@ -328,7 +328,7 @@ class DbConnection
         foreach (array_keys($elements) as $key) {
             $valStr[] = '`' . $key . '`=:' . $key;
         }
-        if (!empty($conditions)) {
+        if ($conditions) {
             $conditions = 'WHERE ' . $conditions;
         }
 

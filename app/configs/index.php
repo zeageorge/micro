@@ -2,9 +2,9 @@
 
 // read components
 $components = [];
-foreach (scandir(dirname(__FILE__) . '/components') AS $fileName) {
-    if ($fileName != '.' AND $fileName != '..') {
-        $components = array_merge(require dirname(__FILE__) . '/components/' . $fileName, $components);
+foreach (scandir(__DIR__ . '/components') AS $fileName) {
+    if ($fileName !== '.' AND $fileName !== '..') {
+        $components = array_merge(require __DIR__ . '/components/' . $fileName, $components);
     }
 }
 

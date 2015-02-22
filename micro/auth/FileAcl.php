@@ -41,10 +41,10 @@ class FileAcl extends Acl
     {
         parent::__construct($params);
 
-        $roles = (isset($params['roles'])) ? $params['roles'] : [];
-        $this->roles = isset($roles['roles']) ? $roles['roles'] : [];
-        $this->perms = isset($roles['perms']) ? $roles['perms'] : [];
-        $this->rolePermsCompare = isset($roles['role_perms']) ? $roles['role_perms'] : [];
+        $roles = array_key_exists('roles', $params) ? $params['roles'] : [];
+        $this->roles = array_key_exists('roles', $roles) ? $roles['roles'] : [];
+        $this->perms = array_key_exists('perms', $roles) ? $roles['perms'] : [];
+        $this->rolePermsCompare = array_key_exists('role_perms', $roles) ? $roles['role_perms'] : [];
     }
 
     /**
@@ -60,16 +60,16 @@ class FileAcl extends Acl
      */
     public function check($userId, $permission, array $data = [])
     {
-        $permissionId = array_search($permission, $this->perms);
+        $permissionId = in_array($permission, $this->perms, true);
         $assigned = $this->assigned($userId);
         if (!$assigned) {
             return false;
         }
 
         foreach ($assigned AS $assign) {
-            if ($assign['perm'] AND $assign['perm'] == $permissionId) {
+            if ($assign['perm'] AND $assign['perm'] === $permissionId) {
                 return true;
-            } elseif ($assign['role'] AND in_array($permissionId, $this->rolePerms($assign['role']))) {
+            } elseif ($assign['role'] AND in_array($permissionId, $this->rolePerms($assign['role']), true)) {
                 return true;
             }
         }

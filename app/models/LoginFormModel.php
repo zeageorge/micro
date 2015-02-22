@@ -40,7 +40,7 @@ class LoginFormModel extends FormModel
 
         $query->params = [
             'login' => $this->login,
-            'pass' => md5($this->password),
+            'pass' => md5($this->password)
         ];
 
         if ($user = User::finder($query, true)) {

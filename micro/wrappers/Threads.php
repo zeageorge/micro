@@ -57,24 +57,23 @@ abstract class Threads
      */
     public function __construct($name, $puid = 0, $guid = 0, $umask = -1)
     {
-        if (!isset($_SERVER['argc'])) {
+        if (!array_key_exists('argc', $_SERVER)) {
             throw new Exception('Threads are permitted only for CLI');
         }
         $this->name = $name;
         $this->guid = $guid;
         $this->puid = $puid;
 
-        if ($umask != -1) {
+        if ($umask !== -1) {
             umask($umask);
         }
 
         $this->isChild = false;
-        $this->internalIPCArray = array();
+        $this->internalIPCArray = [];
+        $this->isIPC = false;
 
         if ($this->createIPCSegment() && $this->createIPCSemaphore()) {
             $this->isIPC = true;
-        } else {
-            $this->isIPC = false;
         }
     }
 
@@ -87,16 +86,16 @@ abstract class Threads
      */
     protected function createIPCSegment()
     {
-        $this->fileIPC1 = "/tmp/" . rand() . md5($this->getName()) . ".shm";
+        $this->fileIPC1 = '/tmp/' . rand() . md5($this->getName()) . '.shm';
 
         touch($this->fileIPC1);
 
         $shm_key = ftok($this->fileIPC1, 't');
-        if ($shm_key == -1) {
-            throw new Exception("Fatal exception creating SHM segment (ftok)");
+        if ($shm_key === -1) {
+            throw new Exception('Fatal exception creating SHM segment (ftok)');
         }
 
-        $this->internalIPCKey = @shmop_open($shm_key, "c", 0644, 10240);
+        $this->internalIPCKey = @shmop_open($shm_key, 'c', 0644, 10240);
         if (!$this->internalIPCKey) {
             return false;
         }
@@ -137,16 +136,16 @@ abstract class Threads
      */
     protected function createIPCSemaphore()
     {
-        $this->fileIPC2 = "/tmp/" . rand() . md5($this->getName()) . ".sem";
+        $this->fileIPC2 = '/tmp/' . rand() . md5($this->getName()) . '.sem';
 
         touch($this->fileIPC2);
 
         $sem_key = ftok($this->fileIPC2, 't');
-        if ($sem_key == -1) {
-            throw new Exception("Fatal exception creating semaphore (ftok)");
+        if ($sem_key === -1) {
+            throw new Exception('Fatal exception creating semaphore (ftok)');
         }
 
-        $this->internalSemaphoreKey = shmop_open($sem_key, "c", 0644, 10);
+        $this->internalSemaphoreKey = shmop_open($sem_key, 'c', 0644, 10);
         if (!$this->internalSemaphoreKey) {
             return false;
         }
@@ -200,15 +199,18 @@ abstract class Threads
      */
     protected function writeToIPCSegment()
     {
-        if (shmop_read($this->internalSemaphoreKey, 1, 1) == 1) {
+        if (shmop_read($this->internalSemaphoreKey, 1, 1) === 1) {
             return;
         }
 
         $serialized_IPC_array = serialize($this->internalIPCArray);
         $shm_bytes_written = shmop_write($this->internalIPCKey, $serialized_IPC_array, 0);
 
-        if ($shm_bytes_written != strlen($serialized_IPC_array)) {
-            throw new Exception("Fatal exception writing SHM segment (shmop_write)" . strlen($serialized_IPC_array) . "-" . shmop_size($this->internalIPCKey));
+        if ($shm_bytes_written !== strlen($serialized_IPC_array)) {
+            throw new Exception(
+                'Fatal exception writing SHM segment (shmop_write)' . strlen($serialized_IPC_array) .
+                '-' . shmop_size($this->internalIPCKey)
+            );
         }
     }
 
@@ -220,8 +222,8 @@ abstract class Threads
      */
     public function getLastAlive()
     {
-        $timestamp = intval($this->getVariable('_pingTime'));
-        if ($timestamp == 0) {
+        $timestamp = (int)$this->getVariable('_pingTime');
+        if ($timestamp === 0) {
             return 0;
         } else {
             return (time() - $timestamp);
@@ -255,7 +257,7 @@ abstract class Threads
         $serialized_IPC_array = shmop_read($this->internalIPCKey, 0, shmop_size($this->internalIPCKey));
 
         if (!$serialized_IPC_array) {
-            throw new Exception("Fatal exception reading SHM segment (shmop_read)\n");
+            throw new Exception('Fatal exception reading SHM segment (shmop_read)' . "\n");
         }
 
         unset($this->internalIPCArray);
@@ -282,12 +284,12 @@ abstract class Threads
      * @param mixed $argList
      * @param string $methodName
      *
-     * @return mixed
+     * @return mixed|void
      */
     public function register_callback_func($argList, $methodName)
     {
         if (is_array($argList) && count($argList) > 1) {
-            if ($argList[1] == -2) {
+            if ($argList[1] === -2) {
                 $this->internalIPCArray['_call_type'] = -2;
             } else {
                 $this->internalIPCArray['_call_type'] = -1;
@@ -345,7 +347,7 @@ abstract class Threads
         while (true) {
             $ok = shmop_read($this->internalSemaphoreKey, 0, 1);
 
-            if ($ok == 0) {
+            if ($ok === 0) {
                 break;
             } else {
                 usleep(10);
@@ -369,16 +371,16 @@ abstract class Threads
         pcntl_signal(SIGCHLD, SIG_IGN);
 
         $pid = pcntl_fork();
-        if ($pid == 0) {
+        if ($pid === 0) {
             $this->isChild = true;
             sleep(1);
 
-            pcntl_signal(SIGUSR1, array($this, "sigHandler"));
+            pcntl_signal(SIGUSR1, [$this, 'sigHandler']);
 
-            if ($this->guid != 0) {
+            if ($this->guid !== 0) {
                 posix_setgid($this->guid);
             }
-            if ($this->puid != 0) {
+            if ($this->puid !== 0) {
                 posix_setuid($this->puid);
             }
             $this->run();

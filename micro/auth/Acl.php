@@ -41,7 +41,7 @@ abstract class Acl
     {
         $this->getConnect();
 
-        if (isset($params['groupTable'])) {
+        if (array_key_exists('groupTable', $params)) {
             $this->groupTable = $params['groupTable'];
         }
         if (!$this->conn->tableExists('acl_user')) {

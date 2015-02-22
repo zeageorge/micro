@@ -51,7 +51,7 @@ class AccessFilter extends Filter
             if ($res === true) {
                 return true;
             } elseif ($res === false) {
-                throw new Exception(isset($rule['message']) ? $rule['message'] : 'Access denied!');
+                throw new Exception(array_key_exists('message', $rule) ? $rule['message'] : 'Access denied!');
             } elseif ($res === null) {
                 continue;
             }
@@ -94,13 +94,13 @@ class AccessFilter extends Filter
      */
     protected function matchAction($rule)
     {
-        if (!isset($rule['actions']) OR !$rule['actions']) {
+        if (!array_key_exists('actions', $rule) OR !$rule['actions']) {
             return true;
         }
         if (is_array($rule['actions'])) {
-            return in_array($this->action, $rule['actions']);
+            return in_array($this->action, $rule['actions'], true);
         } else {
-            return $this->action == $rule['actions'];
+            return $this->action === $rule['actions'];
         }
     }
 
@@ -116,7 +116,7 @@ class AccessFilter extends Filter
      */
     protected function matchUser($rule)
     {
-        if (!isset($rule['users']) OR !$rule['users']) {
+        if (!array_key_exists('users', $rule) OR !$rule['users']) {
             return true;
         }
         if (is_array($rule['users'])) {
@@ -138,7 +138,7 @@ class AccessFilter extends Filter
                         break;
                     }
                     default: {
-                        if (Registry::get('user')->getID() == $u) {
+                        if (Registry::get('user')->getID() === $u) {
                             return true;
                         }
                     }
@@ -162,7 +162,7 @@ class AccessFilter extends Filter
                     break;
                 }
                 default: {
-                    if (Registry::get('user')->getID() == $rule['users']) {
+                    if (Registry::get('user')->getID() === $rule['users']) {
                         return true;
                     }
                 }
@@ -183,7 +183,7 @@ class AccessFilter extends Filter
      */
     protected function matchRole($rule)
     {
-        if (!isset($rule['roles']) OR !$rule['roles']) {
+        if (!array_key_exists('roles', $rule) OR !$rule['roles']) {
             return true;
         }
         if (is_array($rule['roles'])) {
@@ -212,7 +212,7 @@ class AccessFilter extends Filter
      */
     protected function matchIP($rule)
     {
-        if (!isset($rule['ips']) OR !$rule['ips']) {
+        if (!array_key_exists('ips', $rule) OR !$rule['ips']) {
             return true;
         }
         $ip = Registry::get('request')->getUserIP();
@@ -246,18 +246,18 @@ class AccessFilter extends Filter
      */
     protected function matchVerb($rule)
     {
-        if (!isset($rule['verb']) OR !$rule['verb']) {
+        if (!array_key_exists('verb', $rule) OR !$rule['verb']) {
             return true;
         }
         if (is_array($rule['verb'])) {
             $verb = Registry::get('request')->getMethod();
             foreach ($rule['verb'] AS $v) {
-                if ($v == $verb) {
+                if ($v === $verb) {
                     return true;
                 }
             }
         } else {
-            return $rule['verb'] == Registry::get('request')->getMethod();
+            return $rule['verb'] === Registry::get('request')->getMethod();
         }
         return false;
     }

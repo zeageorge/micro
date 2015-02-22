@@ -27,7 +27,7 @@ class Cookie
      */
     public function get($name)
     {
-        return isset($_COOKIE[$name]) ? $_COOKIE[$name] : false;
+        return array_key_exists($name, $_COOKIE) ? $_COOKIE[$name] : false;
     }
 
     /**
@@ -69,7 +69,7 @@ class Cookie
      */
     public function exists($name)
     {
-        return isset($_COOKIE[$name]);
+        return array_key_exists($name, $_COOKIE);
     }
 
     /**

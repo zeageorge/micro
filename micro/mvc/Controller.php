@@ -66,6 +66,11 @@ abstract class Controller
         $view = null;
         $actionClass = false;
 
+        // Set widgetStack for widgets
+        if (!array_key_exists('widgetStack', $GLOBALS)) {
+            $GLOBALS['widgetStack'] = [];
+        }
+
         if (!method_exists($this, 'action' . ucfirst($name))) {
             if (!$actionClass = $this->getActionClassByName($name)) {
                 throw new Exception('Action "' . $name . '" not found into ' . get_class($this));
@@ -111,10 +116,10 @@ abstract class Controller
             return $data;
         }
         foreach ($filters AS $filter) {
-            if (!isset($filter['class']) OR !class_exists($filter['class'])) {
+            if (!array_key_exists('class', $filter) OR !class_exists($filter['class'])) {
                 continue;
             }
-            if (!isset($filter['actions']) OR !in_array($action, $filter['actions'])) {
+            if (!array_key_exists('actions', $filter) OR !in_array($action, $filter['actions'], true)) {
                 continue;
             }
 
@@ -143,7 +148,7 @@ abstract class Controller
     {
         if (method_exists($this, 'actions')) {
             $actions = $this->actions();
-            if (isset($actions[$name]) AND class_exists($actions[$name])) {
+            if (array_key_exists($name, $actions) AND class_exists($actions[$name])) {
                 return $actions[$name];
             }
         }

@@ -11,7 +11,7 @@ echo Html::heading(2, 'Регистрация');
 $form = $this->beginWidget('\Micro\widgets\FormWidget', [
     'method' => 'post',
     'action' => '/register/post',
-    'client' => $model->getClient(),
+    'client' => $model->getClient()
 ]);
 
 echo $form->textFieldRow($model, 'email');

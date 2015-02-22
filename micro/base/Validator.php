@@ -36,7 +36,7 @@ class Validator
         'range' => 'RangeValidator',
         'email' => 'EmailValidator',
         'url' => 'UrlValidator',
-        'file' => 'FileValidator',
+        'file' => 'FileValidator'
     ];
     /** @var array $rule current rule */
     private $rule = [];
@@ -83,7 +83,7 @@ class Validator
         $name = array_shift($this->rule);
         $className = null;
 
-        if (isset($this->validators[$name])) {
+        if (array_key_exists($name, $this->validators)) {
             $className = '\\Micro\\validators\\' . $this->validators[$name];
         } elseif (file_exists(Micro::getInstance()->config['AppDir'] . '/validators/' . $name . '.php')) {
             $className = '\\App\\validators\\' . $name . '.php';

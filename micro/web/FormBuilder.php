@@ -50,15 +50,15 @@ class FormBuilder
         $method = 'GET',
         $type = 'text/plain',
         $action = '',
-        $attr = []
+        array $attr = []
     ) {
         $this->config = $config;
         $this->model = $model;
         $this->widget = new FormWidget([
-            'action' => $action,
-            'method' => $method,
-            'type' => $type,
-            'client' => $model->getClient(),
+            'action'     => $action,
+            'method'     => $method,
+            'type'       => $type,
+            'client'     => $model->getClient(),
             'attributes' => $attr
         ]);
     }
@@ -149,16 +149,17 @@ class FormBuilder
     public function beginRender()
     {
         $this->form = $this->widget->init();
-        if (isset($this->config['legend'])) {
+        if (array_key_exists('legend', $this->config)) {
             echo Html::openTag('fieldset');
             echo Html::legend($this->config['legend']);
         }
-        if (isset($this->config['description'])) {
+        if (array_key_exists('description', $this->config)) {
             echo Html::openTag('div',
                 ['class' => 'description']), $this->config['description'], Html::closeTag('div');
         }
         if ($this->model) {
-            if ($errors = $this->getModelErrors()) {
+            $errors = $this->getModelErrors();
+            if ($errors) {
                 echo Html::openTag('div', ['class' => 'errors']);
                 foreach ($errors AS $error) {
                     echo Html::openTag('div', ['class' => 'error']), $error, Html::closeTag('div');
@@ -176,7 +177,7 @@ class FormBuilder
      */
     public function endRender()
     {
-        if (isset($this->config['legend'])) {
+        if (array_key_exists('legend', $this->config)) {
             echo Html::closeTag('fieldset');
         }
         $this->widget->run();
@@ -198,12 +199,12 @@ class FormBuilder
         }
         foreach ($conf['elements'] AS $key => $value) {
             if (is_array($conf['elements'][$key])) {
-                if ($value['type'] == 'form') {
-                    $subForm = new FormBuilder($value, (isset($value['model'])) ? $value['model'] : null);
+                if ($value['type'] === 'form') {
+                    $subForm = new FormBuilder($value, (array_key_exists('model', $value)) ? $value['model'] : null);
                     echo $subForm;
                 } elseif ($this->model) {
                     echo $this->form->$value['type']($this->model, $key,
-                        (isset($value['options'])) ? $value['options'] : []);
+                        (array_key_exists('options', $value)) ? $value['options'] : []);
                 } else {
                     echo Html::$value['type']($key, $value['value'], $value['options']);
                 }
@@ -213,7 +214,7 @@ class FormBuilder
         }
         foreach ($this->config['buttons'] AS $button) {
             $type = $button['type'] . 'Button';
-            echo Html::$type($button['label'], (isset($button['options'])) ? $button['options'] : []);
+            echo Html::$type($button['label'], (array_key_exists('options', $button)) ? $button['options'] : []);
         }
     }
 }

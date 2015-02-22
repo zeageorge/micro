@@ -25,7 +25,7 @@ class User extends Model
             'email' => 'E-mail',
             'login' => 'Логин',
             'pass' => 'Пароль',
-            'fio' => 'ФИО',
+            'fio' => 'ФИО'
 
         ];
     }

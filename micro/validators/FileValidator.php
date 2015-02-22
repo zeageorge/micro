@@ -33,22 +33,22 @@ class FileValidator extends Validator
     {
         foreach ($this->elements AS $element) {
             $files = new Uploader;
-            if (isset($this->params['maxFiles']) AND (count($files->files) > $this->params['maxFiles'])) {
+            if (array_key_exists('maxFiles', $this->params) AND (count($files->files) > $this->params['maxFiles'])) {
                 $this->errors[] = 'Too many files in parameter ' . $element;
                 return false;
             }
             foreach ($files->files AS $fContext) {
-                if (isset($this->params['types']) AND (strpos($this->params['types'],
+                if (array_key_exists('types', $this->params) AND (strpos($this->params['types'],
                             $fContext['type']) === false)
                 ) {
                     $this->errors[] = 'File ' . $fContext['name'] . ' not allowed type';
                     return false;
                 }
-                if (isset($this->params['minSize']) AND ($fContext['size'] < $this->params['minSize'])) {
+                if (array_key_exists('minSize', $this->params) AND ($fContext['size'] < $this->params['minSize'])) {
                     $this->errors[] = 'File ' . $fContext['name'] . ' too small size';
                     return false;
                 }
-                if (isset($this->params['maxSize']) AND ($fContext['type'] > $this->params['maxSize'])) {
+                if (array_key_exists('maxSize', $this->params) AND ($fContext['type'] > $this->params['maxSize'])) {
                     $this->errors[] = 'File ' . $fContext['name'] . ' too many size';
                     return false;
                 }

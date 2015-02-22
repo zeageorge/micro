@@ -39,7 +39,7 @@ class DbLogger extends LogInterface
         parent::__construct($params);
         $this->getConnect();
 
-        $this->tableName = (isset($params['table']) AND !empty($params['table'])) ? $params['table'] : 'logs';
+        $this->tableName = (array_key_exists('table', $params) AND !empty($params['table'])) ? $params['table'] : 'logs';
 
         if (!$this->conn->tableExists($this->tableName)) {
             $this->conn->createTable(
@@ -83,7 +83,7 @@ class DbLogger extends LogInterface
         $this->conn->insert($this->tableName, [
             'level' => $level,
             'message' => $message,
-            'date_create' => $_SERVER['REQUEST_TIME'],
+            'date_create' => $_SERVER['REQUEST_TIME']
         ]);
     }
 }

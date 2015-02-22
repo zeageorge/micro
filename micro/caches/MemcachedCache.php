@@ -33,7 +33,7 @@ class MemcachedCache implements Cache
      */
     public function __construct(array $config = [])
     {
-        if (!$this->check() OR !isset($config['type'])) {
+        if (!$this->check() OR !array_key_exists('type', $config)) {
             throw new Exception('Memcache(d) not installed or not select type');
         }
 
@@ -51,14 +51,14 @@ class MemcachedCache implements Cache
             }
         }
 
-        if (isset($config['servers'])) {
+        if (array_key_exists('servers', $config)) {
             $this->driver->addServers($config['servers']);
         } elseif ($config['server']) {
             $conf = $config['server'];
             $server = [
-                'hostname' => (isset($conf['hostname']) ? $conf['hostname'] : '127.0.0.1'),
-                'port' => (isset($conf['port']) ? $conf['port'] : 11211),
-                'weight' => (isset($conf['weight']) ? $conf['weight'] : 1)
+                'hostname' => (array_key_exists('hostname', $conf) ? $conf['hostname'] : '127.0.0.1'),
+                'port' => (array_key_exists('port', $conf) ? $conf['port'] : 11211),
+                'weight' => (array_key_exists('weight', $conf) ? $conf['weight'] : 1)
             ];
 
             if (get_class($this->driver) === 'Memcached') {
@@ -79,7 +79,7 @@ class MemcachedCache implements Cache
      */
     public function check()
     {
-        return (!extension_loaded('memcached') && !extension_loaded('memcache')) ? false : true;
+        return (!extension_loaded('memcached') && !extension_loaded('memcache')) ?: true;
     }
 
     /**

@@ -188,7 +188,7 @@ class Html
     {
         $attributes['type'] = 'text/javascript';
         return self::openTag('script',
-            $attributes) . " /*<![CDATA[*/ " . $text . " /*]]>*/ " . self::closeTag('script');
+            $attributes) . ' /*<![CDATA[*/ ' . $text . ' /*]]>*/ ' . self::closeTag('script');
     }
 
     /**
@@ -211,10 +211,10 @@ class Html
             'html4-trans' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
             'html4-strict' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
             'html4-frame' => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
-            'html5' => '<!DOCTYPE html>',
+            'html5' => '<!DOCTYPE html>'
         );
 
-        if (!isset($docTypes[$name])) {
+        if (!array_key_exists($name, $docTypes)) {
             return false;
         }
         return $docTypes[$name];
@@ -368,7 +368,7 @@ class Html
      * @return string
      * @static
      */
-    public static function object($source, array $attributes = [], $params = [])
+    public static function object($source, array $attributes = [], array $params = [])
     {
         $attributes['data'] = $source;
         $paramsConverted = '';
@@ -414,13 +414,13 @@ class Html
 
         $result = null;
         foreach ($items AS $item) {
-            $result .= Html::openTag('li', (isset($item['attr'])) ? $item['attr'] : []);
-            if (isset($item['parents'])) {
-                $result .= ($item['text']) ? $item['text'] : null;
+            $result .= Html::openTag('li', (array_key_exists('attr', $item)) ? $item['attr'] : []);
+            if (array_key_exists('parents', $item)) {
+                $result .= array_key_exists('text', $item) ? $item['text'] : null;
                 $result .= self::lists(
                     $item['parents'],
-                    (isset($item['parentsAttr']) ? $item['parentsAttr'] : []),
-                    (isset($item['parentsIsNumeric']) ? true : false)
+                    (array_key_exists('parentsAttr', $item) ? $item['parentsAttr'] : []),
+                    (array_key_exists('parentsIsNumeric', $item) ? true : false)
                 );
             } else {
                 $result .= $item['text'];
@@ -459,9 +459,9 @@ class Html
         $output = null;
         foreach ($elements AS $value) {
             $output .= self::tableRow(
-                (isset($value['cells'])) ? $value['cells'] : [],
-                (isset($value['header'])) ? $value['header'] : false,
-                (isset($value['attributes'])) ? $value['attributes'] : []
+                array_key_exists('cells', $value) ? $value['cells'] : [],
+                array_key_exists('header', $value) ? $value['header'] : false,
+                array_key_exists('attributes', $value) ? $value['attributes'] : []
             );
         }
         return self::beginTable($attributes) . $output . self::endTable();
@@ -485,15 +485,15 @@ class Html
     {
         $output = null;
         foreach ($elements AS $value) {
-            if ($isHeading == false) {
+            if ($isHeading === false) {
                 $output .= self::tableCell(
-                    (isset($value['value'])) ? $value['value'] : [],
-                    (isset($value['attributes'])) ? $value['attributes'] : []
+                    array_key_exists('value', $value) ? $value['value'] : [],
+                    array_key_exists('attributes', $value) ? $value['attributes'] : []
                 );
             } else {
                 $output .= self::tableHeading(
-                    (isset($value['value'])) ? $value['value'] : [],
-                    (isset($value['attributes'])) ? $value['attributes'] : []
+                    array_key_exists('value', $value) ? $value['value'] : [],
+                    array_key_exists('attributes', $value) ? $value['attributes'] : []
                 );
             }
         }
@@ -729,7 +729,7 @@ class Html
      */
     public static function listBox($name, array $options = [], array $attributes = [])
     {
-        if (isset($attributes['selected'])) {
+        if (array_key_exists('selected', $attributes)) {
             $selected = $attributes['selected'];
             unset($attributes['selected']);
         } else {
@@ -739,21 +739,21 @@ class Html
         $attributes['name'] = $name;
         $opts = '';
         foreach ($options AS $option) {
-            if (isset($option['label'])) {
+            if (array_key_exists('label', $option)) {
                 $opts .= self::optGroup($option['label'], $option['options'], $option['attributes']);
             } else {
-                if ($option['value'] == $selected) {
+                if ($option['value'] === $selected) {
                     $option['selected'] = 'selected';
                 }
 
                 $attr = [];
-                if (isset($option['attributes'])) {
+                if (array_key_exists('attributes', $option)) {
                     $attr = $option['attributes'];
                     unset($option['attributes']);
                 }
 
                 $text = '';
-                if (isset($option['text'])) {
+                if (array_key_exists('text', $option)) {
                     $text = $option['text'];
                     unset($option['text']);
                 }
@@ -781,7 +781,7 @@ class Html
         $attributes['label'] = $label;
         $opts = '';
         foreach ($options AS $option) {
-            if (isset($option['label'])) {
+            if (array_key_exists('label', $option)) {
                 $opts .= self::optgroup($option['label'], $option['options'], $option['attributes']);
             } else {
                 $opts .= self::option($option['value'], $option['text'], $option['attributes']);
@@ -829,7 +829,7 @@ class Html
     ) {
         $checks = '';
         foreach ($checkboxes AS $checkbox) {
-            if ($checkbox['value'] == $selected) {
+            if ($checkbox['value'] === $selected) {
                 $checkbox['attributes']['selected'] = 'selected';
             }
             $check = self::checkboxField($name, $checkbox['value'], $checkbox['attributes']);
@@ -870,7 +870,7 @@ class Html
      */
     private static function field($type, $name, $value = null, array $attributes = [])
     {
-        $attributes['id'] = (isset($attributes['id'])) ? $attributes['id'] : $name;
+        $attributes['id'] = array_key_exists('id', $attributes) ? $attributes['id'] : $name;
         $attributes['type'] = $type;
         $attributes['name'] = $name;
         $attributes['value'] = $value;
@@ -900,7 +900,7 @@ class Html
                 $radio['attributes']['selected'] = 'selected';
             }
             $rad = self::radioField($name, $radio['value'],
-                isset($radio['attributes']) ? $radio['attributes'] : []);
+                array_key_exists('attributes', $radio) ? $radio['attributes'] : []);
             $rads .= str_replace(['%radio%', '%text%'], [$rad, $radio['text']], $format);
         }
         return $rads;
@@ -1321,10 +1321,10 @@ class Html
         }
         foreach ($tracks AS $track) {
             $srcs .= self::tag('track', [
-                'kind' => $track['kind'],
-                'src' => $track['src'],
+                'kind'    => $track['kind'],
+                'src'     => $track['src'],
                 'srclang' => $track['srclang'],
-                'label' => $track['label']
+                'label'   => $track['label']
             ]);
         }
         return self::openTag('video', $attributes) . $srcs . $noCodec . self::closeTag('video');
@@ -1351,10 +1351,10 @@ class Html
         }
         foreach ($tracks AS $track) {
             $srcs .= self::tag('track', [
-                'kind' => $track['kind'],
-                'src' => $track['src'],
+                'kind'    => $track['kind'],
+                'src'     => $track['src'],
                 'srclang' => $track['srclang'],
-                'label' => $track['label']
+                'label'   => $track['label']
             ]);
         }
         return self::openTag('audio', $attributes) . $srcs . $noCodec . self::closeTag('audio');

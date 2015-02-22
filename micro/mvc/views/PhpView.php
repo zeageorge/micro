@@ -39,11 +39,11 @@ class PhpView extends View
      */
     public function render()
     {
-        if (empty($this->view)) {
+        if (!$this->view) {
             return false;
         }
         return $this->renderRawData(
-            ($this->data) ? $this->data : $this->renderFile($this->getViewFile($this->view), $this->params)
+            ($this->data) ?: $this->renderFile($this->getViewFile($this->view), $this->params)
         );
     }
 
@@ -87,10 +87,11 @@ class PhpView extends View
 
         extract($data, EXTR_PREFIX_SAME, 'data');
         ob_start();
+
         include str_replace('\\', '/', $fileName);
 
-        if (!empty($this->widgetStack)) {
-            throw new Exception(count($this->widgetStack) . ' widgets not endings.');
+        if ($GLOBALS['widgetStack']) {
+            throw new Exception(count($GLOBALS['widgetStack']) . ' widgets not endings.');
         }
 
         return ob_get_clean();
@@ -137,7 +138,7 @@ class PhpView extends View
         $calledClass = $this->path;
 
         // Calculate path to view
-        if (substr($calledClass, 0, strpos($calledClass, '\\')) == 'App') {
+        if (substr($calledClass, 0, strpos($calledClass, '\\')) === 'App') {
             $path = Micro::getInstance()->config['AppDir'];
         } else {
             $path = Micro::getInstance()->config['MicroDir'];

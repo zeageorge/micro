@@ -30,7 +30,7 @@ class FileCache implements Cache
      */
     public function __construct(array $config = [])
     {
-        $path = (isset($config['path'])) ? $config['path'] : sys_get_temp_dir() . '/cache';
+        $path = (array_key_exists('path', $config)) ? $config['path'] : sys_get_temp_dir() . '/cache';
         if (!is_dir($path)) {
             mkdir($path, 0600);
         }
@@ -89,7 +89,7 @@ class FileCache implements Cache
             return;
         }
         while (false !== ($obj = readdir($dh))) {
-            if ($obj == '.' || $obj == '..') {
+            if ($obj === '.' || $obj === '..') {
                 continue;
             }
 
@@ -103,8 +103,6 @@ class FileCache implements Cache
         if ($deleteRootToo) {
             @rmdir($dir);
         }
-
-        return;
     }
 
     /**

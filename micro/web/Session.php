@@ -27,7 +27,7 @@ class Session
      */
     public function __construct(array $config = [])
     {
-        if (isset($config['autoStart']) AND ($config['autoStart'] == true)) {
+        if (array_key_exists('autoStart', $config) AND ($config['autoStart'] === true)) {
             $this->create();
         }
     }
@@ -40,7 +40,7 @@ class Session
      */
     public function create()
     {
-        if (!isset($_SESSION)) {
+        if (!session_id()) {
             session_start();
         }
     }
@@ -53,7 +53,7 @@ class Session
      */
     public function destroy()
     {
-        if (isset($_SESSION)) {
+        if (session_id()) {
             session_unset();
             session_destroy();
         }
@@ -70,7 +70,7 @@ class Session
      */
     public function __get($name)
     {
-        return (isset($_SESSION[$name])) ? $_SESSION[$name] : null;
+        return (array_key_exists($name, $_SESSION)) ? $_SESSION[$name] : null;
     }
 
     /**
@@ -99,7 +99,7 @@ class Session
      */
     public function __isset($name)
     {
-        return isset($_SESSION[$name]);
+        return array_key_exists($name, $_SESSION);
     }
 
     /**

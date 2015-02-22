@@ -4,7 +4,6 @@ namespace Micro\widgets;
 
 use Micro\base\Exception;
 use Micro\db\Query;
-use Micro\Micro;
 use Micro\mvc\Widget;
 use Micro\wrappers\Html;
 
@@ -23,11 +22,11 @@ use Micro\wrappers\Html;
 class ListViewWidget extends Widget
 {
     /** @var string $query query to database */
-    public $query = null;
+    public $query;
     /** @var int $elemsType elements of return query type */
     public $elemsType = \PDO::FETCH_ASSOC;
     /** @var string $view Name of view file */
-    public $view = null;
+    public $view;
     /** @var int $limit Limit current rows */
     public $limit = 10;
     /** @var int $page Current page on table */
@@ -98,7 +97,7 @@ class ListViewWidget extends Widget
 
         echo Html::openTag('ul', $this->attributes);
         for (; $i < ($st + $this->limit); $i++) {
-            if (isset($this->rows[$i])) {
+            if (array_key_exists($i, $this->rows)) {
                 echo Html::openTag('li', $this->attributesElement);
 
                 $element = $this->rows[$i];
@@ -118,9 +117,10 @@ class ListViewWidget extends Widget
         $pagers = ob_get_clean();
 
         echo str_replace(
-            array('{counter}','{elements}','{pager}'),
+            array('{counter}', '{elements}', '{pager}'),
             array(
-                Html::openTag('div',$this->attributesCounter).$this->counterText.$this->rowCount.Html::closeTag('div'),
+                Html::openTag('div',
+                    $this->attributesCounter) . $this->counterText . $this->rowCount . Html::closeTag('div'),
                 $elements,
                 $pagers
             ),

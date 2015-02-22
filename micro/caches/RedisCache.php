@@ -40,7 +40,7 @@ class RedisCache implements Cache
 
         $result = false;
         try {
-            if (isset($config['socket_type']) AND $config['socket_type'] === 'unix') {
+            if (array_key_exists('socket_type', $config) AND $config['socket_type'] === 'unix') {
                 $result = $this->driver->connect($config['socket']);
             } else {
                 $result = $this->driver->connect($config['host'], $config['port'], $config['duration']);
@@ -105,7 +105,7 @@ class RedisCache implements Cache
      */
     public function delete($name)
     {
-        return ($this->driver->delete($name) !== 1) ? false : true;
+        return ($this->driver->delete($name) !== 1) ?: true;
     }
 
     /**

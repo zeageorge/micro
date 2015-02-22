@@ -57,7 +57,7 @@ final class Micro
      */
     public static function getInstance(array $config = [])
     {
-        if (self::$_app == null) {
+        if (self::$_app === null) {
             self::$_app = new Micro($config);
         }
 
@@ -71,20 +71,20 @@ final class Micro
      * If isset config, application get parameters for initialization
      * and setup components.
      *
-     * @access private
+     * @access protected
      *
      * @param array $config configuration array
      *
      * @result void
      */
-    private function __construct(array $config = [])
+    protected function __construct(array $config = [])
     {
         $this->config = $config;
 
         Autoload::setAlias('Micro', $config['MicroDir']);
         Autoload::setAlias('App', $config['AppDir']);
 
-        if (isset($config['VendorDir'])) {
+        if (array_key_exists('VendorDir', $config)) {
             Autoload::setAlias('Vendor', $config['VendorDir']);
         }
 
@@ -111,13 +111,13 @@ final class Micro
         $action = Registry::get('request')->getAction();
 
         if (!class_exists($path)) {
-            if (isset($this->config['errorController']) AND $this->config['errorController']) {
+            if (array_key_exists('errorController', $this->config) AND $this->config['errorController']) {
                 if (!Autoload::loader($this->config['errorController'])) {
                     throw new Exception('Error controller not valid');
                 }
 
                 $path = $this->config['errorController'];
-                $action = isset($config['errorAction']) ? $config['errorAction'] : 'error';
+                $action = array_key_exists('errorAction', $this->config) ? $this->config['errorAction'] : 'error';
             } else {
                 throw new Exception('ErrorController not defined or empty');
             }

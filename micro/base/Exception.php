@@ -21,7 +21,8 @@ class Exception extends \Exception
      * Magic convert object to string
      *
      * @access public
-     * @return string
+     *
+     * @return mixed|string
      */
     public function __toString()
     {

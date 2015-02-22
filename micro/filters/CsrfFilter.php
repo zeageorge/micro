@@ -33,13 +33,13 @@ class CsrfFilter extends Filter
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return true;
         }
-        if (!isset($_POST['csrf']) OR !$_POST['csrf']) {
+        if (!array_key_exists('csrf', $_POST) OR !$_POST['csrf']) {
             $this->result = 'Not allowed';
             return false;
         }
 
         $csrf = Registry::get('session')->csrf;
-        if (($key = array_search($_POST['csrf'], $csrf)) !== null) {
+        if (($key = in_array($_POST['csrf'], $csrf, true)) !== null) {
 
             unset($csrf[$key], $_POST['csrf']);
             Registry::get('session')->csrf = $csrf;

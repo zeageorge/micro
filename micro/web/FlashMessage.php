@@ -41,7 +41,7 @@ class FlashMessage
      */
     public function __construct()
     {
-        if (Registry::get('session') != null) {
+        if (Registry::get('session') !== null) {
             $this->session = Registry::get('session');
         } else {
             throw new Exception('Sessions not activated');
@@ -116,7 +116,7 @@ class FlashMessage
     public function has($type = FlashMessage::TYPE_SUCCESS)
     {
         foreach ($this->session->flash AS $element) {
-            if (isset($element['type']) && $element['type'] == $type) {
+            if (array_key_exists('type', $element) && $element['type'] === $type) {
                 return true;
             }
         }
@@ -136,7 +136,7 @@ class FlashMessage
     public function get($type = FlashMessage::TYPE_SUCCESS)
     {
         foreach ($this->session->flash AS $key => $element) {
-            if (isset($element['type']) && $element['type'] == $type) {
+            if (array_key_exists('type', $element) && $element['type'] === $type) {
                 $result = $element;
                 unset(Registry::get('session')->flash[$key]);
                 return $result;

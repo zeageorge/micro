@@ -60,7 +60,7 @@ class CaptchaValidator extends Validator
             }
 
             $convert = Registry::get('user')->makeCaptcha($model->$element);
-            if ($convert != $this->captcha) {
+            if ($convert !== $this->captcha) {
                 return false;
             }
         }

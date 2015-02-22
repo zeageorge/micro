@@ -150,7 +150,7 @@ abstract class FormModel
     public function getLabel($property)
     {
         $elements = $this->attributeLabels();
-        return (isset($elements[$property])) ? $elements[$property] : null;
+        return (array_key_exists($property, $elements)) ? $elements[$property] : null;
     }
 
     /**

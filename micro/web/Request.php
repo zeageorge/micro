@@ -41,7 +41,7 @@ class Request
      */
     public function __construct(array $routes = [])
     {
-        $this->router = new Router(isset($routes['routes']) ? $routes['routes'] : []);
+        $this->router = new Router(array_key_exists('routes', $routes) ? $routes['routes'] : []);
         $this->initialize();
     }
 
@@ -53,16 +53,16 @@ class Request
      */
     private function initialize()
     {
-        $uri = (isset($_GET['r']) OR !empty($_GET['r'])) ? $_GET['r'] : '/default';
+        $uri = (array_key_exists('r', $_GET) AND $_GET['r']) ? $_GET['r'] : '/default';
 
-        if (substr($uri, -1) == '/') {
+        if (substr($uri, -1) === '/') {
             $uri = '/default';
         }
 
         $trustUri = $this->router->parse($uri, $this->getMethod());
         $uriBlocks = explode('/', $trustUri);
 
-        if (isset($uri{0}) AND $uri{0} == '/') {
+        if (isset($uri{0}) AND $uri{0} === '/') {
             array_shift($uriBlocks);
         }
 
@@ -71,13 +71,13 @@ class Request
         $this->prepareController($uriBlocks);
         $this->prepareAction($uriBlocks);
 
-        if (!empty($uriBlocks)) {
+        if ($uriBlocks) {
             $uriBlocks = array_values($uriBlocks);
             $countUriBlocks = count($uriBlocks);
 
             $gets = [];
             for ($i = 0; $i < $countUriBlocks; $i = $i + 2) {
-                if (!isset($uriBlocks[$i + 1])) {
+                if (!array_key_exists($i + 1, $uriBlocks)) {
                     return;
                 }
                 $gets[$uriBlocks[$i]] = $uriBlocks[$i + 1];
@@ -109,7 +109,7 @@ class Request
     private function prepareExtensions(&$uriBlocks)
     {
         $extensions = [];
-        if (isset(Micro::getInstance()->config['extensions'])) {
+        if (array_key_exists('extensions', Micro::getInstance()->config)) {
             $extensions = Micro::getInstance()->config['extensions'];
         }
         if (!$extensions) {
@@ -204,7 +204,7 @@ class Request
 
     public function getUserIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        return array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
     }
 
     /**
