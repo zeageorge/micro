@@ -41,11 +41,11 @@ class PoolDbConnection
      */
     public function __construct(array $params = [])
     {
-        if (!array_key_exists('servers', $params)) {
+        if (empty($params['servers'])) {
             throw new Exception('Servers not defined');
         }
 
-        if (!array_key_exists('master', $params)) {
+        if (empty($params['master'])) {
             $params['master'] = $params['servers'][$params['servers'][0]];
         }
 

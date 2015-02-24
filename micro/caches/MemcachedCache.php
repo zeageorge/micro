@@ -33,7 +33,7 @@ class MemcachedCache implements Cache
      */
     public function __construct(array $config = [])
     {
-        if (!$this->check() OR !array_key_exists('type', $config)) {
+        if (!$this->check() OR empty($config['type'])) {
             throw new Exception('Memcache(d) not installed or not select type');
         }
 
@@ -51,14 +51,14 @@ class MemcachedCache implements Cache
             }
         }
 
-        if (array_key_exists('servers', $config)) {
+        if (!empty($config['servers'])) {
             $this->driver->addServers($config['servers']);
         } elseif ($config['server']) {
             $conf = $config['server'];
             $server = [
-                'hostname' => (array_key_exists('hostname', $conf) ? $conf['hostname'] : '127.0.0.1'),
-                'port' => (array_key_exists('port', $conf) ? $conf['port'] : 11211),
-                'weight' => (array_key_exists('weight', $conf) ? $conf['weight'] : 1)
+                'hostname' => (!empty($conf['hostname']) ? $conf['hostname'] : '127.0.0.1'),
+                'port' => (!empty($conf['port']) ? $conf['port'] : 11211),
+                'weight' => (!empty($conf['weight']) ? $conf['weight'] : 1)
             ];
 
             if (get_class($this->driver) === 'Memcached') {

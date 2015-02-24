@@ -53,8 +53,8 @@ class Router
 
         // scan routes
         foreach ($this->routes AS $condition => $config) {
-            if (is_array($config) AND array_key_exists('route', $config)) {
-                if (array_key_exists('verb', $config) AND ($config['verb'] !== $method)) {
+            if (is_array($config) AND !empty($config['route'])) {
+                if (!empty($config['verb']) AND ($config['verb'] !== $method)) {
                     continue;
                 }
                 $replacement = $config['route'];
@@ -176,7 +176,7 @@ class Router
                 unset($attr[$value]);
             } else {
                 $element = substr($value, 1, -1);
-                if (array_key_exists($element, $attr)) {
+                if (!empty($attr[$element])) {
                     $result .= '/' . $attr[$element];
                     unset($attr[$element]);
                 } else {

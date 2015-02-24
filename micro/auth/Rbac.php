@@ -211,7 +211,7 @@ abstract class Rbac
                 $result = [$id => $role];
                 break;
             } else {
-                if (array_key_exists('childs', $role) AND $role['childs']) {
+                if (!empty($role['childs'])) {
                     $result = $this->searchRoleRecursive($role['childs'], $finder);
                     break;
                 }

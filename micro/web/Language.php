@@ -38,7 +38,7 @@ class Language
     {
         $viewName = substr($viewNameFile, 0, -3);
         $config = Micro::getInstance()->config;
-        $lang = (array_key_exists('lang', $config)) ? $config['lang'] : $this->defaultLang;
+        $lang = !empty($config['lang']) ? $config['lang'] : $this->defaultLang;
 
         if (!file_exists($viewName . $lang . '.ini')) {
             return;
@@ -59,7 +59,7 @@ class Language
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->language)) {
+        if (!empty($this->language[$name])) {
             return $this->language[$name];
         } else {
             throw new Exception($name . ' not defined into lang file');

@@ -97,7 +97,7 @@ class ListViewWidget extends Widget
 
         echo Html::openTag('ul', $this->attributes);
         for (; $i < ($st + $this->limit); $i++) {
-            if (array_key_exists($i, $this->rows)) {
+            if (!empty($this->rows[$i])) {
                 echo Html::openTag('li', $this->attributesElement);
 
                 $element = $this->rows[$i];

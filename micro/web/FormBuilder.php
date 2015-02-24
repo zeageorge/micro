@@ -149,11 +149,11 @@ class FormBuilder
     public function beginRender()
     {
         $this->form = $this->widget->init();
-        if (array_key_exists('legend', $this->config)) {
+        if (!empty($this->config['legend'])) {
             echo Html::openTag('fieldset');
             echo Html::legend($this->config['legend']);
         }
-        if (array_key_exists('description', $this->config)) {
+        if (!empty($this->config['description'])) {
             echo Html::openTag('div',
                 ['class' => 'description']), $this->config['description'], Html::closeTag('div');
         }
@@ -177,7 +177,7 @@ class FormBuilder
      */
     public function endRender()
     {
-        if (array_key_exists('legend', $this->config)) {
+        if (!empty($this->config['legend'])) {
             echo Html::closeTag('fieldset');
         }
         $this->widget->run();
@@ -200,11 +200,10 @@ class FormBuilder
         foreach ($conf['elements'] AS $key => $value) {
             if (is_array($conf['elements'][$key])) {
                 if ($value['type'] === 'form') {
-                    $subForm = new FormBuilder($value, (array_key_exists('model', $value)) ? $value['model'] : null);
+                    $subForm = new FormBuilder($value, !empty($value['model']) ? $value['model'] : null);
                     echo $subForm;
                 } elseif ($this->model) {
-                    echo $this->form->$value['type']($this->model, $key,
-                        (array_key_exists('options', $value)) ? $value['options'] : []);
+                    echo $this->form->$value['type']($this->model, $key, !empty($value['options']) ? $value['options'] : []);
                 } else {
                     echo Html::$value['type']($key, $value['value'], $value['options']);
                 }
@@ -214,7 +213,7 @@ class FormBuilder
         }
         foreach ($this->config['buttons'] AS $button) {
             $type = $button['type'] . 'Button';
-            echo Html::$type($button['label'], (array_key_exists('options', $button)) ? $button['options'] : []);
+            echo Html::$type($button['label'], !empty($button['options']) ? $button['options'] : []);
         }
     }
 }

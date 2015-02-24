@@ -41,7 +41,7 @@ class Request
      */
     public function __construct(array $routes = [])
     {
-        $this->router = new Router(array_key_exists('routes', $routes) ? $routes['routes'] : []);
+        $this->router = new Router( !empty($routes['routes']) ? $routes['routes'] : [] );
         $this->initialize();
     }
 
@@ -53,7 +53,7 @@ class Request
      */
     private function initialize()
     {
-        $uri = (array_key_exists('r', $_GET) AND $_GET['r']) ? $_GET['r'] : '/default';
+        $uri = !empty($_GET['r']) ? $_GET['r'] : '/default';
 
         if (substr($uri, -1) === '/') {
             $uri = '/default';
@@ -76,8 +76,8 @@ class Request
             $countUriBlocks = count($uriBlocks);
 
             $gets = [];
-            for ($i = 0; $i < $countUriBlocks; $i = $i + 2) {
-                if (!array_key_exists($i + 1, $uriBlocks)) {
+            for ($i = 0; $i < $countUriBlocks; $i += 2) {
+                if (empty($uriBlocks[$i + 1])) {
                     return;
                 }
                 $gets[$uriBlocks[$i]] = $uriBlocks[$i + 1];
@@ -109,7 +109,7 @@ class Request
     private function prepareExtensions(&$uriBlocks)
     {
         $extensions = [];
-        if (array_key_exists('extensions', Micro::getInstance()->config)) {
+        if (!empty(Micro::getInstance()->config['extensions'])) {
             $extensions = Micro::getInstance()->config['extensions'];
         }
         if (!$extensions) {
@@ -204,7 +204,7 @@ class Request
 
     public function getUserIP()
     {
-        return array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        return !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
     }
 
     /**

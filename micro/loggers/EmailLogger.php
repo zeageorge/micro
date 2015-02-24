@@ -42,9 +42,9 @@ class EmailLogger extends LogInterface
     {
         parent::__construct($params);
 
-        $this->from = array_key_exists('from', $params) ? $params['from'] : getenv('SERVER_ADMIN');
-        $this->to = array_key_exists('to', $params) ? $params['to'] : $this->from;
-        $this->subject = array_key_exists('subject', $params) ? $params['subject'] : $_SERVER['SERVER_NAME'] . ' log message';
+        $this->from = !empty($params['from']) ? $params['from'] : getenv('SERVER_ADMIN');
+        $this->to = !empty($params['to']) ? $params['to'] : $this->from;
+        $this->subject = !empty($params['subject']) ? $params['subject'] : $_SERVER['SERVER_NAME'] . ' log message';
     }
 
     /**

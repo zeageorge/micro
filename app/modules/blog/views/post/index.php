@@ -8,7 +8,7 @@ use Micro\wrappers\Html;
 /** @var Language $lang */
 
 $currPage = 0;
-if (array_key_exists('page', $_GET)) {
+if (!empty($_GET['page'])) {
     $currPage = $_GET['page'];
 }
 

@@ -167,7 +167,7 @@ class DbRbac extends Rbac
             $this->conn->delete('rbac_user', 'role=:name', ['name' => $element['name']]);
             $this->conn->delete('rbac_role', 'name=:name', ['name' => $element['name']]);
 
-            if (array_key_exists('childs', $tree)) {
+            if (!empty($tree['childs'])) {
                 $this->recursiveDelete($element['childs']);
             }
             unset($tree[$key]);

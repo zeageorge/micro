@@ -165,7 +165,7 @@ class Curl
 
         $this->http_error_message = '';
         if ($this->error) {
-            $this->http_error_message = array_key_exists(0, $this->response_headers) ? $this->response_headers[0] : '';
+            $this->http_error_message = !empty($this->response_headers[0]) ? $this->response_headers[0] : '';
         }
 
         $this->error_message = $this->curl_error ? $this->curl_error_message : $this->http_error_message;

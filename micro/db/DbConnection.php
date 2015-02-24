@@ -36,7 +36,7 @@ class DbConnection
     public function __construct(array $config = [], $ignoreFail = false)
     {
         try {
-            if (!array_key_exists('options', $config)) {
+            if (empty($config['options'])) {
                 $config['options'] = null;
             }
             $this->conn = new \PDO($config['connectionString'], $config['username'], $config['password'],

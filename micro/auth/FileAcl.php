@@ -41,10 +41,10 @@ class FileAcl extends Acl
     {
         parent::__construct($params);
 
-        $roles = array_key_exists('roles', $params) ? $params['roles'] : [];
-        $this->roles = array_key_exists('roles', $roles) ? $roles['roles'] : [];
-        $this->perms = array_key_exists('perms', $roles) ? $roles['perms'] : [];
-        $this->rolePermsCompare = array_key_exists('role_perms', $roles) ? $roles['role_perms'] : [];
+        $roles = !empty($params['roles']) ? $params['roles'] : [];
+        $this->roles = !empty($roles['roles']) ? $roles['roles'] : [];
+        $this->perms = !empty($roles['perms']) ? $roles['perms'] : [];
+        $this->rolePermsCompare = !empty($roles['role_perms']) ? $roles['role_perms'] : [];
     }
 
     /**

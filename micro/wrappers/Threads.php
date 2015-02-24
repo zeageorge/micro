@@ -57,7 +57,7 @@ abstract class Threads
      */
     public function __construct($name, $puid = 0, $guid = 0, $umask = -1)
     {
-        if (!array_key_exists('argc', $_SERVER)) {
+        if (empty($_SERVER['argc'])) {
             throw new Exception('Threads are permitted only for CLI');
         }
         $this->name = $name;

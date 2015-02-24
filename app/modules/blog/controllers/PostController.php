@@ -47,7 +47,7 @@ class PostController extends Controller
         $crt = new Query;
         $crt->limit = 10;
         $crt->order = 'id DESC';
-        $crt->ofset = (array_key_exists('page', $_GET) ? $_GET['page'] : 0) * $crt->limit;
+        $crt->ofset = (!empty($_GET['page']) ? $_GET['page'] : 0) * $crt->limit;
 
 
         $crt2 = new Query;
@@ -80,7 +80,7 @@ class PostController extends Controller
     {
         $blog = new Blog;
 
-        if (array_key_exists('Blog', $_POST)) {
+        if (!empty($_POST['Blog'])) {
             $blog->name = $_POST['Blog']['name'];
             $blog->content = $_POST['Blog']['content'];
 

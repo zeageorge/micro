@@ -55,6 +55,6 @@ class Relations
      */
     public function get($name)
     {
-        return array_key_exists($name, $this->data) ? $this->data[$name] : false;
+        return !empty($this->data[$name]) ? $this->data[$name] : false;
     }
 } 

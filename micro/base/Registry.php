@@ -45,7 +45,7 @@ final class Registry
     public static function get($name = '')
     {
         self::configure($name);
-        return (array_key_exists($name, self::$data)) ? self::$data[$name] : null;
+        return (!empty(self::$data[$name])) ? self::$data[$name] : null;
     }
 
     /**
@@ -60,22 +60,23 @@ final class Registry
      */
     public static function configure($name = null)
     {
-        if ($name AND array_key_exists($name, self::$data)) {
+        if ($name AND !empty(self::$data[$name])) {
             return;
         }
 
-        if (array_key_exists('components', Micro::getInstance()->config)) {
+        if (!empty(Micro::getInstance()->config['components'])) {
+            /** @var array $configs */
             $configs = Micro::getInstance()->config['components'];
         } else {
             throw new Exception('Components not configured');
         }
 
-        if ($name AND array_key_exists($name, $configs)) {
+        if ($name AND !empty($configs[$name])) {
             if (!self::loadComponent($name, $configs[$name])) {
                 throw new Exception('Class ' . $name . ' error loading.');
             }
 
-        } elseif ($name AND !array_key_exists($name, $configs)) {
+        } elseif ($name AND empty($configs[$name])) {
             throw new Exception('Class ' . $name . ' not configured.');
 
         } else {
@@ -100,7 +101,7 @@ final class Registry
      */
     public static function loadComponent($name, $options)
     {
-        if (!array_key_exists('class', $options) OR !$options['class']) {
+        if (empty($options['class'])) {
             return false;
         }
 
@@ -108,7 +109,7 @@ final class Registry
             return false;
         }
 
-        if (array_key_exists('depends', $options) AND $options['depends']) {
+        if (!empty($options['depends'])) {
             if (is_array($options['depends'])) {
                 foreach ($options['depends'] AS $depend) {
                     self::configure($depend);

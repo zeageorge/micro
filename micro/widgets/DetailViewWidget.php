@@ -105,11 +105,7 @@ class DetailViewWidget extends Widget
             $fieldKeys[] = $field['field'];
         }
 
-        if ($this->keys) {
-            $this->keys = array_intersect($fieldKeys, $this->keys);
-        } else {
-            $this->keys = $fieldKeys;
-        }
+        $this->keys = $this->keys ? array_intersect($fieldKeys, $this->keys) : $fieldKeys;
     }
 
     /**
@@ -145,7 +141,7 @@ class DetailViewWidget extends Widget
      */
     public function getAttributeLabel($key)
     {
-        if (array_key_exists($key, $this->attributeLabels)) {
+        if (!empty($this->attributeLabels[$key])) {
             return $this->attributeLabels[$key];
         }
         return $key;

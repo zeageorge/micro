@@ -214,7 +214,7 @@ class Html
             'html5' => '<!DOCTYPE html>'
         );
 
-        if (!array_key_exists($name, $docTypes)) {
+        if (empty($docTypes[$name])) {
             return false;
         }
         return $docTypes[$name];
@@ -414,13 +414,13 @@ class Html
 
         $result = null;
         foreach ($items AS $item) {
-            $result .= Html::openTag('li', (array_key_exists('attr', $item)) ? $item['attr'] : []);
-            if (array_key_exists('parents', $item)) {
-                $result .= array_key_exists('text', $item) ? $item['text'] : null;
+            $result .= Html::openTag('li', !empty($item['attr']) ? $item['attr'] : [] );
+            if (!empty($item['parents'])) {
+                $result .= !empty($item['text']) ? $item['text'] : null;
                 $result .= self::lists(
                     $item['parents'],
-                    (array_key_exists('parentsAttr', $item) ? $item['parentsAttr'] : []),
-                    (array_key_exists('parentsIsNumeric', $item) ? true : false)
+                    (!empty($item['parentsAttr']) ? $item['parentsAttr'] : []),
+                    (!empty($item['parentsIsNumeric']) ? true : false)
                 );
             } else {
                 $result .= $item['text'];
@@ -459,9 +459,9 @@ class Html
         $output = null;
         foreach ($elements AS $value) {
             $output .= self::tableRow(
-                array_key_exists('cells', $value) ? $value['cells'] : [],
-                array_key_exists('header', $value) ? $value['header'] : false,
-                array_key_exists('attributes', $value) ? $value['attributes'] : []
+                !empty($value['cells']) ? $value['cells'] : [],
+                !empty($value['header']) ? $value['header'] : false,
+                !empty($value['attributes']) ? $value['attributes'] : []
             );
         }
         return self::beginTable($attributes) . $output . self::endTable();
@@ -487,13 +487,13 @@ class Html
         foreach ($elements AS $value) {
             if ($isHeading === false) {
                 $output .= self::tableCell(
-                    array_key_exists('value', $value) ? $value['value'] : [],
-                    array_key_exists('attributes', $value) ? $value['attributes'] : []
+                    !empty($value['value']) ? $value['value'] : [],
+                    !empty($value['attributes']) ? $value['attributes'] : []
                 );
             } else {
                 $output .= self::tableHeading(
-                    array_key_exists('value', $value) ? $value['value'] : [],
-                    array_key_exists('attributes', $value) ? $value['attributes'] : []
+                    !empty($value['value']) ? $value['value'] : [],
+                    !empty($value['attributes']) ? $value['attributes'] : []
                 );
             }
         }
@@ -729,7 +729,7 @@ class Html
      */
     public static function listBox($name, array $options = [], array $attributes = [])
     {
-        if (array_key_exists('selected', $attributes)) {
+        if (!empty($attributes['selected'])) {
             $selected = $attributes['selected'];
             unset($attributes['selected']);
         } else {
@@ -739,7 +739,7 @@ class Html
         $attributes['name'] = $name;
         $opts = '';
         foreach ($options AS $option) {
-            if (array_key_exists('label', $option)) {
+            if (!empty($option['label'])) {
                 $opts .= self::optGroup($option['label'], $option['options'], $option['attributes']);
             } else {
                 if ($option['value'] === $selected) {
@@ -747,13 +747,13 @@ class Html
                 }
 
                 $attr = [];
-                if (array_key_exists('attributes', $option)) {
+                if (!empty($option['attributes'])) {
                     $attr = $option['attributes'];
                     unset($option['attributes']);
                 }
 
                 $text = '';
-                if (array_key_exists('text', $option)) {
+                if (!empty($option['text'])) {
                     $text = $option['text'];
                     unset($option['text']);
                 }
@@ -781,7 +781,7 @@ class Html
         $attributes['label'] = $label;
         $opts = '';
         foreach ($options AS $option) {
-            if (array_key_exists('label', $option)) {
+            if (!empty($option['label'])) {
                 $opts .= self::optgroup($option['label'], $option['options'], $option['attributes']);
             } else {
                 $opts .= self::option($option['value'], $option['text'], $option['attributes']);
@@ -870,7 +870,7 @@ class Html
      */
     private static function field($type, $name, $value = null, array $attributes = [])
     {
-        $attributes['id'] = array_key_exists('id', $attributes) ? $attributes['id'] : $name;
+        $attributes['id'] = !empty($attributes['id']) ? $attributes['id'] : $name;
         $attributes['type'] = $type;
         $attributes['name'] = $name;
         $attributes['value'] = $value;
@@ -900,7 +900,7 @@ class Html
                 $radio['attributes']['selected'] = 'selected';
             }
             $rad = self::radioField($name, $radio['value'],
-                array_key_exists('attributes', $radio) ? $radio['attributes'] : []);
+                !empty($radio['attributes']) ? $radio['attributes'] : []);
             $rads .= str_replace(['%radio%', '%text%'], [$rad, $radio['text']], $format);
         }
         return $rads;

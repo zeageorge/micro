@@ -39,7 +39,7 @@ class DbLogger extends LogInterface
         parent::__construct($params);
         $this->getConnect();
 
-        $this->tableName = (array_key_exists('table', $params) AND !empty($params['table'])) ? $params['table'] : 'logs';
+        $this->tableName = !empty($params['table']) ? $params['table'] : 'logs';
 
         if (!$this->conn->tableExists($this->tableName)) {
             $this->conn->createTable(

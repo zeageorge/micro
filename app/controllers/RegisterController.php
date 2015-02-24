@@ -54,7 +54,7 @@ class RegisterController extends Controller
 
     public function actionPost()
     {
-        if (array_key_exists('User', $_POST)) {
+        if (!empty($_POST['User'])) {
             $user = new User;
             $user->setModelData($_POST['User']);
             $user->pass = md5($_POST['User']['pass']);

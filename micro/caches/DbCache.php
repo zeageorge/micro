@@ -36,7 +36,7 @@ class DbCache implements Cache
     public function __construct(array $config = [])
     {
         $this->table = 'cache';
-        if (array_key_exists('table', $config)) {
+        if (!empty($config['table'])) {
             $this->table = $config['table'];
             unset($config['table']);
         }

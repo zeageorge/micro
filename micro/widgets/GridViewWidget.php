@@ -190,7 +190,7 @@ class GridViewWidget extends Widget
         }
 
         foreach ($this->tableConfig AS $conf) {
-            if (array_key_exists('filter', $conf)) {
+            if (!empty($conf['filter'])) {
                 $this->filters = true;
                 break;
             }
@@ -255,7 +255,7 @@ class GridViewWidget extends Widget
         if ($this->tableConfig) {
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('th');
-                $result .= array_key_exists('header', $row) ? $row['header'] : $key;
+                $result .= !empty($row['header']) ? $row['header'] : $key;
                 $result .= Html::closeTag('th');
             }
         } else {
@@ -280,7 +280,7 @@ class GridViewWidget extends Widget
             $result .= Html::openTag('tr');
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('td');
-                $result .= array_key_exists('filter', $row) ? $row['filter'] : null;
+                $result .= !empty($row['filter']) ? $row['filter'] : null;
                 $result .= Html::closeTag('td');
             }
             $result .= Html::closeTag('tr');
@@ -302,15 +302,15 @@ class GridViewWidget extends Widget
             $result .= Html::openTag('tr');
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('td');
-                if (array_key_exists('class', $row) AND is_subclass_of($row['class'], 'Micro\widgets\GridColumn')) {
-                    $primaryKey = $data[array_key_exists('key', $row) ? $row['key'] : 'id'];
+                if (!empty($row['class']) AND is_subclass_of($row['class'], 'Micro\widgets\GridColumn')) {
+                    $primaryKey = $data[ !empty($row['key']) ? $row['key'] : 'id' ];
                     $result .= new $row['class'](
-                        $row + ['str' => isset($data) ? $data : null, 'pKey' => $primaryKey]
+                        $row + ['str' => (null === $data) ?: $data, 'pKey' => $primaryKey]
                     );
-                } elseif (array_key_exists('value', $row)) {
+                } elseif (!empty($row['value'])) {
                     $result .= eval('return ' . $row['value'] . ';');
                 } else {
-                    $result .= array_key_exists($key, $data) ? $data[$key] : null;
+                    $result .= !empty($data[$key]) ? $data[$key] : null;
                 }
                 $result .= Html::closeTag('td');
             }

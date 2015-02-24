@@ -43,6 +43,16 @@ class MenuWidget extends Widget
     }
 
     /**
+     * Initialize widget
+     *
+     * @access public
+     * @return void
+     */
+    public function init()
+    {
+    }
+
+    /**
      * Running widget
      *
      * @access public
@@ -51,15 +61,5 @@ class MenuWidget extends Widget
     public function run()
     {
         echo Html::lists($this->menu, $this->attributes);
-    }
-
-    /**
-     * Initialize widget
-     *
-     * @access public
-     * @return void
-     */
-    public function init()
-    {
     }
 }

@@ -57,7 +57,7 @@ class Autoload
             $firstNsPos = strpos($className, '\\');
             // Add alias in path
             if ($alias = substr($className, 0, $firstNsPos)) {
-                $path .= (array_key_exists($alias, self::$aliases)) ? self::$aliases[$alias] : '';
+                $path .= !empty(self::$aliases[$alias]) ? self::$aliases[$alias] : '';
                 $className = substr($className, $firstNsPos);
                 $lastNsPos -= $firstNsPos;
             }

@@ -83,7 +83,7 @@ class Validator
         $name = array_shift($this->rule);
         $className = null;
 
-        if (array_key_exists($name, $this->validators)) {
+        if (!empty($this->validators[$name])) {
             $className = '\\Micro\\validators\\' . $this->validators[$name];
         } elseif (file_exists(Micro::getInstance()->config['AppDir'] . '/validators/' . $name . '.php')) {
             $className = '\\App\\validators\\' . $name . '.php';

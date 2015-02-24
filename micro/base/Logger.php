@@ -41,11 +41,11 @@ class Logger
     public function __construct(array $params = [])
     {
         foreach ($params['loggers'] AS $name => $log) {
-            if (!array_key_exists('class', $log) OR !class_exists($log['class'])) {
+            if (empty($log['class']) OR !class_exists($log['class'])) {
                 continue;
             }
 
-            if (!array_key_exists('levels', $log) OR empty($log['levels'])) {
+            if (empty($log['levels'])) {
                 continue;
             }
 

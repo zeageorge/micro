@@ -33,7 +33,7 @@ class CsrfFilter extends Filter
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return true;
         }
-        if (!array_key_exists('csrf', $_POST) OR !$_POST['csrf']) {
+        if (empty($_POST['csrf'])) {
             $this->result = 'Not allowed';
             return false;
         }

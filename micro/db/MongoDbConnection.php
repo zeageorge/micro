@@ -37,13 +37,13 @@ class MongoDbConnection
      */
     public function __construct(array $config = [])
     {
-        if (array_key_exists('dbname', $config)) {
+        if (!empty($config['dbname'])) {
             $this->dbName = $config['dbname'];
         } else {
             throw new Exception('MongoDB database name not defined!');
         }
 
-        if (array_key_exists('connectionString', $config)) {
+        if (!empty($config['connectionString'])) {
             $this->conn = new \MongoClient($config['connectionString'], $config['options']);
         } else {
             $this->conn = new \MongoClient;
@@ -96,7 +96,7 @@ class MongoDbConnection
         if ($force) {
             return $this->conn->selectCollection($this->dbName, $collectionName);
         }
-        if (!array_key_exists($collectionName, $this->collections)) {
+        if (empty($this->collections[$collectionName])) {
             $this->collections[$collectionName] = $this->conn->selectCollection($this->dbName, $collectionName);
         }
         return $this->collections[$collectionName];
@@ -230,7 +230,7 @@ class MongoDbConnection
      */
     public function deleteTable($collectionName)
     {
-        if (array_key_exists($collectionName, $this->collections)) {
+        if (!empty($this->collections[$collectionName])) {
             unset($this->collections[$collectionName]);
         }
 

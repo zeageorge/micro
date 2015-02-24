@@ -35,7 +35,7 @@ class MultiDbConnection
      */
     public function __construct(array $params = [])
     {
-        if (!array_key_exists('servers', $params)) {
+        if (empty($params['servers'])) {
             throw new Exception('Servers not defined');
         }
 

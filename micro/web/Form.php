@@ -146,13 +146,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -198,13 +198,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -230,7 +230,7 @@ class Form
     {
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
-        $image = array_key_exists('image', $options) ? $options['image'] : [];
+        $image = !empty($options['image']) ? $options['image'] : [];
         return Html::imageField($element['name'], $element['value'], $image, $options);
     }
 
@@ -251,13 +251,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -305,13 +305,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -357,13 +357,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -409,13 +409,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -461,13 +461,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -513,13 +513,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -565,13 +565,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -619,13 +619,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -671,13 +671,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -725,13 +725,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -777,13 +777,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -831,13 +831,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -883,13 +883,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -935,13 +935,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -987,13 +987,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -1039,13 +1039,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -1087,18 +1087,18 @@ class Form
      */
     public function listBoxFieldRow($model, $property, array $options = [])
     {
-        $elements = array_key_exists('elements', $options) ? $options['elements'] : [];
+        $elements = !empty($options['elements']) ? $options['elements'] : [];
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -1125,7 +1125,7 @@ class Form
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
         $options['selected'] = $element['value'];
-        $elements = array_key_exists('elements', $options) ? $options['elements'] : [];
+        $elements = !empty($options['elements']) ? $options['elements'] : [];
         return Html::listBox($element['name'], $elements, $options);
     }
 
@@ -1146,13 +1146,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -1181,7 +1181,7 @@ class Form
         $options['selected'] = $element['value'];
 
         $elements = [];
-        if (array_key_exists('elements', $options)) {
+        if (!empty($options['elements'])) {
             $elements = $options['elements'];
             unset($options['elements']);
         }
@@ -1208,13 +1208,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -1239,8 +1239,8 @@ class Form
     public function checkBoxListField($model, $property, array $options = [])
     {
         $element = $this->getField($model, $property);
-        $checkboxes = array_key_exists('checkboxes', $options) ? $options['checkboxes'] : [];
-        $format = array_key_exists('format', $options) ? $options['format'] : '<p>%check% %text%</p>';
+        $checkboxes = !empty($options['checkboxes']) ? $options['checkboxes'] : [];
+        $format = !empty($options['format']) ? $options['format'] : '<p>%check% %text%</p>';
         return Html::checkBoxList($element['name'], $checkboxes, $format, $element['value']);
     }
 
@@ -1261,13 +1261,13 @@ class Form
         $options['id'] = $element['id'];
 
         $block = [];
-        if (array_key_exists('block', $options)) {
+        if (!empty($options['block'])) {
             $block = $options['block'];
             unset($options['block']);
         }
 
         $label = [];
-        if (array_key_exists('label', $options)) {
+        if (!empty($options['label'])) {
             $label = $options['label'];
             unset($options['label']);
         }
@@ -1292,8 +1292,8 @@ class Form
     public function radioButtonListField($model, $property, array $options = [])
     {
         $element = $this->getField($model, $property);
-        $radios = array_key_exists('radios', $options) ? $options['radios'] : [];
-        $format = array_key_exists('format', $options) ? $options['format'] : '<p>%radio% %text%</p>';
+        $radios = !empty($options['radios']) ? $options['radios'] : [];
+        $format = !empty($options['format']) ? $options['format'] : '<p>%radio% %text%</p>';
 
         return Html::radioButtonList($element['name'], $radios, $format, $element['value']);
     }

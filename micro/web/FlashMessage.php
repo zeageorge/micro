@@ -116,7 +116,7 @@ class FlashMessage
     public function has($type = FlashMessage::TYPE_SUCCESS)
     {
         foreach ($this->session->flash AS $element) {
-            if (array_key_exists('type', $element) && $element['type'] === $type) {
+            if (!empty($element['type']) && $element['type'] === $type) {
                 return true;
             }
         }
@@ -136,7 +136,7 @@ class FlashMessage
     public function get($type = FlashMessage::TYPE_SUCCESS)
     {
         foreach ($this->session->flash AS $key => $element) {
-            if (array_key_exists('type', $element) && $element['type'] === $type) {
+            if (!empty($element['type']) && $element['type'] === $type) {
                 $result = $element;
                 unset(Registry::get('session')->flash[$key]);
                 return $result;

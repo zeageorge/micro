@@ -84,7 +84,7 @@ final class Micro
         Autoload::setAlias('Micro', $config['MicroDir']);
         Autoload::setAlias('App', $config['AppDir']);
 
-        if (array_key_exists('VendorDir', $config)) {
+        if (!empty($config['VendorDir'])) {
             Autoload::setAlias('Vendor', $config['VendorDir']);
         }
 
@@ -111,13 +111,13 @@ final class Micro
         $action = Registry::get('request')->getAction();
 
         if (!class_exists($path)) {
-            if (array_key_exists('errorController', $this->config) AND $this->config['errorController']) {
+            if (!empty($this->config['errorController'])) {
                 if (!Autoload::loader($this->config['errorController'])) {
                     throw new Exception('Error controller not valid');
                 }
 
                 $path = $this->config['errorController'];
-                $action = array_key_exists('errorAction', $this->config) ? $this->config['errorAction'] : 'error';
+                $action = !empty($this->config['errorAction']) ? $this->config['errorAction'] : 'error';
             } else {
                 throw new Exception('ErrorController not defined or empty');
             }

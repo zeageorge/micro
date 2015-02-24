@@ -44,7 +44,7 @@ class Cache
      */
     public function __construct(array $config = [])
     {
-        if (array_key_exists('servers', $config)) {
+        if (!empty($config['servers'])) {
             foreach ($config['servers'] AS $key => $server) {
                 if (in_array($server['driver'], array_keys($this->drivers), true)) {
                     $this->servers[$key] = new $this->drivers[$server['driver']] ($server);

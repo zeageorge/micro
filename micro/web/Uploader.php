@@ -30,10 +30,10 @@ class Uploader
     public function __construct()
     {
         if (isset($_FILES)) {
-            if (array_key_exists('name', $_FILES)) {
+            if (!empty($_FILES['name'])) {
                 $summ = count($_FILES['name']);
                 for ($i = 0; $i < $summ; $i++) {
-                    if (!array_key_exists($i, $_FILES['name'])) {
+                    if (empty($_FILES['name'][$i])) {
                         break;
                     }
                     $this->files[] = [

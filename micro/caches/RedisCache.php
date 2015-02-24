@@ -40,7 +40,7 @@ class RedisCache implements Cache
 
         $result = false;
         try {
-            if (array_key_exists('socket_type', $config) AND $config['socket_type'] === 'unix') {
+            if (!empty($config['socket_type']) AND $config['socket_type'] === 'unix') {
                 $result = $this->driver->connect($config['socket']);
             } else {
                 $result = $this->driver->connect($config['host'], $config['port'], $config['duration']);

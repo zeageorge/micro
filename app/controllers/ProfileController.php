@@ -48,7 +48,7 @@ class ProfileController extends Controller
             $this->redirect('/logout');
         }
 
-        if (array_key_exists('Setup', $_POST)) {
+        if (!empty($_POST['Setup'])) {
             $form = $_POST['Setup'];
             if (!empty($form['pass'])) {
                 $user->pass = md5($form['pass']);

@@ -54,7 +54,7 @@ class ArrayCache implements Cache
      */
     public function get($name)
     {
-        return array_key_exists($name, $this->driver) ? $this->driver[$name] : false;
+        return !empty($this->driver[$name]) ? $this->driver[$name] : false;
     }
 
     /**
@@ -83,7 +83,7 @@ class ArrayCache implements Cache
      */
     public function delete($name)
     {
-        if (array_key_exists($name, $this->driver)) {
+        if (!empty($this->driver[$name])) {
             unset($this->driver[$name]);
         }
     }
@@ -121,7 +121,7 @@ class ArrayCache implements Cache
      */
     public function getMeta($id)
     {
-        if (array_key_exists($id, $this->driver)) {
+        if (!empty($this->driver[$id])) {
             return $this->get_type($this->driver[$id]);
         }
         return false;

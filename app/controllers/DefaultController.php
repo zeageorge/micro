@@ -64,7 +64,7 @@ class DefaultController extends Controller
             'POST'
         );
 
-        if (array_key_exists('LoginFormModel', $_POST)) {
+        if (!empty($_POST['LoginFormModel'])) {
             $form->setModelData($_POST['LoginFormModel']);
             if ($form->validateModel() AND $form->getModel()->logined()) {
                 $this->redirect('/profile');
@@ -79,7 +79,7 @@ class DefaultController extends Controller
     public function actionError()
     {
         $result = null;
-        if (array_key_exists('errors', $_POST)) {
+        if (!empty($_POST['errors'])) {
             foreach ($_POST['errors'] AS $err) {
                 $result .= Html::heading(3, $err, ['class' => 'text-danger bg-danger']);
             }

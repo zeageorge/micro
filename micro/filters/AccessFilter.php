@@ -51,7 +51,7 @@ class AccessFilter extends Filter
             if ($res === true) {
                 return true;
             } elseif ($res === false) {
-                throw new Exception(array_key_exists('message', $rule) ? $rule['message'] : 'Access denied!');
+                throw new Exception(!empty($rule['message']) ? $rule['message'] : 'Access denied!');
             } elseif ($res === null) {
                 continue;
             }
@@ -94,7 +94,7 @@ class AccessFilter extends Filter
      */
     protected function matchAction($rule)
     {
-        if (!array_key_exists('actions', $rule) OR !$rule['actions']) {
+        if (empty($rule['actions'])) {
             return true;
         }
         if (is_array($rule['actions'])) {
@@ -116,7 +116,7 @@ class AccessFilter extends Filter
      */
     protected function matchUser($rule)
     {
-        if (!array_key_exists('users', $rule) OR !$rule['users']) {
+        if (empty($rule['users'])) {
             return true;
         }
         if (is_array($rule['users'])) {
@@ -183,7 +183,7 @@ class AccessFilter extends Filter
      */
     protected function matchRole($rule)
     {
-        if (!array_key_exists('roles', $rule) OR !$rule['roles']) {
+        if (empty($rule['roles'])) {
             return true;
         }
         if (is_array($rule['roles'])) {
@@ -212,7 +212,7 @@ class AccessFilter extends Filter
      */
     protected function matchIP($rule)
     {
-        if (!array_key_exists('ips', $rule) OR !$rule['ips']) {
+        if (empty($rule['ips'])) {
             return true;
         }
         $ip = Registry::get('request')->getUserIP();
@@ -246,7 +246,7 @@ class AccessFilter extends Filter
      */
     protected function matchVerb($rule)
     {
-        if (!array_key_exists('verb', $rule) OR !$rule['verb']) {
+        if (empty($rule['verb'])) {
             return true;
         }
         if (is_array($rule['verb'])) {
