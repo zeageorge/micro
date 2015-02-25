@@ -4,6 +4,15 @@ namespace App\models;
 
 use Micro\db\Model;
 
+/**
+ * Class User
+ * @property string login
+ * @property string fio
+ * @property string pass
+ *
+ * @package App
+ * @subpackage models
+ */
 class User extends Model
 {
     static public function tableName()

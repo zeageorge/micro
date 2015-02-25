@@ -321,6 +321,7 @@ abstract class Threads
                 break;
             }
         }
+        return false;
     }
 
     /**

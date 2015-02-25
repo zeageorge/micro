@@ -36,6 +36,8 @@ class Exception extends \Exception
             $mvc->action($config['errorAction']);
 
             error_reporting(0);
+
+            return '';
         } else {
             return '"Error #' . $this->getCode() . ' - ' . $this->getMessage() . '"';
         }

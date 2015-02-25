@@ -36,5 +36,5 @@ if (!$blogs) {
             <?php endif; ?>
         <?php endfor; ?>
     </p>
-    <p><?= $lang->hello; ?></p>
+    <p><?= /** @noinspection PhpUndefinedFieldInspection */ $lang->hello; ?></p>
 <?php } ?>

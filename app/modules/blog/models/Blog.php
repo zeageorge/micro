@@ -6,8 +6,11 @@ use Micro\db\Model;
 
 /**
  * Class Blog
- * @var int $id
- * @package App\modules\blog\models
+ *
+ * @property int $id
+ *
+ * @package App
+ * @subpackage modules\blog\models
  */
 class Blog extends Model
 {

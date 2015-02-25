@@ -173,7 +173,7 @@ abstract class Model extends FormModel
             $arr = getVars($this);
             unset($arr['isNewRecord']);
 
-            if ($this->db->insert($this->tableName, $arr)) {
+            if ($this->db->insert($this->tableName(), $arr)) {
                 $this->_isNewRecord = false;
                 $this->afterCreate();
                 return true;
@@ -274,11 +274,11 @@ abstract class Model extends FormModel
                 if (isset($this->primaryKey) AND $this->primaryKey) {
                     $where .= $this->primaryKey . '=:' . $this->primaryKey;
                 } else {
-                    throw new Exception ('In table ' . $this->tableName . ' option `id` not defined/not use.');
+                    throw new Exception ('In table ' . $this->tableName() . ' option `id` not defined/not use.');
                 }
             }
 
-            if ($this->db->update($this->tableName, $arr, $where)) {
+            if ($this->db->update($this->tableName(), $arr, $where)) {
                 $this->afterUpdate();
                 return true;
             }
@@ -321,12 +321,12 @@ abstract class Model extends FormModel
         }
         if ($this->beforeDelete()) {
             if (!isset($this->primaryKey) AND $this->primaryKey) {
-                throw new Exception('In table ' . $this->tableName . ' option `id` not defined/not use.');
+                throw new Exception('In table ' . $this->tableName() . ' option `id` not defined/not use.');
             }
 
             if (
             $this->db->delete(
-                $this->tableName,
+                $this->tableName(),
                 $this->primaryKey . '=:' . $this->primaryKey, [$this->primaryKey => $this->{$this->primaryKey}]
             )
             ) {
