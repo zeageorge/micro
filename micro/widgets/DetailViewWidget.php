@@ -1,13 +1,12 @@
 <?php /** MicroDetailViewWidget */
-
 namespace Micro\widgets;
+die('DANGER: NOT WORKED!!!!');
 
-use Micro\base\Exception;
-use Micro\base\Registry;
 use Micro\db\Model;
 use Micro\db\Query;
 use Micro\mvc\Widget;
 use Micro\wrappers\Html;
+use Micro\base\Exception;
 
 /**
  * DetailViewWidget class file.
@@ -23,14 +22,8 @@ use Micro\wrappers\Html;
  */
 class DetailViewWidget extends Widget
 {
-    /** @var Model $model Model for details */
-    public $model;
-    /** @var string $table Table for details */
-    public $table = '';
-    /** @var string $condition Condition for generate with table */
-    public $condition = '';
-    /** @var array $keys Keys for render */
-    public $keys = [];
+    /** @var array $columns Rendered columns */
+    public $columns;
     /** @var array $attributes attributes for dl */
     public $attributes = [];
     /** @var array $attributesElement attributes for dt */
@@ -40,110 +33,128 @@ class DetailViewWidget extends Widget
     /** @var array $attributeLabels labels for attributes */
     public $attributeLabels = [];
 
-    /** @var \Micro\db\DbConnection $conn connect to database */
-    protected $conn;
-    /** @var array $statement elements from data */
-    protected $statement = [];
-
+    /** @var array $keys Data keys */
+    protected $keys;
+    /** @var mixed $data Data source */
+    protected $data;
 
     /**
-     * Re-declare constructor class
+     * Redeclare constructor, generate keys and data
      *
      * @access public
      *
-     * @param array $args arguments
+     * @param array $args Arguments
      *
      * @result void
+     * @throws \Micro\base\Exception
      */
-    public function __construct(array $args = [])
+    public function __construct( array $args = [] )
     {
         parent::__construct($args);
-        $this->getConnect();
+
+        if (empty($args['data'])) {
+            throw new Exception('Argument "data" not defined into DetailViewWidget');
+        }
+
+        switch (gettype($args['data'])) {
+            case 'array': {
+                $this->data = (object)$args['data'];
+                $this->keys = array_keys($args['data']);
+                break;
+            }
+            case 'object': {
+                if ($args['data'] instanceof Query) {
+                    $this->data = $args['data']->run();
+                } elseif (is_subclass_of($args['data'], 'Micro\db\Model')) {
+                    $this->data = $args['data'];
+                } else {
+                    throw new Exception('Argument "model" not supported type into DetailViewWidget');
+                }
+
+                $this->keys = $this->data->getAttributes();// die(var_dump($this->keys));
+                break;
+            }
+            default: {
+                throw new Exception('Argument "model" not supported type into DetailViewWidget');
+            }
+        }
+        if (empty($args['columns'])) {
+            $this->columns = $this->keys;
+        }
     }
 
     /**
-     * Get connect to DB
+     * Prepare selected rows
      *
      * @access public
-     * @global Registry
+     *
      * @return void
-     */
-    public function getConnect()
-    {
-        $this->conn = Registry::get('db');
-    }
-
-    /**
-     * Initialize widget
-     *
-     * @access public
-     * @result void
      */
     public function init()
     {
-        if ($this->model instanceof Model) {
-            $this->statement = \Micro\db\getVars($this->model);
-            $cls = get_class($this->model);
-            $this->table = $cls::tableName();
-        } else {
-            $query = new Query;
-            $query->table = $this->table;
-            $query->where = $this->condition;
-            $query->limit = 1;
-            $query->single = true;
-            $this->statement = $query->run(\PDO::FETCH_ASSOC);
+        foreach ($this->columns AS $key=>$val) {
+            if (is_integer($key)) {
+                $key = $val;
+            }
+
+            if ( ! in_array( $key, $this->keys, true )) {
+                unset($this->columns[$key]);
+                continue;
+            } die(var_dump($this->columns, $this->keys));
+
+            if ( !is_array( $val ) ) {
+                $buffer = array(
+                    'label' => ( method_exists( $this->data, 'getLabel' ) ? $this->data->getLabel( $key ) : $key ),
+                    'type'      => 'text', // raw - for eval , text - attribute or text ,
+                    'value'     => $val
+                );
+                $this->columns[$key] = $buffer;
+            } else {
+                $buffer = array(
+                    'label' => $val['label'] ? $val['label'] : $key,
+                    'type'  => $val['type']  ? $val['type']  : 'text',
+                    'value' => $val['value'] ? $val['value'] : $key
+                );
+                $this->columns[$key] = $buffer;
+            }
         }
-
-        if (!$this->statement) {
-            throw new Exception('Elements for render not found');
-        }
-
-        $fields = $this->conn->listFields($this->table);
-
-        $fieldKeys = [];
-        foreach ($fields AS $field) {
-            $fieldKeys[] = $field['field'];
-        }
-
-        $this->keys = $this->keys ? array_intersect($fieldKeys, $this->keys) : $fieldKeys;
     }
 
     /**
-     * Running widget
+     * Run drawing
      *
      * @access public
+     *
      * @return void
      */
     public function run()
     {
-        $result = Html::openTag('dl', $this->attributes);
-        foreach ($this->statement AS $key => $value) {
-            if (in_array($key, $this->keys, true)) {
-                $result .= Html::openTag('dt', $this->attributesElement);
-                $result .= $this->getAttributeLabel($key);
-                $result .= Html::closeTag('dt');
-                $result .= Html::openTag('dd', $this->attributesValue);
-                $result .= $value;
-                $result .= Html::closeTag('dd');
-            }
-        }
-        echo $result, Html::closeTag('dl');
-    }
+        $result = Html::openTag('dl', $this->attributes);// die(var_dump($this->columns, $this->data));
 
-    /**
-     * Get label for attribute
-     *
-     * @access public
-     *
-     * @param string $key key of label search
-     *
-     * @return string
-     */
-    public function getAttributeLabel($key)
-    {
-        if (!empty($this->attributeLabels[$key])) {
-            return $this->attributeLabels[$key];
+        foreach ($this->columns AS $key=>$val) {// die(var_dump($key, $val));
+            $result .= Html::openTag('dt', $this->attributesElement);
+            $result .= $val['label'];
+            $result .= Html::closeTag('dt');
+            $result .= Html::openTag('dd', $this->attributesValue);
+
+            switch ($val['type']) {
+                case 'raw': {
+                    $data = $this->data;
+                    $result .= eval('return ' . $val['value']);
+                    break;
+                }
+                default: {
+                    if (property_exists($this->data, $val['value'])) {
+                        $result .= $this->data->{$val['value']};
+                    } else {
+                        $result .= $val['value'];
+                    }
+                }
+            }
+
+            $result .= Html::closeTag('dd');
         }
-        return $key;
+
+        echo $result , Html::closeTag('dl');
     }
 }

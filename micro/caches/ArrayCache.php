@@ -2,6 +2,8 @@
 
 namespace Micro\caches;
 
+use \Micro\base\Type;
+
 /**
  * Class ArrayCache
  *
@@ -122,41 +124,9 @@ class ArrayCache implements Cache
     public function getMeta($id)
     {
         if (!empty($this->driver[$id])) {
-            return $this->get_type($this->driver[$id]);
+            return Type::getType($this->driver[$id]);
         }
         return false;
-    }
-
-    /**
-     * Get type of var
-     *
-     * @access protected
-     *
-     * @param mixed $var any object
-     *
-     * @return string
-     */
-    protected function get_type($var)
-    {
-        if (is_object($var)) {
-            return get_class($var);
-        } elseif (null === $var) {
-            return 'null';
-        } elseif (is_string($var)) {
-            return 'string';
-        } elseif (is_array($var)) {
-            return 'array';
-        } elseif (is_int($var)) {
-            return 'integer';
-        } elseif (is_bool($var)) {
-            return 'boolean';
-        } elseif (is_float($var)) {
-            return 'float';
-        } elseif (is_resource($var)) {
-            return 'resource';
-        } else {
-            return 'unknown';
-        }
     }
 
     /**

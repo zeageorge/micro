@@ -2,23 +2,10 @@
 
 namespace Micro\db;
 
+use Micro\base\Type;
 use Micro\base\Exception;
 use Micro\base\Registry;
 use Micro\web\FormModel;
-
-/**
- * Get public vars into object
- *
- * @access public
- *
- * @param mixed $object
- *
- * @return array
- */
-function getVars($object)
-{
-    return get_object_vars($object);
-}
 
 /**
  * Model class file.
@@ -103,6 +90,22 @@ abstract class Model extends FormModel
     }
 
     /**
+     * Get attributes defined into model
+     *
+     * @access public
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        $fields = [];
+        foreach (Registry::get('db')->listFields(static::tableName()) AS $field) {
+            $fields[] = $field['field'];
+        }
+        return $fields;
+    }
+
+    /**
      * Relations for model
      *
      * @access public
@@ -170,7 +173,7 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeCreate()) {
-            $arr = getVars($this);
+            $arr = Type::getVars($this);
             unset($arr['isNewRecord']);
 
             if ($this->db->insert($this->tableName(), $arr)) {
@@ -267,7 +270,7 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeUpdate()) {
-            $arr = getVars($this);
+            $arr = Type::getVars($this);
             unset($arr['isNewRecord']);
 
             if (!$where) {

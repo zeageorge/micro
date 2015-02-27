@@ -22,6 +22,7 @@ class ActionsGridColumn extends GridColumn
      * Convert object to string
      *
      * @access public
+     *
      * @return mixed
      */
     public function __toString()
@@ -33,27 +34,25 @@ class ActionsGridColumn extends GridColumn
             $this->params['template'] = '{view} {edit} {delete}';
         }
 
-        $viewLink = (!empty($this->params['viewLink']) ? $this->params['viewLink'] : $this->params['link'] . '/');
+        $viewLink = !empty($this->params['viewLink']) ? $this->params['viewLink'] : $this->params['link'].'/';
         $r = Html::href(
             !empty($this->params['viewText']) ? $this->params['viewText'] : 'view',
             $viewLink . $this->params['pKey']
         );
 
-        $editLink = (!empty($this->params['editLink']) ? $this->params['editLink'] : $this->params['link'] . '/edit/');
+        $editLink = !empty($this->params['editLink']) ? $this->params['editLink'] : $this->params['link'].'/edit/';
         $w = Html::href(
             !empty($this->params['editText']) ? $this->params['editText'] : 'edit',
             $editLink . $this->params['pKey']
         );
 
-        $deleteLink = (!empty($this->params['deleteLink']) ? $this->params['deleteLink'] : $this->params['link'] . '/del/');
+        $deleteLink = !empty($this->params['deleteLink']) ? $this->params['deleteLink'] : $this->params['link'].'/del/';
         $d = Html::href(
             !empty($this->params['deleteText']) ? $this->params['deleteText'] : 'delete',
             $deleteLink . $this->params['pKey'],
             ['onclick' => 'return confirm(\'Are you sure?\')']
         );
 
-        return str_replace('{view}', $r, str_replace('{edit}', $w,
-            str_replace('{delete}', $d, $this->params['template'])
-        ));
+        return str_replace( ['{view}','{edit}','{delete}'], [$r, $w, $d], $this->params['template'] );
     }
 }
