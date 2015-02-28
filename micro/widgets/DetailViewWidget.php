@@ -1,6 +1,5 @@
 <?php /** MicroDetailViewWidget */
 namespace Micro\widgets;
-die('DANGER: NOT WORKED!!!!');
 
 use Micro\db\Model;
 use Micro\db\Query;
@@ -71,7 +70,7 @@ class DetailViewWidget extends Widget
                     throw new Exception('Argument "model" not supported type into DetailViewWidget');
                 }
 
-                $this->keys = $this->data->getAttributes();// die(var_dump($this->keys));
+                $this->keys = $this->data->getAttributes();
                 break;
             }
             default: {
@@ -93,27 +92,27 @@ class DetailViewWidget extends Widget
     public function init()
     {
         foreach ($this->columns AS $key=>$val) {
-            if (is_integer($key)) {
-                $key = $val;
-            }
+            $arg = is_int($key) ? $val : $key;
 
-            if ( ! in_array( $key, $this->keys, true )) {
+            if ( !in_array($arg, $this->keys, true) ) {
                 unset($this->columns[$key]);
                 continue;
-            } die(var_dump($this->columns, $this->keys));
+            }
 
             if ( !is_array( $val ) ) {
+                $label =
+
                 $buffer = array(
-                    'label' => ( method_exists( $this->data, 'getLabel' ) ? $this->data->getLabel( $key ) : $key ),
+                    'label' => ( method_exists( $this->data, 'getLabel' ) ? $this->data->getLabel( $arg ) : $arg ),
                     'type'      => 'text', // raw - for eval , text - attribute or text ,
                     'value'     => $val
                 );
                 $this->columns[$key] = $buffer;
             } else {
                 $buffer = array(
-                    'label' => $val['label'] ? $val['label'] : $key,
+                    'label' => $val['label'] ? $val['label'] : $arg,
                     'type'  => $val['type']  ? $val['type']  : 'text',
-                    'value' => $val['value'] ? $val['value'] : $key
+                    'value' => $val['value'] ? $val['value'] : $arg
                 );
                 $this->columns[$key] = $buffer;
             }
@@ -132,11 +131,12 @@ class DetailViewWidget extends Widget
         $result = Html::openTag('dl', $this->attributes);// die(var_dump($this->columns, $this->data));
 
         foreach ($this->columns AS $key=>$val) {// die(var_dump($key, $val));
+
             $result .= Html::openTag('dt', $this->attributesElement);
             $result .= $val['label'];
             $result .= Html::closeTag('dt');
-            $result .= Html::openTag('dd', $this->attributesValue);
 
+            $result .= Html::openTag('dd', $this->attributesValue);
             switch ($val['type']) {
                 case 'raw': {
                     $data = $this->data;
@@ -151,8 +151,8 @@ class DetailViewWidget extends Widget
                     }
                 }
             }
-
             $result .= Html::closeTag('dd');
+
         }
 
         echo $result , Html::closeTag('dl');

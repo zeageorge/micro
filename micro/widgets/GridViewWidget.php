@@ -75,7 +75,9 @@ class GridViewWidget extends Widget
      * Get connect to DB
      *
      * @access public
+     *
      * @global Registry
+     *
      * @return void
      */
     public function getConnect()
@@ -87,6 +89,7 @@ class GridViewWidget extends Widget
      * Initialize widget
      *
      * @access public
+     *
      * @result void
      */
     public function init()
@@ -126,6 +129,7 @@ class GridViewWidget extends Widget
      * Make rows from sql
      *
      * @access private
+     *
      * @return void
      */
     private function makeDbRows()
@@ -154,6 +158,7 @@ class GridViewWidget extends Widget
      * Make rows from array
      *
      * @access protected
+     *
      * @return void
      */
     private function makeArrRows()
@@ -174,6 +179,7 @@ class GridViewWidget extends Widget
      * Make table configuration
      *
      * @access public
+     *
      * @return void
      */
     private function makeTableConfig()
@@ -201,6 +207,7 @@ class GridViewWidget extends Widget
      * Running widget
      *
      * @access public
+     *
      * @return void
      */
     public function run()
@@ -233,6 +240,7 @@ class GridViewWidget extends Widget
      * Render counter
      *
      * @access private
+     *
      * @return string
      */
     private function renderCounter()
@@ -247,6 +255,7 @@ class GridViewWidget extends Widget
      * Render heading rows
      *
      * @access private
+     *
      * @return string
      */
     private function renderHeading()
@@ -270,6 +279,7 @@ class GridViewWidget extends Widget
      * Render filters
      *
      * @access private
+     *
      * @return string
      */
     private function renderFilters()
@@ -293,6 +303,7 @@ class GridViewWidget extends Widget
      * Render rows
      *
      * @access private
+     *
      * @return string
      */
     private function renderRows()
