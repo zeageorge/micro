@@ -45,20 +45,20 @@ class PostController extends Controller
     public function actionIndex()
     {
         $crt = new Query;
-        $crt->limit = 10;
+        $crt->table = Blog::tableName();
         $crt->order = 'id DESC';
-        $crt->ofset = (!empty($_GET['page']) ? $_GET['page'] : 0) * $crt->limit;
+//        $crt->limit = 10;
+//        $crt->ofset = (!empty($_GET['page']) ? $_GET['page'] : 0) * $crt->limit;
 
-
-        $crt2 = new Query;
-        $crt2->select = 'COUNT(id)';
-        $crt2->table = Blog::tableName();
-        $crt2->single = true;
-        $num = $crt2->run();
+//        $crt2 = new Query;
+//        $crt2->select = 'COUNT(id)';
+//        $crt2->table = Blog::tableName();
+//        $crt2->single = true;
+//        $num = $crt2->run();
 
         $v = new View;
-        $v->addParameter('blogs', Blog::finder($crt));
-        $v->addParameter('pages', ceil($num[0] / 10));
+        $v->addParameter('blogs', $crt);
+//        $v->addParameter('pages', ceil($num[0] / 10));
         return $v;
     }
 

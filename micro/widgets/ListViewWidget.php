@@ -2,10 +2,10 @@
 
 namespace Micro\widgets;
 
-use Micro\base\Exception;
 use Micro\db\Query;
 use Micro\mvc\Widget;
 use Micro\wrappers\Html;
+use Micro\base\Exception;
 
 /**
  * ListViewWidget class file.
@@ -21,65 +21,95 @@ use Micro\wrappers\Html;
  */
 class ListViewWidget extends Widget
 {
-    /** @var string $query query to database */
-    public $query;
-    /** @var int $elemsType elements of return query type */
-    public $elemsType = \PDO::FETCH_ASSOC;
-    /** @var string $view Name of view file */
-    public $view;
-    /** @var int $limit Limit current rows */
-    public $limit = 10;
     /** @var int $page Current page on table */
     public $page = 0;
-    /** @var array $paginationConfig parameters for PaginationWidget */
-    public $paginationConfig = [];
+    /** @var int $limit Limit current rows */
+    public $limit = 10;
+    /** @var string $template Template */
+    public $template = '{counter}{elements}{pager}';
+    /** @var string $counterText Text for counter */
+    public $counterText = 'Sum: ';
+    /** @var string $emptyText Text for empty message */
+    public $emptyText = 'Elements not found';
     /** @var array $attributes attributes for dl */
     public $attributes = [];
-    /** @var array $attributesElement attributes for dt */
+    /** @var array $attributesElement attributes for element */
     public $attributesElement = [];
+    /** @var array $attributesCounter attributes for counter */
     public $attributesCounter = [];
-    public $counterText = '';
-    public $template = '{counter}{elements}{pager}';
+    /** @var array $attributesEmpty attributes for empty */
+    public $attributesEmpty = [];
+    /** @var array $paginationConfig parameters for PaginationWidget */
+    public $paginationConfig = [];
 
-    /** @var int $rowCount summary lines */
-    protected $rowCount = 0;
-    /** @var array $rows Rows table */
-    protected $rows = [];
-    /** @var string $pathView Generate path to view file */
+    /** @var string $view Path to view file */
     protected $pathView = '';
 
+    /** @var array $rows Rows from data */
+    protected $rows;
+    /** @var int $rowsCount Count rows */
+    protected $rowsCount = 0;
+    /** @var int $totalCount Total count data */
+    protected $totalCount = 0;
 
-    /**
-     * Initialize widget
-     *
-     * @access public
-     * @result void
-     */
-    public function init()
+    public function __construct( array $args=[] )
     {
-        if (!$this->query instanceof Query) {
-            throw new Exception('Query not defined or error type');
-        }
+        parent::__construct($args);
 
-        if (!$this->pathView OR !$this->view) {
-            throw new Exception('Controller or view not defined');
+        if (empty($args['data'])) {
+            throw new Exception('Argument "data" not initialized into ListViewWidget');
+        }
+        if (empty($args['pathView'])) {
+            throw new Exception('Argument "view" not initialized into ListViewWidget');
         }
 
         if ($this->limit < 10) {
             $this->limit = 10;
         }
+        if ($this->page < 0) {
+            $this->page = 0;
+        }
 
-        $this->pathView .= '/' . $this->view . '.php';
+        if ($args['data'] instanceof Query) {
+            $select               = $args['data']->select;
 
+            $args['data']->select = 'COUNT(id)';
+            $args['data']->single = true;
+            $this->totalCount     = $args['data']->run()[0];
+
+            $args['data']->select = $select;
+            $args['data']->ofset  = $this->page*$this->limit;
+            $args['data']->limit  = $this->limit;
+            $args['data']->single = false;
+            $args['data']         = $args['data']->run();
+        } else {
+            $this->totalCount = count($args['data']);
+            $args['data'] = array_slice($args['data'], $this->page*$this->limit, $this->limit);
+        }
+
+        foreach ($args['data'] AS $model) {
+            $this->rows[] = is_subclass_of($model, 'Micro\db\Model') ? $model : (object)$model;
+        }
+    }
+
+    /**
+     * Initialized widget
+     *
+     * @access public
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function init()
+    {
         if (!file_exists($this->pathView)) {
             throw new Exception('View path not valid: ' . $this->pathView);
         }
 
-        $this->rows = $this->query->run($this->elemsType);
-        $this->rowCount = count($this->rows);
+        $this->rowsCount                       = count($this->rows);
 
-        $this->paginationConfig['countRows'] = $this->rowCount;
-        $this->paginationConfig['limit'] = $this->limit;
+        $this->paginationConfig['countRows']   = $this->totalCount;
+        $this->paginationConfig['limit']       = $this->limit;
         $this->paginationConfig['currentPage'] = $this->page;
     }
 
@@ -87,44 +117,56 @@ class ListViewWidget extends Widget
      * Running widget
      *
      * @access public
-     * @return void
+     *
+     * @return string
      */
     public function run()
     {
-        $st = $i = $this->page * $this->limit;
-
-        ob_start();
-
-        echo Html::openTag('ul', $this->attributes);
-        for (; $i < ($st + $this->limit); $i++) {
-            if (!empty($this->rows[$i])) {
-                echo Html::openTag('li', $this->attributesElement);
-
-                $element = $this->rows[$i];
-                include $this->pathView;
-
-                echo Html::closeTag('li');
-            }
-        }
-        echo Html::closeTag('ul');
-
-        $elements = ob_get_clean();
-
-        ob_start();
-        $pager = new PaginationWidget($this->paginationConfig);
-        $pager->init();
-        $pager->run();
-        $pagers = ob_get_clean();
-
-        echo str_replace(
-            array('{counter}', '{elements}', '{pager}'),
-            array(
-                Html::openTag('div',
-                    $this->attributesCounter) . $this->counterText . $this->rowCount . Html::closeTag('div'),
-                $elements,
-                $pagers
-            ),
+        return str_replace(
+            ['{counter}', '{elements}', '{pager}'],
+            [$this->getCounter(), $this->getElements(), $this->getPaginate()],
             $this->template
         );
+    }
+    protected function getCounter()
+    {
+        return Html::openTag('div', $this->attributesCounter) .
+            $this->counterText . $this->rowsCount . Html::closeTag('div');
+    }
+    protected function getPaginate()
+    {
+        if (!$this->rows) {
+            return '';
+        }
+
+        ob_start();
+
+            $pager = new PaginationWidget($this->paginationConfig);
+            $pager->init();
+            $pager->run();
+
+        return ob_get_clean();
+    }
+    protected function getElements()
+    {
+        if (!$this->rows) {
+            return Html::openTag('div', $this->attributesEmpty) . $this->emptyText . Html::closeTag('div');
+        }
+
+        ob_start();
+        echo Html::openTag('ul', $this->attributes);
+
+
+        foreach ($this->rows AS $element) {
+            echo Html::openTag('li', $this->attributesElement);
+
+            include $this->pathView;
+
+            echo Html::closeTag('li');
+        }
+
+        echo Html::closeTag('ul');
+
+        return ob_get_clean();
     }
 }

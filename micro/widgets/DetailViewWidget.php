@@ -52,7 +52,7 @@ class DetailViewWidget extends Widget
         parent::__construct($args);
 
         if (empty($args['data'])) {
-            throw new Exception('Argument "data" not defined into DetailViewWidget');
+            throw new Exception('Argument "data" not initialized into DetailViewWidget');
         }
 
         switch (gettype($args['data'])) {
