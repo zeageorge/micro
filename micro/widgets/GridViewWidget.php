@@ -97,7 +97,7 @@ class GridViewWidget extends Widget
             $this->rows[] = is_subclass_of($model, 'Micro\db\Model') ? $model : (object)$model;
         }
 
-        $this->fields = !empty($this->rows) ? array_keys(Type::getVars($this->rows[0])) : [];
+        $this->fields = (null !== $this->rows) ? array_keys(Type::getVars($this->rows[0])) : [];
     }
 
     /**
@@ -115,7 +115,7 @@ class GridViewWidget extends Widget
         $this->paginationConfig['limit']       = $this->limit;
         $this->paginationConfig['currentPage'] = $this->page;
 
-        $this->tableConfig = $this->tableConfig ? $this->tableConfig : $this->fields;
+        $this->tableConfig = $this->tableConfig ?: $this->fields;
     }
 
     /**
