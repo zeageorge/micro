@@ -2,10 +2,11 @@
 
 namespace Micro\widgets;
 
-use Micro\base\Registry;
-use Micro\db\DbConnection;
+use Micro\base\Type;
+use Micro\db\Query;
 use Micro\mvc\Widget;
 use Micro\wrappers\Html;
+use Micro\base\Exception;
 
 /**
  * GridViewWidget class file.
@@ -21,39 +22,37 @@ use Micro\wrappers\Html;
  */
 class GridViewWidget extends Widget
 {
-    /** @var string $query query for get lines */
-    public $query;
-    /** @var int $limit Limit current rows */
-    public $limit = 10;
     /** @var int $page Current page on table */
     public $page = 1;
-    /** @var array $paginationConfig parameters for PaginationWidget */
-    public $paginationConfig = [];
-    /** @var array $tableConfig table configuration */
-    public $tableConfig = [];
+    /** @var int $limit Limit current rows */
+    public $limit = 10;
+    /** @var bool $filters Usage filters */
+    public $filters = false;
+    /** @var string $template Template render */
+    public $template = '{counter}{table}{pager}';
+    /** @var string $textCounter text for before counter */
+    public $counterText = 'Sum: ';
+    /** @var string $emptyText text to render if rows not found */
+    public $emptyText = 'Elements not found';
     /** @var array $attributes attributes for table */
     public $attributes = [];
     /** @var array $attributesCounter attributes for counter */
     public $attributesCounter = [];
     /** @var array $attributesHeading attributes for heading */
     public $attributesHeading = [];
-    /** @var string $textCounter text for before counter */
-    public $textCounter = 'Всего: ';
-    /** @var bool $filters rendered filters */
-    public $filters = false;
-    /** @var array $rows Rows table */
-    public $rows = [];
-    /** @var array $keys Keys table */
-    public $keys = [];
-    /** @var string $emptyText text to render if rows not found */
-    public $emptyText = 'Elements not found!';
-    /** @var string $template Template render */
-    public $template = '{counter}{data}{paginator}';
+    /** @var array $tableConfig table configuration */
+    public $tableConfig = [];
+    /** @var array $paginationConfig parameters for PaginationWidget */
+    public $paginationConfig = [];
 
-    /** @var int $rowCount summary lines */
-    protected $rowCount = 0;
-    /** @var DbConnection $conn current connection to db */
-    protected $conn;
+    /** @var array $rows Rows from data */
+    protected $rows;
+    /** @var array $fields Fields of data */
+    protected $fields = [];
+    /** @var int $rowsCount Count rows */
+    protected $rowsCount = 0;
+    /** @var int $totalCount Total count data */
+    protected $totalCount = 0;
 
 
     /**
@@ -64,25 +63,41 @@ class GridViewWidget extends Widget
      * @param array $args arguments
      *
      * @result void
+     * @throws Exception
      */
-    public function __construct(array $args = [])
+    public function __construct( array $args = [] )
     {
-        parent::__construct($args);
-        $this->getConnect();
-    }
+        parent::__construct( $args );
 
-    /**
-     * Get connect to DB
-     *
-     * @access public
-     *
-     * @global Registry
-     *
-     * @return void
-     */
-    public function getConnect()
-    {
-        $this->conn = Registry::get('db');
+        if (empty($args['data'])) {
+            throw new Exception('Argument "data" not initialized into GridViewWidget');
+        }
+
+        $this->limit = ($this->limit < 10) ? 10 : $this->limit;
+        $this->page  = ($this->page < 0)   ? 0  : $this->page;
+
+        if ($args['data'] instanceof Query) {
+            $select               = $args['data']->select;
+
+            $args['data']->select = 'COUNT(id)';
+            $args['data']->single = true;
+            $this->totalCount     = $args['data']->run()[0];
+
+            $args['data']->select = $select;
+            $args['data']->ofset  = $this->page*$this->limit;
+            $args['data']->limit  = $this->limit;
+            $args['data']->single = false;
+            $args['data']         = $args['data']->run();
+        } else {
+            $this->totalCount = count($args['data']);
+            $args['data'] = array_slice($args['data'], $this->page*$this->limit, $this->limit);
+        }
+
+        foreach ($args['data'] AS $model) {
+            $this->rows[] = is_subclass_of($model, 'Micro\db\Model') ? $model : (object)$model;
+        }
+
+        $this->fields = !empty($this->rows) ? array_keys(Type::getVars($this->rows[0])) : [];
     }
 
     /**
@@ -94,113 +109,13 @@ class GridViewWidget extends Widget
      */
     public function init()
     {
-        $this->page = ($this->page < 0) ? 0 : $this->page;
-        $this->limit = ($this->limit < 1) ? 1 : $this->limit;
+        $this->rowsCount = count($this->rows);
 
-        if (!$this->rows) {
-            $this->makeDbRows();
-        } else {
-            $this->makeArrRows();
-        }
-
-        // Upgrade rows
-        if (is_object($this->rows[0]) === true) {
-            foreach ($this->rows AS $key => $row) {
-                $this->rows[$key] = (array)$row;
-                foreach ($this->rows[$key] AS $num => $val) {
-                    if (is_array($this->rows[$key][$num]) OR is_object($this->rows[$key][$num])) {
-                        unset($this->rows[$key][$num]);
-                    }
-                    if (strpos($num, 'isNewRecord') !== false) {
-                        unset($this->rows[$key][$num]);
-                    }
-                }
-            }
-        }
-
-        $this->makeTableConfig();
-
-        $this->paginationConfig['countRows'] = $this->rowCount;
-        $this->paginationConfig['limit'] = $this->limit;
+        $this->paginationConfig['countRows']   = $this->totalCount;
+        $this->paginationConfig['limit']       = $this->limit;
         $this->paginationConfig['currentPage'] = $this->page;
-    }
 
-    /**
-     * Make rows from sql
-     *
-     * @access private
-     *
-     * @return void
-     */
-    private function makeDbRows()
-    {
-        // отрезать лимит
-        if (($position = strpos($this->query, 'LIMIT')) !== false) {
-            $this->query = substr($this->query, 0, $position);
-        }
-
-        // посчитать всех
-        if (!$this->conn->count($this->query)) {
-            return;
-        }
-
-        // получаем одного
-        $st = array_shift($this->conn->rawQuery($this->query . ' LIMIT 1'));
-        $this->keys = array_keys($st);
-
-
-        $this->rowCount = $this->conn->count($this->query);
-
-        $this->rows = $this->conn->rawQuery($this->query . ' LIMIT ' . ($this->page * $this->limit) . ',' . $this->limit);
-    }
-
-    /**
-     * Make rows from array
-     *
-     * @access protected
-     *
-     * @return void
-     */
-    private function makeArrRows()
-    {
-        $this->query = $this->query ? null : $this->query;
-        $this->rowCount = count($this->rows);
-
-        // cut current
-        if ($this->rowCount > $this->limit) {
-            $this->rows = array_slice($this->rows, ($this->page * $this->limit), $this->limit);
-        }
-
-        // make keys
-        $this->keys = array_keys($this->rows[0]);
-    }
-
-    /**
-     * Make table configuration
-     *
-     * @access public
-     *
-     * @return void
-     */
-    private function makeTableConfig()
-    {
-        if (!$this->tableConfig) {
-            foreach ($this->keys AS $key) {
-                $this->tableConfig[$key] = [
-                    'header' => $key,
-                    'filter' => '<input type="text" name="' . $key . '" value="" />',
-                    'value' => null,
-                    'class' => null
-                ];
-            }
-        }
-
-        foreach ($this->tableConfig AS $conf) {
-            if (!empty($conf['filter'])) {
-                $this->filters = true;
-                break;
-            }
-        }
+        $this->tableConfig = $this->tableConfig ? $this->tableConfig : $this->fields;
     }
 
     /**
@@ -208,105 +123,89 @@ class GridViewWidget extends Widget
      *
      * @access public
      *
-     * @return void
+     * @return string
      */
     public function run()
     {
+        if (!$this->rows) {
+            return $this->emptyText;
+        }
+
+        echo  str_replace(
+            ['{counter}', '{pager}', '{table}'],
+            [ $this->getCounter(), $this->getPager(), $this->getTable() ],
+            $this->template
+        );
+    }
+
+    protected function getCounter()
+    {
+        return Html::openTag('div', $this->attributesCounter) .
+               $this->counterText . $this->rowsCount . Html::closeTag('div');
+    }
+
+    protected function getPager()
+    {
+        if (!$this->rows) {
+            return '';
+        }
+
         ob_start();
+
         $pager = new PaginationWidget($this->paginationConfig);
         $pager->init();
         $pager->run();
-        $pager = ob_get_clean();
 
-        $result = $this->template;
-        $result = str_replace('{counter}', $this->renderCounter(), $result);
-        $result = str_replace(
-            '{paginator}',
-            $pager,
-            $result
-        );
+        return ob_get_clean();
+    }
 
-
+    protected function getTable()
+    {
         $table = Html::openTag('table', $this->attributes);
         $table .= $this->renderHeading();
         $table .= $this->renderFilters();
         $table .= $this->renderRows();
         $table .= Html::closeTag('table');
-
-        echo str_replace('{data}', $table, $result);
+        return $table;
     }
 
-    /**
-     * Render counter
-     *
-     * @access private
-     *
-     * @return string
-     */
-    private function renderCounter()
-    {
-        $result = Html::openTag('div', $this->attributesCounter);
-        $result .= $this->textCounter . $this->rowCount;
-        $result .= Html::closeTag('div');
-        return $result;
-    }
 
-    /**
-     * Render heading rows
-     *
-     * @access private
-     *
-     * @return string
-     */
-    private function renderHeading()
+    protected function renderHeading()
     {
+        if (!$this->tableConfig) {
+            return '';
+        }
+
         $result = Html::openTag('tr', $this->attributesHeading);
-        if ($this->tableConfig) {
-            foreach ($this->tableConfig AS $key => $row) {
-                $result .= Html::openTag('th');
-                $result .= !empty($row['header']) ? $row['header'] : $key;
-                $result .= Html::closeTag('th');
-            }
-        } else {
-            $result .= Html::openTag('td',
-                    ['style' => 'text-align:center']) . $this->emptyText . Html::closeTag('td');
+        foreach ($this->tableConfig AS $key=>$row) {
+            $result .= Html::openTag('th');
+            $result .= !empty($row['header']) ? $row['header'] : $key;
+            $result .= Html::closeTag('th');
         }
         $result .= Html::closeTag('tr');
+
         return $result;
     }
-
-    /**
-     * Render filters
-     *
-     * @access private
-     *
-     * @return string
-     */
-    private function renderFilters()
+    protected function renderFilters()
     {
-        $result = null;
-        if ($this->filters) {
-            $result .= Html::beginForm(null, 'get');
-            $result .= Html::openTag('tr');
-            foreach ($this->tableConfig AS $key => $row) {
-                $result .= Html::openTag('td');
-                $result .= !empty($row['filter']) ? $row['filter'] : null;
-                $result .= Html::closeTag('td');
-            }
-            $result .= Html::closeTag('tr');
-            $result .= Html::endForm();
+        if (!$this->filters) {
+            return '';
         }
+        $result = null;
+
+        $result .= Html::beginForm(null, 'get');
+        $result .= Html::openTag('tr');
+        foreach ($this->tableConfig AS $key=>$row) {
+            $result .= Html::openTag('td');
+            $result .= !empty($row['filter']) ? $row['filter'] : null;
+            $result .= Html::closeTag('td');
+        }
+        $result .= Html::closeTag('tr');
+        $result .= Html::endForm();
+
         return $result;
     }
-
-    /**
-     * Render rows
-     *
-     * @access private
-     *
-     * @return string
-     */
-    private function renderRows()
+    protected function renderRows()
     {
         $result = null;
         foreach ($this->rows AS $data) {
@@ -321,7 +220,7 @@ class GridViewWidget extends Widget
                 } elseif (!empty($row['value'])) {
                     $result .= eval('return ' . $row['value'] . ';');
                 } else {
-                    $result .= !empty($data[$key]) ? $data[$key] : null;
+                    $result .= property_exists($data, $key) ? $data->$key : null;
                 }
                 $result .= Html::closeTag('td');
             }
