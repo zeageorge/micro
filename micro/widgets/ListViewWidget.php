@@ -52,6 +52,16 @@ class ListViewWidget extends Widget
     /** @var int $totalCount Total count data */
     protected $totalCount = 0;
 
+    /**
+     * Redeclare widget constructor
+     *
+     * @access public
+     *
+     * @param array $args Widget arguments
+     *
+     * @result void
+     * @throws Exception
+     */
     public function __construct( array $args=[] )
     {
         parent::__construct($args);
@@ -124,16 +134,32 @@ class ListViewWidget extends Widget
     {
         return str_replace(
             ['{counter}', '{elements}', '{pager}'],
-            [$this->getCounter(), $this->getElements(), $this->getPaginate()],
+            [$this->getCounter(), $this->getElements(), $this->getPager()],
             $this->template
         );
     }
+
+    /**
+     * Get counter
+     *
+     * @access protected
+     *
+     * @return string
+     */
     protected function getCounter()
     {
         return Html::openTag('div', $this->attributesCounter) .
             $this->counterText . $this->rowsCount . Html::closeTag('div');
     }
-    protected function getPaginate()
+
+    /**
+     * Get pager
+     *
+     * @access protected
+     *
+     * @return string
+     */
+    protected function getPager()
     {
         if (!$this->rows) {
             return '';
@@ -147,6 +173,14 @@ class ListViewWidget extends Widget
 
         return ob_get_clean();
     }
+
+    /**
+     * Get elements
+     *
+     * @access protected
+     *
+     * @return string
+     */
     protected function getElements()
     {
         if (!$this->rows) {

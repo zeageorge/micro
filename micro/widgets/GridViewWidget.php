@@ -23,7 +23,7 @@ use Micro\base\Exception;
 class GridViewWidget extends Widget
 {
     /** @var int $page Current page on table */
-    public $page = 1;
+    public $page = 0;
     /** @var int $limit Limit current rows */
     public $limit = 10;
     /** @var bool $filters Usage filters */
@@ -79,7 +79,7 @@ class GridViewWidget extends Widget
         if ($args['data'] instanceof Query) {
             $select               = $args['data']->select;
 
-            $args['data']->select = 'COUNT(id)';
+            $args['data']->select = 'COUNT(*)';
             $args['data']->single = true;
             $this->totalCount     = $args['data']->run()[0];
 
@@ -131,19 +131,33 @@ class GridViewWidget extends Widget
             return $this->emptyText;
         }
 
-        echo  str_replace(
+        return str_replace(
             ['{counter}', '{pager}', '{table}'],
             [ $this->getCounter(), $this->getPager(), $this->getTable() ],
             $this->template
         );
     }
 
+    /**
+     * Get counter
+     *
+     * @access protected
+     *
+     * @return string
+     */
     protected function getCounter()
     {
         return Html::openTag('div', $this->attributesCounter) .
                $this->counterText . $this->rowsCount . Html::closeTag('div');
     }
 
+    /**
+     * Get pager
+     *
+     * @access protected
+     *
+     * @return string
+     */
     protected function getPager()
     {
         if (!$this->rows) {
@@ -159,6 +173,13 @@ class GridViewWidget extends Widget
         return ob_get_clean();
     }
 
+    /**
+     * Get table
+     *
+     * @access protected
+     *
+     * @return string
+     */
     protected function getTable()
     {
         $table = Html::openTag('table', $this->attributes);
@@ -169,7 +190,13 @@ class GridViewWidget extends Widget
         return $table;
     }
 
-
+    /**
+     * Render heading
+     *
+     * @access protected
+     *
+     * @return string
+     */
     protected function renderHeading()
     {
         if (!$this->tableConfig) {
@@ -186,6 +213,14 @@ class GridViewWidget extends Widget
 
         return $result;
     }
+
+    /**
+     * Render filters
+     *
+     * @access protected
+     *
+     * @return null|string
+     */
     protected function renderFilters()
     {
         if (!$this->filters) {
@@ -205,6 +240,14 @@ class GridViewWidget extends Widget
 
         return $result;
     }
+
+    /**
+     * Render rows
+     *
+     * @access protected
+     *
+     * @return null|string
+     */
     protected function renderRows()
     {
         $result = null;
@@ -213,7 +256,7 @@ class GridViewWidget extends Widget
             foreach ($this->tableConfig AS $key => $row) {
                 $result .= Html::openTag('td');
                 if (!empty($row['class']) AND is_subclass_of($row['class'], 'Micro\widgets\GridColumn')) {
-                    $primaryKey = $data[ !empty($row['key']) ? $row['key'] : 'id' ];
+                    $primaryKey = $data->{ !empty($row['key']) ? $row['key'] : 'id' };
                     $result .= new $row['class'](
                         $row + ['str' => (null === $data) ?: $data, 'pKey' => $primaryKey]
                     );

@@ -100,11 +100,9 @@ class DetailViewWidget extends Widget
             }
 
             if ( !is_array( $val ) ) {
-                $label =
-
                 $buffer = array(
                     'label' => ( method_exists( $this->data, 'getLabel' ) ? $this->data->getLabel( $arg ) : $arg ),
-                    'type'      => 'text', // raw - for eval , text - attribute or text ,
+                    'type'      => 'text',
                     'value'     => $val
                 );
                 $this->columns[$key] = $buffer;
@@ -124,14 +122,13 @@ class DetailViewWidget extends Widget
      *
      * @access public
      *
-     * @return void
+     * @return string
      */
     public function run()
     {
-        $result = Html::openTag('dl', $this->attributes);// die(var_dump($this->columns, $this->data));
+        $result = Html::openTag('dl', $this->attributes);
 
-        foreach ($this->columns AS $key=>$val) {// die(var_dump($key, $val));
-
+        foreach ($this->columns AS $key=>$val) {
             $result .= Html::openTag('dt', $this->attributesElement);
             $result .= $val['label'];
             $result .= Html::closeTag('dt');
@@ -152,9 +149,7 @@ class DetailViewWidget extends Widget
                 }
             }
             $result .= Html::closeTag('dd');
-
         }
-
-        echo $result , Html::closeTag('dl');
+        return $result . Html::closeTag('dl');
     }
 }

@@ -21,10 +21,10 @@ class PaginationWidget extends Widget
 {
     /** @var int $countRows count rows */
     public $countRows = 0;
-    /** @var int $limit limit rows per page */
-    public $limit = 10;
     /** @var int $currentPage current page */
     public $currentPage = 1;
+    /** @var int $limit limit rows per page */
+    public $limit = 10;
     /** @var string $url url for pagination links */
     public $url = '';
     /** @var array $attributes attributes for list */
