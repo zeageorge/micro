@@ -35,6 +35,7 @@ class FormWidget extends Widget
      * Initialize widget
      *
      * @access public
+     *
      * @return Form
      */
     public function init()
@@ -48,13 +49,15 @@ class FormWidget extends Widget
      * Running widget
      *
      * @access public
+     *
      * @return void
      */
     public function run()
     {
-        echo Html::endForm();
+        $result = Html::endForm();
         if ($this->client) {
-            echo Html::script($this->client);
+            $result .= Html::script($this->client);
         }
+        echo $result;
     }
 }

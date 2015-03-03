@@ -154,7 +154,7 @@ class PhpView extends View
                 strtolower(basename(str_replace('\\', '/', '/' . $this->path))));
             $path .= dirname($cl) . '/views/' . $className . '/' . $view . '.php';
         }
-        return $path;
+        return str_replace('//','/', $path);
     }
 
     /**

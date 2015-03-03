@@ -128,11 +128,11 @@ class ListViewWidget extends Widget
      *
      * @access public
      *
-     * @return string
+     * @return void
      */
     public function run()
     {
-        return str_replace(
+        echo str_replace(
             ['{counter}', '{elements}', '{pager}'],
             [$this->getCounter(), $this->getElements(), $this->getPager()],
             $this->template

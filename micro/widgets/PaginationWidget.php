@@ -42,6 +42,7 @@ class PaginationWidget extends Widget
      * Initialize widget
      *
      * @access public
+     *
      * @result void
      */
     public function init()
@@ -79,6 +80,7 @@ class PaginationWidget extends Widget
      * Running widget
      *
      * @access public
+     *
      * @return void
      */
     public function run()

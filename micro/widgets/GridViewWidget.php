@@ -123,15 +123,16 @@ class GridViewWidget extends Widget
      *
      * @access public
      *
-     * @return string
+     * @return void
      */
     public function run()
     {
         if (!$this->rows) {
-            return $this->emptyText;
+            echo $this->emptyText;
+            return;
         }
 
-        return str_replace(
+        echo str_replace(
             ['{counter}', '{pager}', '{table}'],
             [ $this->getCounter(), $this->getPager(), $this->getTable() ],
             $this->template
@@ -148,7 +149,7 @@ class GridViewWidget extends Widget
     protected function getCounter()
     {
         return Html::openTag('div', $this->attributesCounter) .
-               $this->counterText . $this->rowsCount . Html::closeTag('div');
+               $this->counterText . $this->totalCount . Html::closeTag('div');
     }
 
     /**

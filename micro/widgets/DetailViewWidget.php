@@ -122,7 +122,7 @@ class DetailViewWidget extends Widget
      *
      * @access public
      *
-     * @return string
+     * @return void
      */
     public function run()
     {
@@ -150,6 +150,6 @@ class DetailViewWidget extends Widget
             }
             $result .= Html::closeTag('dd');
         }
-        return $result . Html::closeTag('dl');
+        echo $result , Html::closeTag('dl');
     }
 }

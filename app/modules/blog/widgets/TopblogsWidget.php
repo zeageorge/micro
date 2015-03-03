@@ -14,6 +14,6 @@ class TopblogsWidget extends Widget
     public function run()
     {
         $v = new View;
-        return $v;
+        echo $v;
     }
 }

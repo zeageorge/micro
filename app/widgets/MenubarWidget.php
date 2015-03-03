@@ -18,6 +18,6 @@ class MenubarWidget extends Widget
         $v->view = 'menubar';
         $v->asWidget = true;
 
-        return $v;
+        echo $v;
     }
 }
