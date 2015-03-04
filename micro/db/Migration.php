@@ -16,7 +16,7 @@ use Micro\base\Registry;
  * @version 1.0
  * @since 1.0
  */
-class Migration
+abstract class Migration
 {
     /** @var DbConnection $db connection to db */
     protected $db = false;
@@ -50,18 +50,16 @@ class Migration
      *
      * @access public
      * @return void
+     * @abstract
      */
-    public function up()
-    {
-    }
+    abstract public function up();
 
     /**
      * Downgrade DB
      *
      * @access public
      * @return void
+     * @abstract
      */
-    public function down()
-    {
-    }
+    abstract public function down();
 }
