@@ -197,6 +197,20 @@ class DbConnection
     }
 
     /**
+     * Remove table from database
+     *
+     * @access public
+     *
+     * @param string $name table name
+     *
+     * @return mixed
+     */
+    public function removeTable($name)
+    {
+        return $this->exec('DROP TABLE `' . $name . '`;');
+    }
+
+    /**
      * Field exists in table
      *
      * @access public
