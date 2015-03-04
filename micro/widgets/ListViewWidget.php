@@ -85,7 +85,7 @@ class ListViewWidget extends Widget
 
             $args['data']->select = 'COUNT(id)';
             $args['data']->single = true;
-            $this->totalCount     = $args['data']->run()[0];
+            $this->totalCount     = $args['data']->run(\PDO::FETCH_BOTH)[0];
 
             $args['data']->select = $select;
             $args['data']->ofset  = $this->page*$this->limit;
