@@ -809,6 +809,21 @@ class Html
     }
 
     /**
+     * Converting array to options
+     *
+     * @param array $arr Input array
+     *
+     * @return array|null Output array
+     */
+    public static function arrayToOptions( array $arr = [] ) {
+        $result = [];
+        foreach ($arr AS $n => $m) {
+            $result[] = [ 'value'=>$n , 'text'=>$m ];
+        }
+        return $result;
+    }
+
+    /**
      * Render checkBoxList (input checkbox tags)
      *
      * @access public
