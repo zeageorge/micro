@@ -123,9 +123,9 @@ final class Micro
             }
         }
 
-        /** @var \Micro\mvc\Controller $mvc ModelViewController */
+        /** @var \Micro\mvc\controllers\Controller $mvc ModelViewController */
         $mvc = new $path;
-        $mvc->action($action);
+        echo $mvc->action($action);
     }
 
     /**
