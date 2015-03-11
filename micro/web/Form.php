@@ -1087,7 +1087,6 @@ class Form
      */
     public function listBoxFieldRow($model, $property, array $options = [])
     {
-        $elements = !empty($options['elements']) ? $options['elements'] : [];
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
 
@@ -1105,7 +1104,7 @@ class Form
 
         return Html::openTag('div', $block) .
         Html::label($model->getLabel($property), $element['id'], $label) .
-        $this->listBoxField($model, $property, $elements, $options) .
+        $this->listBoxField($model, $property, $options) .
         Html::closeTag('div');
     }
 
@@ -1125,7 +1124,13 @@ class Form
         $element = $this->getField($model, $property);
         $options['id'] = $element['id'];
         $options['selected'] = $element['value'];
-        $elements = !empty($options['elements']) ? $options['elements'] : [];
+
+        $elements = [];
+        if (!empty($options['elements'])) {
+            $elements = $options['elements'];
+            unset($options['elements']);
+        }
+
         return Html::listBox($element['name'], $elements, $options);
     }
 
