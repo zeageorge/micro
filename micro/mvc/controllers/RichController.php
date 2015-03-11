@@ -1,11 +1,8 @@
 <?php
 
-namespace Micro\mvc;
+namespace Micro\mvc\controllers;
 
-use Micro\base\Exception;
 use Micro\base\Registry;
-use Micro\mvc\controllers\Controller;
-use Micro\web\Response;
 
 abstract class RichController extends Controller
 {
@@ -30,9 +27,12 @@ abstract class RichController extends Controller
      * }
      * </code>
      *
+     * @access public
+     *
      * @return array
+     * @abstract
      */
-    abstract function actionsTypes();
+    abstract public function actionsTypes();
 
     public function __construct()
     {
