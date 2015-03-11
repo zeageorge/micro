@@ -1102,10 +1102,6 @@ class Form
             unset($options['label']);
         }
 
-        if (empty($options['size'])) {
-            $options['size'] = 3;
-        }
-
         return Html::openTag('div', $block) .
         Html::label($model->getLabel($property), $element['id'], $label) .
         $this->listBoxField($model, $property, $options) .
@@ -1133,6 +1129,10 @@ class Form
         if (!empty($options['elements'])) {
             $elements = $options['elements'];
             unset($options['elements']);
+        }
+
+        if (empty($options['size'])) {
+            $options['size'] = 3;
         }
 
         return Html::listBox($element['name'], $elements, $options);
