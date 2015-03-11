@@ -16,7 +16,17 @@ abstract class Controller
     public $response;
 
 
-    abstract function action($name = 'index');
+    /**
+     * Master action
+     *
+     * @access public
+     *
+     * @param string $name Called action name
+     *
+     * @return string
+     * @abstract
+     */
+    abstract public function action($name = 'index');
 
     /**
      * Constructor controller

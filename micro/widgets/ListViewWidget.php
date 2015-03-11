@@ -149,7 +149,7 @@ class ListViewWidget extends Widget
     protected function getCounter()
     {
         return Html::openTag('div', $this->attributesCounter) .
-            $this->counterText . $this->rowsCount . Html::closeTag('div');
+            $this->counterText . $this->totalCount . Html::closeTag('div');
     }
 
     /**

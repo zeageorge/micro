@@ -57,14 +57,14 @@ class PaginationWidget extends Widget
             $this->limit = 10;
         }
 
-        $this->totalPages = $this->countRows / $this->limit;
-
-        if ($this->totalPages === 0) {
-            $this->totalPages = 1;
-        }
+        $this->totalPages = intval($this->countRows / $this->limit);
 
         if ($a = ($this->countRows % $this->limit)) {
             $this->totalPages++;
+        }
+
+        if ($this->totalPages === 0) {
+            $this->totalPages = 1;
         }
 
         if ($this->currentPage < 0) {
@@ -88,15 +88,15 @@ class PaginationWidget extends Widget
         $items = [];
         if ($this->totalPages > 0) {
             for ($i = 0; ($i + 1) <= $this->totalPages; $i++) {
-                $items[] = [
-                    'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
-                    'attr' => array_merge($this->attributesElement , ['class' => 'active'] )
-                ];
-
                 if ($i !== $this->currentPage) {
                     $items[] = [
                         'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
                         'attr' => $this->attributesElement
+                    ];
+                } else {
+                    $items[] = [
+                        'text' => Html::href($i + 1, $this->url . $i, $this->attributesLink),
+                        'attr' => array_merge($this->attributesElement , ['class' => 'active'] )
                     ];
                 }
             }

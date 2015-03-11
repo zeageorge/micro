@@ -11,10 +11,8 @@ abstract class RichController extends Controller
 {
     /** @var string $module Module of current request */
     public $module;
-    /** @var integer $result Result status */
-    public $status;
     /** @var string $format Format for response */
-    public $format = 'json';
+    public $format = 'application/json';
 
 
     /**
@@ -44,19 +42,16 @@ abstract class RichController extends Controller
     }
 
     /**
-     * Run action
+     * Master action
      *
      * @access public
      *
-     * @param string $name action name
+     * @param string $name Called action name
      *
-     * @return void
-     * @throws Exception
+     * @return string
      */
     public function action($name = 'index')
     {
-
-
         $view = null;
         $actionClass = false;
 
@@ -64,8 +59,8 @@ abstract class RichController extends Controller
             $actionClass = $this->getActionClassByName($name);
 
             if (!$actionClass) {
-                $this->status = 500;
-                $this->response([ 'errorString'=>'Action "' . $name . '" not found into ' . get_class($this) ]);
+                $this->response->setStatus(500, 'Action "' . $name . '" not found into ' . get_class($this));
+                return $this->response;
             }
         }
         $filters = method_exists($this, 'filters') ? $this->filters() : [];
@@ -73,10 +68,10 @@ abstract class RichController extends Controller
         // new logic - check headers
         $types = $this->actionsTypes();
         if (!empty($types[$name]) && $this->methodType !== $types[$name]) {
-            $this->status = 500;
-            $this->response([
-              'errorString'=>'Action "'. $name .'" not run with method "'. $this->methodType .'" into '.get_class($this)
-            ]);
+            $this->response->setStatus(500,
+                'Action "'. $name .'" not run with method "'. $this->methodType .'" into '.get_class($this)
+            );
+            return $this->response;
         }
 
         // pre - operations
@@ -90,20 +85,23 @@ abstract class RichController extends Controller
             $view = $this->{'action' . ucfirst($name)}();
         }
 
-        if (is_object($view)) {
-            $view = (array) $view;
-        }
-
         // new logic - check headers
+        $this->response->setContentType($this->format);
+
 
         // post - operations
-        echo $this->applyFilters($name, false, $filters, $view);
+        $this->response->setBody($this->applyFilters($name, false, $filters, $view));
+        return $this->response;
     }
-
-    public function response( array $data = [] )
+    protected function switchContentType($data)
     {
-        $headers = [];
-
-        $response = new Response($data, $this->status, $headers);
+        switch ($this->format) {
+            case 'application/json': {
+                return json_encode( is_object($data) ? (array)$data : $data );
+            }
+            case 'application/xml': {
+                return is_object($data) ? $data->__toString() : $data;
+            }
+        }
     }
 }

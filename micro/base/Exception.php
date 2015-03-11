@@ -31,13 +31,10 @@ class Exception extends \Exception
 
             $config = Micro::getInstance()->config;
 
-            /** @var \Micro\mvc\Controller $mvc controller */
+            /** @var \Micro\mvc\controllers\Controller $mvc controller */
             $mvc = new $config['errorController'];
-            $mvc->action($config['errorAction']);
-
+            echo $mvc->action($config['errorAction']);
             error_reporting(0);
-
-            return '';
         } else {
             return '"Error #' . $this->getCode() . ' - ' . $this->getMessage() . '"';
         }

@@ -1,6 +1,6 @@
 <?php /** MicroController */
 
-namespace Micro\mvc;
+namespace Micro\mvc\controllers;
 
 use Micro\mvc\controllers\Controller AS Controller;
 use Micro\base\Exception;
@@ -26,13 +26,13 @@ abstract class ViewController extends Controller
 
 
     /**
-     * Run action
+     * Master action
      *
      * @access public
      *
-     * @param string $name action name
+     * @param string $name Called action name
      *
-     * @return void
+     * @return string
      * @throws Exception
      */
     public function action($name = 'index')
@@ -71,6 +71,7 @@ abstract class ViewController extends Controller
         }
 
         $this->response->setBody( $this->applyFilters($name, false, $filters, $view) );
+        return $this->response;
     }
 
     /**

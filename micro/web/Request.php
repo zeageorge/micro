@@ -90,11 +90,38 @@ class Request
      * Get request method
      *
      * @access public
+     *
      * @return string
      */
     public function getMethod()
     {
         return $_SERVER['REQUEST_METHOD'];
+    }
+
+    /**
+     * Check request is AJAX ?
+     *
+     * @access public
+     *
+     * @return bool
+     */
+    public function isAjax()
+    {
+        return !empty($_SERVER['HTTP_X_REQUEST_WITH']) && $_SERVER['HTTP_X_REQUEST_WITH'] === 'XMLHttpRequest';
+    }
+
+    /**
+     * Get browser data from user user agent string
+     *
+     * @access public
+     *
+     * @param null|string $agent User agent string
+     *
+     * @return mixed
+     */
+    public function getBrowser( $agent = null )
+    {
+        return get_browser( $agent ?: $_SERVER['HTTP_USER_AGENT'], true);
     }
 
     /**
