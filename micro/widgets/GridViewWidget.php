@@ -77,16 +77,21 @@ class GridViewWidget extends Widget
         $this->page  = ($this->page < 0)   ? 0  : $this->page;
 
         if ($args['data'] instanceof Query) {
-            $select               = $args['data']->select;
+            if (!empty($args['data']->having) || !empty($args['data']->group)) {
+                $res = new Query;
+                $res->select = 'COUNT(*)';
+                $res->table = '(' . $args['data']->getQuery() . ') micro_count';
+                $res->single = true;
+            } else {
+                $res = clone $args['data'];
+                $res->select = 'COUNT(*)';
+                $res->single = true;
+            }
 
-            $args['data']->select = 'COUNT(*)';
-            $args['data']->single = true;
-            $this->totalCount     = $args['data']->run()[0];
+            $this->totalCount     = $res->run()[0];
 
-            $args['data']->select = $select;
             $args['data']->ofset  = $this->page*$this->limit;
             $args['data']->limit  = $this->limit;
-            $args['data']->single = false;
             $args['data']         = $args['data']->run();
         } else {
             $this->totalCount = count($args['data']);
