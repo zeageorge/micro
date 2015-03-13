@@ -31,7 +31,7 @@ class Console
     public function __construct(array $params = [])
     {
         array_shift($params);
-        $this->command = '\\App\\consoles\\' . array_shift($params) . 'ConsoleCommand';
+        $this->command = '\\App\\consoles\\' . ucfirst(array_shift($params)) . 'ConsoleCommand';
 
         foreach ($params AS $param) {
             $pos = strpos($param, '=');
