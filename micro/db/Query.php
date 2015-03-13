@@ -225,7 +225,7 @@ class Query
     {
         $res = $this->conn->rawQuery($this->getQuery(), $this->params, $as, $this->objectName);
         if ($this->single) {
-            return $res[0];
+            return !empty($res[0]) ? $res[0] : false;
         } else {
             return $res;
         }
