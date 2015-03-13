@@ -154,6 +154,7 @@ final class Micro
         if (!$command->result) {
             throw new Exception($command->message);
         }
+        echo $command->message , "\n";
     }
 
     /**
