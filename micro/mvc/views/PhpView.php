@@ -132,6 +132,7 @@ class PhpView extends View
      * @param string $view view file name
      *
      * @return string
+     * @throws Exception
      */
     private function getViewFile($view)
     {
@@ -154,7 +155,13 @@ class PhpView extends View
                 strtolower(basename(str_replace('\\', '/', '/' . $this->path))));
             $path .= dirname($cl) . '/views/' . $className . '/' . $view . '.php';
         }
-        return str_replace('//','/', $path);
+
+        $path = str_replace('//','/', $path);
+
+        if (!file_exists($path)) {
+            throw new Exception('View path `' . $path . '` not exists.');
+        }
+        return $path;
     }
 
     /**
