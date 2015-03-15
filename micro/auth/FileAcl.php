@@ -61,6 +61,7 @@ class FileAcl extends Acl
     public function check($userId, $permission, array $data = [])
     {
         $permissionId = in_array($permission, $this->perms, true);
+        /** @var array $assigned */
         $assigned = $this->assigned($userId);
         if (!$assigned) {
             return false;

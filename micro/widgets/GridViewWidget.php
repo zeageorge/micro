@@ -77,7 +77,7 @@ class GridViewWidget extends Widget
         $this->page  = ($this->page < 0)   ? 0  : $this->page;
 
         if ($args['data'] instanceof Query) {
-            if (!empty($args['data']->having) || !empty($args['data']->group)) {
+            if ($args['data']->having || $args['data']->group) {
                 $res = new Query;
                 $res->select = 'COUNT(*)';
                 $res->table = '(' . $args['data']->getQuery() . ') micro_count';

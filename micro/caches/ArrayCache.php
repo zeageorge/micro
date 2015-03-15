@@ -141,7 +141,7 @@ class ArrayCache implements Cache
      */
     public function increment($name, $offset = 1)
     {
-        $this->driver[$name] = $this->driver[$name] + $offset;
+        $this->driver[$name] += $offset;
     }
 
     /**
@@ -156,6 +156,6 @@ class ArrayCache implements Cache
      */
     public function decrement($name, $offset = 1)
     {
-        $this->driver[$name] = $this->driver[$name] - $offset;
+        $this->driver[$name] -= $offset;
     }
 }

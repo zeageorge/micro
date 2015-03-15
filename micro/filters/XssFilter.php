@@ -50,7 +50,7 @@ class XssFilter extends Filter
      *
      * @access private
      *
-     * @param array $data data for check
+     * @param array|mixed $data data for check
      *
      * @return mixed
      */

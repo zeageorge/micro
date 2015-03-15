@@ -35,16 +35,18 @@ class StringValidator extends Validator
                 $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
                 return false;
             }
-            $elementValue = $model->$element;
+            $elementLength = strlen($model->$element);
 
             if (!empty($this->params['min'])) {
-                if ((integer)$this->params['min'] > strlen($elementValue)) {
+                $this->params['min'] = filter_var($this->params['min'], FILTER_VALIDATE_INT);
+                if ($this->params['min'] > $elementLength) {
                     $this->errors[] = $element . ' error: minimal characters not valid.';
                     return false;
                 }
             }
             if (!empty($this->params['max'])) {
-                if ((integer)$this->params['max'] < strlen($elementValue)) {
+                $this->params['max'] = filter_var($this->params['max'], FILTER_VALIDATE_INT);
+                if ($this->params['max'] < $elementLength) {
                     $this->errors[] = $element . ' error: maximal characters not valid.';
                     return false;
                 }

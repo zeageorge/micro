@@ -93,6 +93,7 @@ abstract class Rbac
     {
         $tree = $this->tree($this->rawRoles());
 
+        /** @var array $roles */
         $roles = $this->assigned($userId);
         if (!$roles) {
             return false;

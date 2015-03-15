@@ -29,10 +29,10 @@ class Uploader
      */
     public function __construct()
     {
-        if (isset($_FILES)) {
+        if (null !== $_FILES) {
             if (!empty($_FILES['name'])) {
-                $summ = count($_FILES['name']);
-                for ($i = 0; $i < $summ; $i++) {
+                $sumFiles = count($_FILES['name']);
+                for ($i = 0; $i < $sumFiles; $i++) {
                     if (empty($_FILES['name'][$i])) {
                         break;
                     }

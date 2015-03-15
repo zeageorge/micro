@@ -6,8 +6,6 @@ use Micro\base\Registry;
 
 abstract class RichController extends Controller
 {
-    /** @var string $module Module of current request */
-    public $module;
     /** @var string $format Format for response */
     public $format = 'application/json';
 
@@ -34,6 +32,13 @@ abstract class RichController extends Controller
      */
     abstract public function actionsTypes();
 
+    /**
+     * Construct RICH controller
+     *
+     * @access public
+     *
+     * @result void
+     */
     public function __construct()
     {
         parent::__construct();
@@ -79,6 +84,7 @@ abstract class RichController extends Controller
 
         // running
         if ($actionClass) {
+            /** @var \Micro\mvc\Action $cl */
             $cl = new $actionClass;
             $view = $cl->run();
         } else {
@@ -93,6 +99,16 @@ abstract class RichController extends Controller
         $this->response->setBody($this->applyFilters($name, false, $filters, $view));
         return $this->response;
     }
+
+    /**
+     * Switch content type
+     *
+     * @access protected
+     *
+     * @param mixed $data Any content
+     *
+     * @return string
+     */
     protected function switchContentType($data)
     {
         switch ($this->format) {

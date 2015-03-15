@@ -108,9 +108,9 @@ class DetailViewWidget extends Widget
                 $this->columns[$key] = $buffer;
             } else {
                 $buffer = array(
-                    'label' => $val['label'] ? $val['label'] : $arg,
-                    'type'  => $val['type']  ? $val['type']  : 'text',
-                    'value' => $val['value'] ? $val['value'] : $arg
+                    'label' => $val['label'] ?: $arg,
+                    'type'  => $val['type']  ?: 'text',
+                    'value' => $val['value'] ?: $arg
                 );
                 $this->columns[$key] = $buffer;
             }

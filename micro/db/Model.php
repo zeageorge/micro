@@ -70,6 +70,18 @@ abstract class Model extends FormModel
     }
 
     /**
+     * @access public
+     *
+     * @return string
+     * @throws Exception
+     * @static
+     */
+    public static function tableName()
+    {
+        throw new Exception('Function `tableName` not defined into ' . get_called_class());
+    }
+
+    /**
      * Finder data in DB
      *
      * @access public
@@ -143,6 +155,7 @@ abstract class Model extends FormModel
                     $sql->params = $relation['Params'];
                 }
 
+                /** @var Model $relation['Model'] */
                 $this->cacheRelations[$name] = $relation['Model']::finder($sql, $relation['IsMany']);
             }
             return $this->cacheRelations[$name];
@@ -176,7 +189,7 @@ abstract class Model extends FormModel
             $arr = Type::getVars($this);
             unset($arr['isNewRecord']);
 
-            if ($this->db->insert($this->tableName(), $arr)) {
+            if ($this->db->insert(static::tableName(), $arr)) {
                 $this->_isNewRecord = false;
                 $this->afterCreate();
                 return true;
@@ -194,7 +207,7 @@ abstract class Model extends FormModel
      */
     public function afterCreate()
     {
-        $pKey = isset($this->primaryKey) ? $this->primaryKey : 'id';
+        $pKey = $this->primaryKey ?: 'id';
 
         if (property_exists($this, $pKey)) {
             $this->$pKey = $this->db->lastInsertId($pKey);
@@ -274,14 +287,14 @@ abstract class Model extends FormModel
             unset($arr['isNewRecord']);
 
             if (!$where) {
-                if (isset($this->primaryKey) AND $this->primaryKey) {
+                if ($this->primaryKey) {
                     $where .= $this->primaryKey . '=:' . $this->primaryKey;
                 } else {
-                    throw new Exception ('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+                    throw new Exception ('In table ' . static::tableName() . ' option `id` not defined/not use.');
                 }
             }
 
-            if ($this->db->update($this->tableName(), $arr, $where)) {
+            if ($this->db->update(static::tableName(), $arr, $where)) {
                 $this->afterUpdate();
                 return true;
             }
@@ -323,13 +336,13 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeDelete()) {
-            if (!isset($this->primaryKey) AND $this->primaryKey) {
-                throw new Exception('In table ' . $this->tableName() . ' option `id` not defined/not use.');
+            if (!$this->primaryKey) {
+                throw new Exception('In table ' . static::tableName() . ' option `id` not defined/not use.');
             }
 
             if (
             $this->db->delete(
-                $this->tableName(),
+                static::tableName(),
                 $this->primaryKey . '=:' . $this->primaryKey, [$this->primaryKey => $this->{$this->primaryKey}]
             )
             ) {

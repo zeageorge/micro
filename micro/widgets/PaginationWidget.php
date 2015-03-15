@@ -57,7 +57,7 @@ class PaginationWidget extends Widget
             $this->limit = 10;
         }
 
-        $this->totalPages = intval($this->countRows / $this->limit);
+        $this->totalPages = (int)($this->countRows / $this->limit);
 
         if ($a = ($this->countRows % $this->limit)) {
             $this->totalPages++;

@@ -179,7 +179,7 @@ class Curl
      * @access public
      *
      * @param string $url URL
-     * @param array $data data
+     * @param array|mixed $data data
      *
      * @return void
      */

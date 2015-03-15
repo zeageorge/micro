@@ -62,7 +62,8 @@ class Response
      */
     public function addHeader( $name, $value, $replace = true )
     {
-        $this->headers[$name] = $replace ? $value : ( empty($this->headers[$name]) ? $value : $this->headers[$name] );
+        $header = empty($this->headers[$name]) ? $value : $this->headers[$name];
+        $this->headers[$name] = $replace ? $value : $header;
     }
 
     /**
@@ -76,7 +77,7 @@ class Response
      */
     public function getHeader( $name )
     {
-        return !empty($this->headers) ? $this->headers[$name] : NULL;
+        return $this->headers ? $this->headers[$name] : NULL;
     }
 
     /**
@@ -134,7 +135,7 @@ class Response
      */
     public function setStatusMessage( $message = '' )
     {
-        $this->statusMessage = !empty($message) ? $message : $this->getStatusMessageFromCode($this->statusCode);
+        $this->statusMessage = $message ?: $this->getStatusMessageFromCode($this->statusCode);
     }
 
     /**
@@ -176,7 +177,7 @@ class Response
      */
     public function setContentType( $newType = '' )
     {
-        $this->contentType = !empty($newType) ? $newType : 'Content-Type: text/html';
+        $this->contentType = $newType ?: 'Content-Type: text/html';
     }
 
     /**

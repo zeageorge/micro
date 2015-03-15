@@ -2,7 +2,6 @@
 
 namespace Micro\mvc\controllers;
 
-use Micro\mvc\controllers\Controller AS Controller;
 use Micro\base\Exception;
 
 /**
@@ -57,6 +56,7 @@ abstract class ViewController extends Controller
         $this->applyFilters($name, true, $filters, null);
 
         if ($actionClass) {
+            /** @var \Micro\mvc\Action $cl */
             $cl = new $actionClass;
             $view = $cl->run();
         } else {
