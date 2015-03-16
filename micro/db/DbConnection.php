@@ -31,7 +31,7 @@ class DbConnection
      * @param bool $ignoreFail ignore PDO fail create?
      *
      * @result void
-     * @throw Exception
+     * @throws Exception
      */
     public function __construct(array $config = [], $ignoreFail = false)
     {
@@ -43,7 +43,7 @@ class DbConnection
                 $config['options']);
         } catch (Exception $e) {
             if (!$ignoreFail) {
-                die('Connect to DB failed: ' . $e->getMessage());
+               throw new Exception('Connect to DB failed: ' . $e->getMessage());
             }
         }
     }
@@ -74,21 +74,21 @@ class DbConnection
      */
     public function rawQuery($query = '', array $params = [], $fetchType = \PDO::FETCH_ASSOC, $fetchClass = 'Model')
     {
-        $st = $this->conn->prepare($query);
+        $sth = $this->conn->prepare($query);
 
         if ($fetchType === \PDO::FETCH_CLASS) {
-            $st->setFetchMode($fetchType, ucfirst($fetchClass), ['new' => false]);
+            $sth->setFetchMode($fetchType, ucfirst($fetchClass), ['new' => false]);
         } else {
-            $st->setFetchMode($fetchType);
+            $sth->setFetchMode($fetchType);
         }
 
         foreach ($params AS $name => $value) {
-            $st->bindValue($name, $value);
+            $sth->bindValue($name, $value);
         }
-        if ($st->execute()) {
-            return $st->fetchAll();
+        if ($sth->execute()) {
+            return $sth->fetchAll();
         } else {
-            throw new Exception($st->errorCode() . ': ' . print_r($st->errorInfo()));
+            throw new Exception($sth->errorCode() . ': ' . print_r($sth->errorInfo()));
         }
     }
 
