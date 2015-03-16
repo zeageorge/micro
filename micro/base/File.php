@@ -83,7 +83,9 @@ class File
     public static function recurseCopy($src, $dst)
     {
         $dir = opendir($src);
-        mkdir($dst, 0777);
+        if (!file_exists($dst)) {
+            mkdir( $dst, 0777 );
+        }
 
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
@@ -113,7 +115,9 @@ class File
     public static function recurseCopyIfEdited($src = '', $dst = '', $exc = '.php')
     {
         $dir = opendir($src);
-        mkdir($dst, 0777);
+        if (!file_exists($dst)) {
+            mkdir($dst, 0777);
+        }
 
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
