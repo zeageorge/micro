@@ -46,7 +46,7 @@ class RedisCache implements Cache
                 $result = $this->driver->connect($config['host'], $config['port'], $config['duration']);
             }
         } catch (Exception $e) {
-            die ((string)$e);
+            throw new Exception( (string)$e );
         }
 
         if (!$result) {

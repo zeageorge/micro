@@ -10,4 +10,4 @@
     <p><label for="Setup_pass">Новый пароль</label><input id="Setup_pass" type="password" name="Setup[pass]"/></p>
 
     <p><?= \Micro\wrappers\Html::submitButton('Обновить') ?></p>
-<?= \Micro\wrappers\Html::endForm() ?>
+<?= \Micro\wrappers\Html::endForm();

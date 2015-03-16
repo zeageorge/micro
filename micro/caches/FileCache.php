@@ -85,7 +85,7 @@ class FileCache implements Cache
      */
     protected function unlinkRecursive($dir, $deleteRootToo = false)
     {
-        if (!$dh = @opendir($dir)) {
+        if (!$dh = opendir($dir)) {
             return;
         }
         while (false !== ($obj = readdir($dh))) {
@@ -93,7 +93,7 @@ class FileCache implements Cache
                 continue;
             }
 
-            if (!@unlink($dir . '/' . $obj)) {
+            if (!unlink($dir . '/' . $obj)) {
                 $this->unlinkRecursive($dir . '/' . $obj, true);
             }
         }
@@ -101,7 +101,7 @@ class FileCache implements Cache
         closedir($dh);
 
         if ($deleteRootToo) {
-            @rmdir($dir);
+            rmdir($dir);
         }
     }
 

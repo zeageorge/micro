@@ -104,7 +104,7 @@ final class Micro
     public function run()
     {
         if (php_sapi_name() === 'cli') {
-            die('Not allowed from web');
+            throw new Exception('Not allowed from web');
         }
 
         $path = $this->prepareController();
@@ -141,7 +141,7 @@ final class Micro
         global $argv;
 
         if (php_sapi_name() !== 'cli') {
-            die('Not allowed from command');
+            throw new Exception('Not allowed from command');
         }
 
         $cli = new Console($argv);

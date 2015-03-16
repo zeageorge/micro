@@ -28,7 +28,7 @@ class File
     public static function dirSize($dirName)
     {
         $totalSize = 0;
-        if ($dirStream = @opendir($dirName)) {
+        if ($dirStream = opendir($dirName)) {
             while (false !== ($fileName = readdir($dirStream))) {
                 if ($fileName !== '.' && $fileName !== '..') {
                     if (is_file($dirName . '/' . $fileName)) {
@@ -57,16 +57,16 @@ class File
     public static function removeDir($path)
     {
         if (is_file($path)) {
-            @unlink($path);
+            unlink($path);
         } else {
             foreach (scandir($path) as $dir) {
                 if ($dir !== '.' AND $dir !== '..') {
                     self::removeDir($path . '/' . $dir);
                 }
             }
-            @unlink($path);
+            unlink($path);
         }
-        @rmdir($path);
+        rmdir($path);
     }
 
     /**
@@ -83,7 +83,7 @@ class File
     public static function recurseCopy($src, $dst)
     {
         $dir = opendir($src);
-        @mkdir($dst, 0777);
+        mkdir($dst, 0777);
 
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
@@ -91,7 +91,7 @@ class File
                     self::recurseCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     copy($src . '/' . $file, $dst . '/' . $file);
-                    @chmod($dst . '/' . $file, 0666);
+                    chmod($dst . '/' . $file, 0666);
                 }
             }
         }
@@ -113,7 +113,7 @@ class File
     public static function recurseCopyIfEdited($src = '', $dst = '', $exc = '.php')
     {
         $dir = opendir($src);
-        @mkdir($dst, 0777);
+        mkdir($dst, 0777);
 
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
@@ -123,10 +123,10 @@ class File
                     if (substr($src . '/' . $file, 0 - strlen($exc)) !== $exc) {
                         if (!file_exists($dst . '/' . $file)) {
                             copy($src . '/' . $file, $dst . '/' . $file);
-                            @chmod($dst . '/' . $file, 0666);
+                            chmod($dst . '/' . $file, 0666);
                         } elseif (filemtime($src . '/' . $file) !== filemtime($dst . '/' . $file)) {
                             copy($src . '/' . $file, $dst . '/' . $file);
-                            @chmod($dst . '/' . $file, 0666);
+                            chmod($dst . '/' . $file, 0666);
                         }
                     }
                 }

@@ -20,4 +20,4 @@ use Micro\wrappers\Html;
         <?= Html::submitButton(($model->isNewRecord()) ? 'Создать' : 'Обновить'); ?>
     </div>
 
-<?= Html::endForm(); ?>
+<?= Html::endForm();
