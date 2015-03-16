@@ -36,7 +36,6 @@ class StringValidator extends Validator
                 return false;
             }
             $elementLength = strlen($model->$element);
-
             if (!empty($this->params['min'])) {
                 $this->params['min'] = filter_var($this->params['min'], FILTER_VALIDATE_INT);
                 if ($this->params['min'] > $elementLength) {

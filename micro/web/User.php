@@ -54,6 +54,35 @@ class User
     }
 
     /**
+     * Login user
+     *
+     * @access public
+     *
+     * @param int|string $userId User identify
+     *
+     * @return void
+     */
+    public function login($userId)
+    {
+        $this->setID($userId);
+    }
+
+    /**
+     * Logout user
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function logout()
+    {
+        if (!$this->isGuest()) {
+            $this->setID(null);
+            Registry::get('session')->destroy();
+        }
+    }
+
+    /**
      * Get state user
      *
      * @access public
