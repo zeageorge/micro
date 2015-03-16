@@ -2,7 +2,7 @@
   "name":        "lugnsk/microphp",
   "type":        "library",
   "license":     "MIT",
-  "version":     "1.x",
+  "version":     "current",
   "homepage":    "http://micro.linpax.org/",
   "description": "Very small framework written on php to create HL-apps using hierarchical MVC pattern",
   "keywords":    [
