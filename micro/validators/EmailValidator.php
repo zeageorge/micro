@@ -35,7 +35,7 @@ class EmailValidator extends Validator
                 $this->errors[] = 'Parameter ' . $element . ' not defined in class ' . get_class($model);
                 return false;
             }
-            if (filter_var($model->$element, FILTER_VALIDATE_EMAIL) === false) {
+            if (!filter_var($model->$element, FILTER_VALIDATE_EMAIL)) {
                 $this->errors[] = 'Parameter ' . $element . ' is not a valid E-mail address';
                 return false;
             }
@@ -54,7 +54,7 @@ class EmailValidator extends Validator
      */
     public function client($model)
     {
-        $js = 'if (/^\w+@\w+$/.test(this.value) != true) {' .
+        $js = 'if (/^[\w.-]{1,}@[\w.-]{1,}$/.test(this.value) != true) {' .
             ' e.preventDefault(); this.focus(); alert(\'Value is not a valid e-mail\'); }';
         return $js;
     }
