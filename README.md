@@ -6,6 +6,8 @@ Micro - молодой H-MVC фреймворк со свободным исхо
 Micro реализует паттерн "иерархический модель-представление-контроллер" (HMVC).
 Текущая стабильная версия отсутствует, распостраняется по свободной лицензией MIT.  
 [![Build Status](https://secure.travis-ci.org/lugnsk/micro.png)](http://travis-ci.org/lugnsk/micro)
+[![HHVM Status](http://hhvm.h4cc.de/badge/lugnsk/microphp.svg)](http://hhvm.h4cc.de/package/lugnsk/microphp)
+[![Dependency Status](https://www.versioneye.com/user/projects/55066a5d66e561bb9b000142/badge.svg?style=flat)](https://www.versioneye.com/user/projects/55066a5d66e561bb9b000142)
 [![Latest Stable Version](https://poser.pugx.org/lugnsk/microphp/v/stable.svg)](https://packagist.org/packages/lugnsk/microphp)
 [![Total Downloads](https://poser.pugx.org/lugnsk/microphp/downloads.svg)](https://packagist.org/packages/lugnsk/microphp)
 [![Latest Unstable Version](https://poser.pugx.org/lugnsk/microphp/v/unstable.svg)](https://packagist.org/packages/lugnsk/microphp)
