@@ -26,6 +26,11 @@
   ],
 
   "minimum-stability": "dev",
+  "suggest": {
+    "ext-curl": "required",
+    "ext-pdo": "required",
+    "ext-pdo_mysql": "required"
+  },
   "require": {
     "php": ">=5.4.0",
     "ext-mbstring": "*",
