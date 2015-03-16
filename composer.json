@@ -37,6 +37,6 @@
     "lib-pcre": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "4.5.*"
   }
 }
