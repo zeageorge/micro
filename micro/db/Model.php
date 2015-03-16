@@ -146,7 +146,7 @@ abstract class Model extends FormModel
             if (empty($this->cacheRelations[$name])) {
                 $sql = new Query;
 
-                $sql->addWhere('`m`.`' . $relation['On'][1] . '`="' . $this->{$relation['On'][0]} . '"');
+                $sql->addWhere('`m`.`' . $relation['On'][1] . '`=:' . $relation['On'][0]);
 
                 if ($relation['Where']) {
                     $sql->addWhere($relation['Where']);
@@ -154,6 +154,8 @@ abstract class Model extends FormModel
                 if ($relation['Params']) {
                     $sql->params = $relation['Params'];
                 }
+
+                $sql->params[ $relation['On'][0] ] = $this->{$relation['On'][0]};
 
                 /** @var Model $relation['Model'] */
                 $this->cacheRelations[$name] = $relation['Model']::finder($sql, $relation['IsMany']);
