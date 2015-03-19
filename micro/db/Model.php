@@ -188,10 +188,7 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeCreate()) {
-            $arr = Type::getVars($this);
-            unset($arr['isNewRecord']);
-
-            if ($this->db->insert(static::tableName(), $arr)) {
+            if ($this->db->insert(static::tableName(), $this->checkAttributesExists())) {
                 $this->_isNewRecord = false;
                 $this->afterCreate();
                 return true;
@@ -285,9 +282,6 @@ abstract class Model extends FormModel
             return false;
         }
         if ($this->beforeUpdate()) {
-            $arr = Type::getVars($this);
-            unset($arr['isNewRecord']);
-
             if (!$where) {
                 if ($this->primaryKey) {
                     $where .= $this->primaryKey . '=:' . $this->primaryKey;
@@ -296,7 +290,7 @@ abstract class Model extends FormModel
                 }
             }
 
-            if ($this->db->update(static::tableName(), $arr, $where)) {
+            if ($this->db->update(static::tableName(), $this->checkAttributesExists(), $where)) {
                 $this->afterUpdate();
                 return true;
             }
@@ -364,5 +358,31 @@ abstract class Model extends FormModel
      */
     public function afterDelete()
     {
+    }
+
+    /**
+     * Check attributes exists into table
+     *
+     * @access protected
+     *
+     * @return array
+     */
+    protected function checkAttributesExists()
+    {
+        $arr = Type::getVars($this);
+
+        $buffer = [];
+        foreach ($this->db->listFields(static::tableName()) AS $row) {
+            $buffer[] = $row['field'];
+        }
+
+        foreach ($arr AS $key=>$val) {
+            if (!in_array($key, $buffer)) {
+                unset($arr[$key]);
+            }
+        }
+
+        unset($arr['isNewRecord']);
+        return $arr;
     }
 }
