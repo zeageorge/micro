@@ -761,6 +761,9 @@ class Html
                 $opts .= self::option($option['value'], $text, $attr);
             }
         }
+
+        $attributes['name'] = array_key_exists('multiple', $attributes) ? $attributes['name'].'[]' : '';
+
         return self::openTag('select', $attributes) . $opts . self::closeTag('select');
     }
 
